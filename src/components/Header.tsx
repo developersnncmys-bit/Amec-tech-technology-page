@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 
-const NAV = [
+type NavItem = { href: string; label: string; disabled?: boolean };
+
+const NAV: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/source", label: "Source", disabled: true },
   { href: "/oem-engineering", label: "OEM Engineering" },
@@ -14,7 +16,7 @@ const NAV = [
 
 // On the Source product page the navbar switches to a page-local nav that
 // jumps to sections within the page instead of the top-level site routes.
-const SOURCE_NAV = [
+const SOURCE_NAV: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "#product", label: "Product" },
   { href: "#features", label: "Features" },
