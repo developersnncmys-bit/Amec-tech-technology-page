@@ -109,6 +109,9 @@ export function IndustriesCarousel() {
     };
   }, []);
 
+  // Pin the carousel in view so the user sees the full set of cards before
+  // scrolling continues. WhyAmec no longer pins (static alternating rows), so
+  // the previous pin-stacking collision no longer applies.
   useIsomorphicLayoutEffect(() => {
     const pinTarget = pinRef.current;
     if (!pinTarget) return;
@@ -117,10 +120,11 @@ export function IndustriesCarousel() {
       ScrollTrigger.create({
         trigger: pinTarget,
         start: "top top",
-        end: "+=100%",
-        pin: pinTarget,
+        end: "+=80%",
+        pin: true,
         pinSpacing: true,
         anticipatePin: 1,
+        invalidateOnRefresh: true,
       });
     }, pinTarget);
 
@@ -141,12 +145,12 @@ export function IndustriesCarousel() {
   };
 
   return (
-    <section ref={pinRef} className="flex min-h-screen flex-col justify-center py-20 md:py-28">
+    <section ref={pinRef} className="flex min-h-screen flex-col justify-start pb-20 pt-14 md:pb-28 md:pt-20">
       <div className="mx-auto w-full max-w-[1464px] px-6 md:px-14">
         <AnimateIn>
-          <div className="grid gap-6 md:grid-cols-[1.4fr_1fr] md:items-end md:gap-12">
+          <div className="flex flex-col items-center gap-4 text-center md:gap-6">
             <h2 className="heading-lg">INDUSTRIES WE SERVE</h2>
-            <p className="max-w-xl font-display text-base leading-relaxed text-white/70 md:ml-auto md:pb-2 md:text-right md:text-lg">
+            <p className="max-w-2xl font-sans text-base leading-relaxed text-white/70 md:text-lg">
               From electric mobility to renewable energy and defense, our technologies enable innovation across industries.
             </p>
           </div>

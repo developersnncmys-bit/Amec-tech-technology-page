@@ -40,37 +40,34 @@ export function TechnologyCards() {
       const cards = gsap.utils.toArray<HTMLElement>("[data-tech-card]");
       if (!cards.length) return;
 
-      gsap.from("[data-tech-heading]", {
-        autoAlpha: 0,
-        y: 24,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: section, start: "top 80%" },
-      });
-      gsap.from("[data-tech-sub]", {
-        autoAlpha: 0,
-        y: 24,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: section, start: "top 80%" },
-      });
-      gsap.from(cards, {
-        autoAlpha: 0,
-        y: 40,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: { trigger: section, start: "top 75%" },
+      // Entrance timeline — plays as the section enters the viewport.
+      // No pin: TC is a static showcase, so the pin was adding ~1 viewport
+      // of dead scroll space with no payoff. Firing on scroll trigger lets
+      // the animation play naturally as the user scrolls through.
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        scrollTrigger: {
+          trigger: section,
+          start: "top 75%",
+          toggleActions: "play none none reverse",
+        },
       });
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "+=100%",
-        pin: section,
-        pinSpacing: true,
-        anticipatePin: 1,
-      });
+      tl.from("[data-tech-heading]", {
+        autoAlpha: 0,
+        y: 24,
+        duration: 0.6,
+      })
+        .from(
+          "[data-tech-sub]",
+          { autoAlpha: 0, y: 24, duration: 0.6 },
+          "-=0.4"
+        )
+        .from(
+          cards,
+          { autoAlpha: 0, y: 40, duration: 0.7, stagger: 0.15 },
+          "-=0.3"
+        );
     }, section);
 
     const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -82,8 +79,8 @@ export function TechnologyCards() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="flex min-h-screen flex-col justify-center py-20 md:py-28">
-      <div className="mx-auto w-full max-w-[1600px] px-6 pt-4 md:px-14 md:pt-8">
+    <section ref={sectionRef} className="pb-16 pt-8 md:pb-24 md:pt-12">
+      <div className="mx-auto w-full max-w-[1600px] px-6 md:px-14">
         {/* Header: heading spans cols 1-2, description sits in col 3.
             Uses the same 3-col grid as the cards below so text edges align
             perfectly with card 1 (left) and card 3 (right). */}
@@ -93,7 +90,7 @@ export function TechnologyCards() {
           </h2>
           <p
             data-tech-sub
-            className="text-sm leading-relaxed text-white/70 md:pb-2 md:text-right md:text-base"
+            className="text-sm leading-relaxed text-white/70 md:pb-2 md:text-left md:text-base"
           >
             Integrated EV platforms, smart energy systems, and OEM engineering built for innovation.
           </p>
@@ -102,10 +99,11 @@ export function TechnologyCards() {
         {/* Cards — revealed during pin */}
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {CARDS.map((card) => (
-            <div
+            <Link
               key={card.title}
+              href={card.href}
               data-tech-card
-              className="card overflow-hidden"
+              className="card group/card block overflow-hidden transition-colors duration-300 hover:border-white/20"
             >
               <div
                 className="h-[320px] w-full"
@@ -119,17 +117,16 @@ export function TechnologyCards() {
               <div className="p-5">
                 <h3 className="text-sm font-semibold text-white md:text-base">{card.title}</h3>
                 <p className="mt-2 body text-xs md:text-[13px]">{card.body}</p>
-                <Link
-                  href={card.href}
-                  className="cta-link mt-3 inline-flex items-center gap-2 text-xs font-medium text-white md:text-sm"
+                <span
+                  className="group/cta mt-4 inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out group-hover/card:border-white group-hover/card:bg-white group-hover/card:text-black"
                 >
-                  <span className="btn-arrow bg-white/10 text-white">
-                    <ArrowRight className="h-3 w-3" />
+                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/card:bg-black group-hover/card:text-white">
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </span>
                   Explore More
-                </Link>
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

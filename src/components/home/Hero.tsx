@@ -37,16 +37,18 @@ export function Hero() {
 
       const words = gsap.utils.toArray<HTMLElement>("[data-intro-word]");
       gsap.set(words, { autoAlpha: 0.12 });
+      // Scrub-reveal in natural scroll flow (no pin). stagger.amount keeps
+      // the full timeline short regardless of word count, and the trigger
+      // range is tight so a single scroll gesture completes the reveal.
       gsap.to(words, {
         autoAlpha: 1,
         ease: "none",
-        duration: 0.5,
-        stagger: 0.5,
+        stagger: { amount: 1 },
         scrollTrigger: {
           trigger: "[data-intro]",
-          start: "top 85%",
-          end: "top 25%",
-          scrub: 0.5,
+          start: "top 90%",
+          end: "top 50%",
+          scrub: 0.3,
           invalidateOnRefresh: true,
         },
       });
@@ -104,21 +106,38 @@ export function Hero() {
           </div>
 
           <div className="absolute inset-0 flex items-end justify-between gap-16 px-6 pb-10 md:px-24 md:pb-16">
-            <div className="max-w-[60%] text-left">
-              <p data-hero-eyebrow className="eyebrow">AMEC</p>
-              <h1 data-hero-title className="mt-2 heading-xl">
+            <div className="max-w-[70%] text-left">
+              <p
+                data-hero-eyebrow
+                className="eyebrow md:!text-[38px] md:!leading-none md:!tracking-[0.14em] md:!text-white/80"
+              >
+                AMEC
+              </p>
+              <h1
+                data-hero-title
+                className="mt-1 heading-xl md:!mt-2 md:!text-[52px] md:!leading-[1.06]"
+              >
                 {"TECHNOLOGY".split("").map((c, i) => (
                   <span key={i} className="inline-block">{c}</span>
                 ))}
               </h1>
-              <p data-hero-sub className="mt-3 body-hero md:!text-[22px] whitespace-normal md:whitespace-nowrap">
+              <p
+                data-hero-sub
+                className="mt-3 body-hero md:!mt-4 md:!text-[20px] md:!leading-[1.2] whitespace-normal md:whitespace-nowrap"
+              >
                 Engineering Powertrain, Energy & Scalable Technologies
               </p>
             </div>
             <div data-hero-cta className="shrink-0 self-end">
-              <button type="button" onClick={scrollToIntro} className="btn-primary group">
+              <button
+                type="button"
+                onClick={scrollToIntro}
+                className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              >
                 Explore more
-                <span className="btn-arrow"><ArrowRight className="h-3 w-3" /></span>
+                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
               </button>
             </div>
           </div>
@@ -127,7 +146,7 @@ export function Hero() {
       <div id="technology-intro" className="shell mt-16 mb-6 md:mt-24 md:mb-10">
         <p
           data-intro
-          className="mx-auto max-w-3xl text-center font-display text-base leading-relaxed text-white/70 md:text-lg"
+          className="mx-auto max-w-4xl text-center font-display text-lg leading-relaxed text-white/70 md:text-[22px]"
         >
           {INTRO_WORDS.map((word, i) => (
             <Fragment key={i}>

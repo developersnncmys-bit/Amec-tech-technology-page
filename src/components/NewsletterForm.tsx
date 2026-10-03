@@ -29,19 +29,19 @@ export function NewsletterForm() {
     setEmail("");
   };
 
-  const wrapperState =
+  const inputState =
     status === "error"
-      ? "border-red-400/60 focus-within:border-red-400 focus-within:ring-red-400/30"
+      ? "border-red-400/60 focus:border-red-400 focus:ring-red-400/30"
       : status === "success"
-        ? "border-emerald-400/60 focus-within:border-emerald-400 focus-within:ring-emerald-400/30"
-        : "border-white/10 focus-within:border-white/40 focus-within:ring-white/20";
+        ? "border-emerald-400/60 focus:border-emerald-400 focus:ring-emerald-400/30"
+        : "border-white/15 focus:border-white/40 focus:ring-white/20";
 
   return (
     <form className="mt-8 max-w-sm" onSubmit={handleSubmit} noValidate>
-      <label htmlFor="newsletter" className="eyebrow block">Stay updated</label>
-      <div
-        className={`mt-3 flex items-center gap-2 rounded-full border bg-bg-soft px-4 py-2 transition focus-within:ring-2 ${wrapperState}`}
-      >
+      <label htmlFor="newsletter" className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80">
+        STAY UPDATED
+      </label>
+      <div className="mt-3 flex items-center gap-2">
         <input
           id="newsletter"
           type="email"
@@ -57,11 +57,11 @@ export function NewsletterForm() {
             }
           }}
           placeholder="you@company.com"
-          className="flex-1 bg-transparent text-sm placeholder:text-white/40 focus:outline-none"
+          className={`flex-1 rounded border bg-transparent px-4 py-2.5 text-sm text-white placeholder:text-white/40 transition focus:outline-none focus:ring-2 ${inputState}`}
         />
         <button
           type="submit"
-          className="grid h-8 w-8 place-items-center rounded-full bg-white text-black transition hover:bg-white/90"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded bg-white text-black transition hover:bg-white/90"
           aria-label="Subscribe"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">

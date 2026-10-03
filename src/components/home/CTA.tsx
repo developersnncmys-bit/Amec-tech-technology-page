@@ -29,37 +29,44 @@ export function CTA() {
         anticipatePin: 1,
       });
 
+      // Eyebrow drops in once as the section enters view (before the pin).
+      gsap.from("[data-cta-eyebrow]", {
+        autoAlpha: 0,
+        y: -20,
+        duration: 0.6,
+        ease: "power3.out",
+        scrollTrigger: { trigger: pinTarget, start: "top 70%" },
+      });
+
+      // Button bounces in once as the section enters view (before the pin).
+      gsap.from("[data-cta-button]", {
+        autoAlpha: 0,
+        y: 30,
+        scale: 0.85,
+        duration: 0.7,
+        delay: 0.3,
+        ease: "back.out(1.6)",
+        scrollTrigger: { trigger: pinTarget, start: "top 70%" },
+      });
+
+      // Heading words — start dim, brighten word-by-word via scrub as the
+      // user scrolls through the pinned range. stagger.amount keeps the full
+      // reveal inside one unit of timeline regardless of word count, so a
+      // single scroll gesture reveals the entire headline (no need to scroll
+      // multiple times to march through it).
       const words = gsap.utils.toArray<HTMLElement>("[data-cta-word]");
       gsap.set(words, { autoAlpha: 0.14 });
       gsap.to(words, {
         autoAlpha: 1,
         ease: "none",
-        duration: 0.5,
-        stagger: 0.5,
+        stagger: { amount: 1 },
         scrollTrigger: {
           trigger: pinTarget,
           start: "top top",
-          end: "+=80%",
-          scrub: 0.5,
+          end: "+=30%",
+          scrub: 0.3,
           invalidateOnRefresh: true,
         },
-      });
-
-      gsap.from("[data-cta-eyebrow]", {
-        autoAlpha: 0,
-        y: 10,
-        duration: 0.5,
-        ease: "power3.out",
-        scrollTrigger: { trigger: pinTarget, start: "top 80%" },
-      });
-
-      gsap.from("[data-cta-button]", {
-        autoAlpha: 0,
-        y: 20,
-        duration: 0.6,
-        delay: 0.2,
-        ease: "power3.out",
-        scrollTrigger: { trigger: pinTarget, start: "top 65%" },
       });
 
       // Slow radial glow drift behind the heading — sine-wave floating.
@@ -151,9 +158,14 @@ export function CTA() {
             ))}
           </h2>
           <div data-cta-button>
-            <Link href="/contact" className="btn-primary group">
+            <Link
+              href="/contact"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+            >
               Get in Touch
-              <span className="btn-arrow"><ArrowRight className="h-3 w-3" /></span>
+              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
             </Link>
           </div>
         </div>
@@ -172,8 +184,10 @@ export function CTA() {
                 <p className="eyebrow">Collaboration</p>
                 <h3 className="mt-3 text-2xl font-semibold md:text-3xl">Partner with<br />AMEC</h3>
               </div>
-              <span className="cta-link inline-flex items-center gap-3 text-sm font-medium text-white">
-                <span className="btn-arrow bg-white text-black"><ArrowRight className="h-3 w-3" /></span>
+              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
+                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
                 Become a Partner
               </span>
             </div>
@@ -189,8 +203,10 @@ export function CTA() {
                 <p className="eyebrow">Careers</p>
                 <h3 className="mt-3 text-2xl font-semibold md:text-3xl">Build the<br />future with AMEC.</h3>
               </div>
-              <span className="cta-link inline-flex items-center gap-3 text-sm font-medium text-white">
-                <span className="btn-arrow bg-white text-black"><ArrowRight className="h-3 w-3" /></span>
+              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
+                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
                 Explore Careers
               </span>
             </div>

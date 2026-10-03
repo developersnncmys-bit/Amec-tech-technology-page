@@ -1,7 +1,6 @@
 "use client";
 
-import { Fragment, useRef } from "react";
-import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
+import { useEffect, useRef, useState } from "react";
 import { AnimateIn } from "@/components/AnimateIn";
 
 const PILLARS = [
@@ -21,7 +20,7 @@ const PILLARS = [
   },
   {
     number: "03",
-    title: "Engineering-Led Product Development",
+    title: "Full-Cycle Development Support",
     body:
       "We provide complete product development support—from concept and feasibility to design, prototyping, validation, and production readiness. Our integrated engineering approach ensures every stage of the product lifecycle is optimized for performance, manufacturability, compliance, and scalability.",
     image: "/images/whyamec3.png",
@@ -36,172 +35,136 @@ const PILLARS = [
 ];
 
 export function WhyAmec() {
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const [active, setActive] = useState(0);
+  const blockRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-  useIsomorphicLayoutEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const idx = Number((e.target as HTMLElement).dataset.index);
+            setActive(idx);
+          }
+        });
+      },
+      { rootMargin: "-50% 0px -50% 0px", threshold: 0 }
+    );
 
-    const ctx = gsap.context(() => {
-      // Initial state: all cards hidden, first card visible, all words dimmed.
-      gsap.set("[data-pillar-card]", { autoAlpha: 0 });
-      gsap.set("[data-pillar-card='0']", { autoAlpha: 1 });
-      gsap.set("[data-pillar-word]", { autoAlpha: 0.14 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          // Give each pillar more scroll room (130% of viewport per pillar
-          // instead of 100%) so the word reveal has time to finish before the
-          // card fades out.
-          start: "top top",
-          end: `+=${PILLARS.length * 130}%`,
-          pin: true,
-          pinSpacing: true,
-          scrub: 0.3,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // Timeline: 1 unit per pillar. Within each unit:
-      //   - swap-in the card (if not first)
-      //   - word-by-word scrub reveal of that card's text — spread across the
-      //     full segment via stagger.amount so ALL words finish before swap-out
-      //     (regardless of how many words the card has).
-      //   - swap-out (if not last)
-      const segment = 1;
-      const swap = 0.06;
-      const bufferBeforeFadeOut = 0.22;
-      const wordDuration = 0.1;
-      // Total time budget for the word tween within the segment.
-      const wordWindow = segment - swap * 2 - bufferBeforeFadeOut;
-      // Total stagger spread — first word ends at wordDuration,
-      // last word ends at wordWindow.
-      const staggerAmount = Math.max(0.1, wordWindow - wordDuration);
-
-      PILLARS.forEach((_, i) => {
-        const start = i * segment;
-
-        if (i > 0) {
-          tl.to(
-            `[data-pillar-card='${i}']`,
-            { autoAlpha: 1, duration: swap, ease: "power2.out" },
-            start
-          );
-        }
-
-        tl.to(
-          `[data-pillar-word='${i}']`,
-          {
-            autoAlpha: 1,
-            duration: wordDuration,
-            ease: "none",
-            stagger: { amount: staggerAmount },
-          },
-          start + swap
-        );
-
-        if (i < PILLARS.length - 1) {
-          tl.to(
-            `[data-pillar-card='${i}']`,
-            { autoAlpha: 0, duration: swap, ease: "power2.in" },
-            start + segment - swap
-          );
-        }
-      });
-    }, section);
-
-    const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
-
-    return () => {
-      window.clearTimeout(refreshId);
-      ctx.revert();
-    };
+    const nodes = blockRefs.current.filter(Boolean) as HTMLDivElement[];
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative flex min-h-screen w-full flex-col overflow-hidden py-16 md:py-24"
-    >
-      <div className="mx-auto w-full max-w-[1600px] px-6 md:px-14">
+    <section className="relative w-full py-16 md:py-24">
+      <div className="mx-auto w-full max-w-[1400px] px-6 md:px-14">
+        {/* Header */}
         <AnimateIn className="text-center">
-          <h2 className="heading-lg">WHY AMEC TECHNOLOGY</h2>
+          <span className="eyebrow">/ Our principles</span>
+          <h2 className="heading-lg mt-4">WHY AMEC TECHNOLOGY</h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/70 md:text-base">
-            Engineering-first innovation, deep technical expertise, and collaborative product development that
-            transform ideas into reliable, market-ready solutions.
+            Engineering-first innovation, deep technical expertise, and
+            collaborative product development that transform ideas into
+            reliable, market-ready solutions.
           </p>
         </AnimateIn>
 
-        {/* Card stack — all 3 pillars sit at the same spot; only one is visible at a time */}
-        <div className="relative mt-12 w-full md:mt-16">
-          {/* Sizing spacer keeps the stack area tall enough for the largest card */}
-          <div className="invisible" aria-hidden>
-            <PillarCard pillar={PILLARS[0]} indexAttr="__spacer" />
+        {/* Desktop: pinned showcase */}
+        <div className="mt-20 hidden md:grid md:grid-cols-[1.05fr_1fr] md:gap-16 lg:gap-24">
+          {/* Left — sticky stage */}
+          <div className="relative">
+            <div className="sticky top-24 h-[72vh] overflow-hidden rounded-card border border-white/[0.08] bg-bg-card">
+              {/* Image stack (crossfade) */}
+              {PILLARS.map((p, i) => (
+                <div
+                  key={p.number}
+                  aria-hidden
+                  className="absolute inset-0 bg-cover bg-center transition-opacity duration-[900ms] ease-out"
+                  style={{
+                    backgroundImage: `url('${p.image}')`,
+                    opacity: active === i ? 1 : 0,
+                  }}
+                />
+              ))}
+
+              {/* Progress rail (vertical) */}
+              <div className="absolute right-6 top-1/2 flex -translate-y-1/2 flex-col items-end gap-3">
+                {PILLARS.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`block h-10 w-[2px] rounded-full transition-all duration-500 ease-out ${
+                      active === i
+                        ? "scale-y-100 bg-white"
+                        : "scale-y-75 bg-white/20"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="absolute inset-0">
-            {PILLARS.map((pillar, i) => (
+          {/* Right — scrolling panels */}
+          <div className="flex flex-col">
+            {PILLARS.map((p, i) => (
               <div
-                key={pillar.number}
-                data-pillar-card={i}
-                className="absolute inset-0"
+                key={p.number}
+                ref={(el) => {
+                  blockRefs.current[i] = el;
+                }}
+                data-index={i}
+                className="flex min-h-[72vh] flex-col justify-center"
               >
-                <PillarCard pillar={pillar} indexAttr={String(i)} />
+                <div
+                  className={`transition-all duration-500 ease-out ${
+                    active === i
+                      ? "opacity-100 blur-0"
+                      : "opacity-35 blur-[1px]"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-white/55">
+                      0{i + 1}
+                    </span>
+                    <span
+                      className={`h-[1px] origin-left bg-white transition-all duration-500 ${
+                        active === i ? "w-16 opacity-100" : "w-8 opacity-30"
+                      }`}
+                    />
+                  </div>
+                  <h3 className="mt-6 heading-md text-white">{p.title}</h3>
+                  <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/70 md:text-base">
+                    {p.body}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Mobile: stacked cards */}
+        <div className="mt-14 flex flex-col gap-8 md:hidden">
+          {PILLARS.map((p) => (
+            <AnimateIn key={p.number}>
+              <article className="overflow-hidden rounded-card border border-white/[0.08] bg-bg-card">
+                <div
+                  className="aspect-[16/10] w-full bg-cover bg-center"
+                  style={{ backgroundImage: `url('${p.image}')` }}
+                />
+                <div className="p-6">
+                  <span className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-white/55">
+                    {p.number}
+                  </span>
+                  <h3 className="mt-3 heading-md text-white">{p.title}</h3>
+                  <p className="mt-4 text-sm leading-relaxed text-white/70">
+                    {p.body}
+                  </p>
+                </div>
+              </article>
+            </AnimateIn>
+          ))}
+        </div>
       </div>
     </section>
-  );
-}
-
-function PillarCard({
-  pillar,
-  indexAttr,
-}: {
-  pillar: (typeof PILLARS)[number];
-  indexAttr: string;
-}) {
-  const titleWords = pillar.title.split(" ");
-  const bodyWords = pillar.body.split(" ");
-  const isSpacer = indexAttr === "__spacer";
-  return (
-    <div className="grid gap-6 md:min-h-[420px] md:grid-cols-[1.2fr_1fr] md:items-stretch md:gap-10">
-      <div
-        className="order-2 aspect-[16/10] w-full rounded-xl md:order-1 md:aspect-auto md:h-full md:min-h-[340px]"
-        style={{
-          backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%), url('${pillar.image}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-        aria-hidden
-      />
-      <div className="order-1 flex h-full flex-col justify-center md:order-2">
-        <span className="text-xs font-medium text-white/50">{pillar.number}</span>
-        <h3 className="mt-2 heading-md">
-          {titleWords.map((word, i) => (
-            <Fragment key={i}>
-              <span {...(!isSpacer ? { "data-pillar-word": indexAttr } : {})} className="inline-block">
-                {word}
-              </span>
-              {i < titleWords.length - 1 ? " " : ""}
-            </Fragment>
-          ))}
-        </h3>
-        <p className="mt-4 text-sm leading-relaxed text-white/70 md:text-base">
-          {bodyWords.map((word, i) => (
-            <Fragment key={i}>
-              <span {...(!isSpacer ? { "data-pillar-word": indexAttr } : {})} className="inline-block">
-                {word}
-              </span>
-              {i < bodyWords.length - 1 ? " " : ""}
-            </Fragment>
-          ))}
-        </p>
-      </div>
-    </div>
   );
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { Facebook, Linkedin, Mail, MapPin, Phone, Twitter, YouTube } from "./Icons";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter, YouTube } from "./Icons";
 import { NewsletterForm } from "./NewsletterForm";
 
 const COMPANY = [
@@ -19,25 +19,28 @@ const VERTICALS = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] bg-bg pt-16">
-      <div className="grid w-full gap-12 px-6 pb-10 md:grid-cols-[1.2fr_1fr_1fr_1fr] md:px-14">
+    <footer className="bg-bg pt-20 md:pt-24">
+      <div className="mx-auto grid w-full max-w-[1440px] gap-12 px-6 pb-14 md:grid-cols-[1.9fr_1fr_1fr_1.1fr] md:gap-12 md:px-14 md:pb-20">
         <div>
           <Logo />
-          <p className="mt-6 max-w-xs text-sm text-white/60">
+          <p className="mt-6 max-w-xs text-sm leading-relaxed text-white/60">
             We Build, Design & Engineer Industry Defining Technology For The Inevitable Future.
           </p>
-          <div className="mt-6 flex items-center gap-3 text-white/60">
-            <a href="#" aria-label="Facebook" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 transition hover:border-white/30 hover:bg-white/5 hover:text-white">
-              <Facebook className="h-3.5 w-3.5" />
+          <div className="mt-10 flex items-center gap-5 text-white">
+            <a href="#" aria-label="Facebook" className="transition-opacity hover:opacity-70">
+              <Facebook className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Twitter" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 transition hover:border-white/30 hover:bg-white/5 hover:text-white">
-              <Twitter className="h-3.5 w-3.5" />
+            <a href="#" aria-label="Twitter" className="transition-opacity hover:opacity-70">
+              <Twitter className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="LinkedIn" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 transition hover:border-white/30 hover:bg-white/5 hover:text-white">
-              <Linkedin className="h-3.5 w-3.5" />
+            <a href="#" aria-label="Instagram" className="transition-opacity hover:opacity-70">
+              <Instagram className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="YouTube" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 transition hover:border-white/30 hover:bg-white/5 hover:text-white">
-              <YouTube className="h-4 w-4" />
+            <a href="#" aria-label="LinkedIn" className="transition-opacity hover:opacity-70">
+              <Linkedin className="h-5 w-5" />
+            </a>
+            <a href="#" aria-label="YouTube" className="transition-opacity hover:opacity-70">
+              <YouTube className="h-5 w-5" />
             </a>
           </div>
 
@@ -48,30 +51,33 @@ export function Footer() {
         <FooterColumn title="Verticals" items={VERTICALS} />
 
         <div>
-          <h3 className="text-sm font-semibold text-white">Contact us</h3>
-          <ul className="mt-4 space-y-3 text-sm text-white/60">
-            <li className="flex items-start gap-2">
+          <h3 className="text-sm font-semibold text-white">Contacts us</h3>
+          <ul className="mt-5 space-y-4 text-sm text-white/60">
+            <li className="flex items-start gap-3">
               <Mail className="mt-0.5 h-4 w-4 shrink-0" />
               <a href="mailto:contact@company.com" className="transition-colors hover:text-white">contact@company.com</a>
             </li>
-            <li className="flex items-start gap-2">
+            <li className="flex items-start gap-3">
               <Phone className="mt-0.5 h-4 w-4 shrink-0" />
-              <a href="tel:+14156875892" className="transition-colors hover:text-white">(415) 687 – 5892</a>
+              <a href="tel:+14146875892" className="transition-colors hover:text-white">(414) 687 – 5892</a>
             </li>
-            <li className="flex items-start gap-2">
+            <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-              <span>794 McAllister St<br />San Francisco, 94102</span>
+              <span>794 Mcallister St<br />San Francisco, 94102</span>
             </li>
           </ul>
         </div>
       </div>
 
-      <div className="border-t border-white/[0.06] py-6">
-        <div className="flex w-full flex-col items-start justify-between gap-3 px-6 text-xs text-white/40 md:flex-row md:items-center md:px-14">
+      <div className="mx-auto max-w-[1440px] border-t border-white/[0.08] px-6 py-6 md:px-14">
+        <div className="flex w-full flex-col items-start justify-between gap-3 text-xs text-white/50 md:flex-row md:items-center">
           <p>© 2026 AMEC Group. All Rights Reserved.</p>
-          <p className="flex items-center gap-4">
-            <Link href="/terms" className="transition-colors hover:text-white/70">Terms and Conditions</Link>
-            <Link href="/privacy" className="transition-colors hover:text-white/70">Privacy Policy</Link>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>All Rights Reserved</span>
+            <span aria-hidden className="text-white/25">|</span>
+            <Link href="/terms" className="transition-colors hover:text-white">Terms and Conditions</Link>
+            <span aria-hidden className="text-white/25">|</span>
+            <Link href="/privacy" className="transition-colors hover:text-white">Privacy Policy</Link>
           </p>
         </div>
       </div>
@@ -83,7 +89,7 @@ function FooterColumn({ title, items }: { title: string; items: { label: string;
   return (
     <div>
       <h3 className="text-sm font-semibold text-white">{title}</h3>
-      <ul className="mt-4 space-y-2.5 text-sm text-white/60">
+      <ul className="mt-5 space-y-3 text-sm text-white/60">
         {items.map((item) => (
           <li key={item.href}>
             <Link href={item.href} className="transition-colors hover:text-white">{item.label}</Link>

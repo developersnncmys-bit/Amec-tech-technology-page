@@ -3,36 +3,21 @@
 @tailwind utilities;
 
 /*
- * TT Supermolot Neue — licensed font (TypeType). Drop the licensed files
- * into /public/fonts/ using the filenames below and they will take priority
- * over the Chakra Petch fallback. If the files are missing the browser
- * silently skips this rule.
+ * TT Supermolot Neue Trial (DemiBold) — single file in /public/font/.
+ * `font-weight: 100 900` lets it serve every heading weight (400–700) from
+ * this one face until Regular/Bold trial files are added.
  */
 @font-face {
   font-family: "TT Supermolot Neue";
-  src: url("/fonts/TTSupermolotNeue-DemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TT Supermolot Neue";
-  src: url("/fonts/TTSupermolotNeue-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TT Supermolot Neue";
-  src: url("/fonts/TTSupermolotNeue-Bold.woff2") format("woff2");
-  font-weight: 700;
+  src: url("/font/tt-supermolot-neue-trl.db.ttf") format("truetype");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
   color-scheme: dark;
-  --font-display: "TT Supermolot Neue", var(--font-display-fallback), system-ui, sans-serif;
+  --font-display: "TT Supermolot Neue Trl", "TT Supermolot Neue", "TTSupermolotNeue", sans-serif;
 }
 
 html,
@@ -99,11 +84,11 @@ body {
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70;
+    @apply inline-flex items-center gap-2 rounded bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/30 hover:bg-white/5;
+    @apply inline-flex items-center gap-2 rounded border border-white/15 px-5 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/30 hover:bg-white/5;
   }
 
   .btn-arrow {
@@ -133,6 +118,10 @@ body {
   0%   { transform: translateX(-100%); }
   50%  { transform: translateX(200%); }
   100% { transform: translateX(200%); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes preloader-fade-in {
   from { opacity: 0; transform: translateY(6px); }

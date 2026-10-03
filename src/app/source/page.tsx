@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { AnimateIn } from "@/components/AnimateIn";
-import { ArrowRight, Facebook, Instagram, Linkedin, Twitter, YouTube } from "@/components/Icons";
-import { Logo } from "@/components/Logo";
+import { ArrowRight } from "@/components/Icons";
+import { Footer } from "@/components/Footer";
 
 const SOURCE_IMG = "/images/Source.png";
 
@@ -13,30 +13,77 @@ const SOURCE_IMG = "/images/Source.png";
 // Data
 // ---------------------------------------------------------------------------
 
-const MODES = [
+type ModeMetric = {
+  label: string;
+  value: string;
+  pos: string;
+  accent: string;
+  dotHex: string;
+  // SVG line in viewBox 0–100 coords (preserveAspectRatio="none" so these
+  // match CSS % positions directly). x1,y1 = line start near chip edge;
+  // x2,y2 = target point on the diagram where the pulse marker sits.
+  line: { x1: number; y1: number; x2: number; y2: number };
+};
+
+const MODES: Array<{
+  id: string;
+  num: string;
+  label: string;
+  tagline: string;
+  body: string;
+  metrics: ModeMetric[];
+}> = [
   {
     id: "on-grid",
-    label: "ON-Grid",
+    num: "01",
+    label: "On-Grid",
+    tagline: "Solar first, grid connected.",
     body:
       "In on-grid operation, SOURCE prioritizes solar power for connected loads while intelligently interacting with the utility grid. Excess solar energy can be utilized efficiently, while the grid supplements power when solar generation is insufficient.",
+    metrics: [
+      { label: "Solar", value: "4.2 kW", pos: "left-[6%] top-[14%]", accent: "text-amber-300", dotHex: "#fcd34d", line: { x1: 20, y1: 24, x2: 46, y2: 32 } },
+      { label: "Export", value: "1.1 kW", pos: "right-[4%] top-[30%]", accent: "text-sky-300", dotHex: "#7dd3fc", line: { x1: 88, y1: 40, x2: 93, y2: 45 } },
+      { label: "Home load", value: "3.1 kW", pos: "right-[8%] bottom-[18%]", accent: "text-white", dotHex: "#f8fafc", line: { x1: 76, y1: 72, x2: 60, y2: 60 } },
+    ],
   },
   {
     id: "off-grid",
-    label: "OFF-Grid",
+    num: "02",
+    label: "Off-Grid",
+    tagline: "Complete energy independence.",
     body:
       "Complete energy independence for remote and rural installations. SOURCE runs the home directly from solar and battery, with intelligent load management ensuring reliable 24/7 power.",
+    metrics: [
+      { label: "Solar", value: "4.2 kW", pos: "left-[6%] top-[14%]", accent: "text-amber-300", dotHex: "#fcd34d", line: { x1: 20, y1: 24, x2: 46, y2: 32 } },
+      { label: "Battery", value: "85%", pos: "left-[8%] bottom-[20%]", accent: "text-emerald-300", dotHex: "#6ee7b7", line: { x1: 22, y1: 72, x2: 54, y2: 68 } },
+      { label: "Home load", value: "3.1 kW", pos: "right-[8%] bottom-[18%]", accent: "text-white", dotHex: "#f8fafc", line: { x1: 76, y1: 72, x2: 60, y2: 60 } },
+    ],
   },
   {
     id: "hybrid",
+    num: "03",
     label: "Hybrid",
+    tagline: "Real-time power routing.",
     body:
       "Best of both worlds. SOURCE decides in real time whether to draw from solar, storage, or grid based on load, tariff, and weather forecasts — optimising cost and reliability.",
+    metrics: [
+      { label: "Solar", value: "4.2 kW", pos: "left-[6%] top-[14%]", accent: "text-amber-300", dotHex: "#fcd34d", line: { x1: 20, y1: 24, x2: 46, y2: 32 } },
+      { label: "Grid", value: "Standby", pos: "right-[4%] top-[30%]", accent: "text-sky-300", dotHex: "#7dd3fc", line: { x1: 88, y1: 40, x2: 93, y2: 45 } },
+      { label: "Battery", value: "Charging", pos: "left-[8%] bottom-[20%]", accent: "text-emerald-300", dotHex: "#6ee7b7", line: { x1: 22, y1: 72, x2: 54, y2: 68 } },
+    ],
   },
   {
     id: "back-up",
+    num: "04",
     label: "Back-Up",
+    tagline: "20 ms switchover.",
     body:
       "Automatic islanding within 20 ms when a grid outage is detected. Critical loads keep running from stored energy; no manual switching, no downtime.",
+    metrics: [
+      { label: "Grid", value: "Offline", pos: "right-[4%] top-[30%]", accent: "text-rose-300", dotHex: "#fda4af", line: { x1: 88, y1: 40, x2: 93, y2: 45 } },
+      { label: "Battery", value: "85%", pos: "left-[8%] bottom-[20%]", accent: "text-emerald-300", dotHex: "#6ee7b7", line: { x1: 22, y1: 72, x2: 54, y2: 68 } },
+      { label: "Critical loads", value: "1.8 kW", pos: "right-[8%] bottom-[18%]", accent: "text-white", dotHex: "#f8fafc", line: { x1: 76, y1: 72, x2: 60, y2: 60 } },
+    ],
   },
 ];
 
@@ -142,7 +189,7 @@ const APPLICATIONS = [
   {
     title: "Small-Scale Industry",
     body: "Continuous power for workshops and light manufacturing.",
-    image: "/images/Source-Smallsscale.png",
+    image: "/images/source-smallscale.png",
   },
   {
     title: "Remote Sites",
@@ -194,7 +241,7 @@ export default function SourcePage() {
       <MonitoringSection />
       <FAQ />
       <ClosingCTA />
-      <SourceFooter />
+      <Footer />
     </>
   );
 }
@@ -263,19 +310,14 @@ function Hero() {
         </AnimateIn>
       </div>
 
-      {/* Bottom: description on the left, CTAs on the right */}
-      <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 px-6 pb-12 md:flex-row md:items-end md:justify-between md:px-14 md:pb-16">
+      {/* Bottom-left: description with CTAs stacked below */}
+      <div className="absolute inset-x-0 bottom-0 flex px-6 pb-12 md:px-14 md:pb-16">
         <AnimateIn className="max-w-xl">
           <p className="text-base leading-relaxed text-white/85 md:text-lg">
             Seamlessly manage solar, grid, and battery power for maximum efficiency and uninterrupted energy.
           </p>
-        </AnimateIn>
-        <AnimateIn>
-          <div className="flex flex-wrap gap-3 md:justify-end">
-            <Link href="/contact" className="btn-primary">
-              Request a Quote
-              <span className="btn-arrow"><ArrowRight className="h-3 w-3" /></span>
-            </Link>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/contact" className="btn-primary">Request a Quote</Link>
             <Link href="/contact" className="btn-ghost">Talk to an Expert</Link>
           </div>
         </AnimateIn>
@@ -303,48 +345,25 @@ function ProductOverview() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Initial state: everything dim
-      gsap.set("[data-block1-word], [data-block2-word]", { autoAlpha: 0.15 });
+      // Pin the section while block 2 (Problem it Solves) scrubs its
+      // word-by-word reveal. Block 1 renders fully visible — no dim.
+      gsap.set("[data-block2-word]", { autoAlpha: 0.15 });
 
-      const tl = gsap.timeline({
+      gsap.to("[data-block2-word]", {
+        autoAlpha: 1,
+        ease: "none",
+        stagger: { amount: 1 },
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=180%",
+          end: "+=30%",
           pin: true,
           pinSpacing: true,
-          scrub: 0.4,
+          scrub: 0.3,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
-
-      // Sequential reveal:
-      //   0.00 → 0.45   block 1 words light up
-      //   0.45 → 0.55   short pause / buffer
-      //   0.55 → 1.00   block 2 words light up
-      // Un-revealed words stay at autoAlpha 0.15.
-      tl.to(
-        "[data-block1-word]",
-        {
-          autoAlpha: 1,
-          ease: "none",
-          duration: 0.1,
-          stagger: { amount: 0.35 },
-        },
-        0
-      );
-
-      tl.to(
-        "[data-block2-word]",
-        {
-          autoAlpha: 1,
-          ease: "none",
-          duration: 0.1,
-          stagger: { amount: 0.35 },
-        },
-        0.55
-      );
     }, section);
 
     const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -388,7 +407,7 @@ function ProductOverview() {
             </div>
 
             {/* 02 — Problem it Solves */}
-            <div className="grid grid-cols-[auto_1fr] gap-6 md:gap-8">
+            <div data-block2-trigger className="grid grid-cols-[auto_1fr] gap-6 md:gap-8">
               <div className="flex flex-col items-center">
                 <span className="font-display text-xl font-semibold text-white/40 md:text-2xl">02</span>
               </div>
@@ -451,40 +470,37 @@ function SceneBand() {
     };
   }, []);
 
+  // Preload + decode both scene images on mount so the first opacity flip has
+  // a fully-decoded bitmap sitting on a GPU layer — no first-paint pop.
+  useEffect(() => {
+    const sources = ["/images/sourcemorning.png", "/images/sourcenight.png"];
+    sources.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+      img.decode?.().catch(() => {});
+    });
+  }, []);
+
   return (
     <section
       ref={pinRef}
       className="relative flex min-h-screen w-full flex-col justify-end overflow-hidden bg-[#0f0f0f]"
     >
-      {/* Cross-fade background layers */}
-      <div
-        className="absolute inset-0 transition-opacity duration-700"
-        style={{
-          backgroundImage:
-            "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%), url('/images/sourcemorning.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: view === "morning" ? 1 : 0,
-        }}
+      {/* Single stable img element — src swap only, no transform. */}
+      <img
+        src={view === "morning" ? "/images/sourcemorning.png" : "/images/sourcenight.png"}
+        alt=""
         aria-hidden
+        decoding="sync"
+        fetchPriority="high"
+        className="absolute inset-0 h-full w-full object-cover"
       />
-      <div
-        className="absolute inset-0 transition-opacity duration-700"
-        style={{
-          backgroundImage: "url('/images/sourcenight.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: view === "night" ? 1 : 0,
-        }}
-        aria-hidden
-      />
-
       <div className="relative flex flex-col items-center gap-6 px-6 pb-20 text-center md:px-14 md:pb-28">
-        <div className="flex justify-center gap-2 rounded-full border border-white/15 bg-black/40 p-1 backdrop-blur">
+        <div className="flex justify-center gap-2 rounded border border-white/15 p-1">
           <button
             type="button"
             onClick={() => setView("morning")}
-            className={`rounded-full px-5 py-2 text-sm font-medium transition md:text-base ${
+            className={`rounded px-5 py-2 text-sm font-medium transition md:text-base ${
               view === "morning" ? "bg-white text-black" : "text-white/80 hover:text-white"
             }`}
           >
@@ -493,7 +509,7 @@ function SceneBand() {
           <button
             type="button"
             onClick={() => setView("night")}
-            className={`rounded-full px-5 py-2 text-sm font-medium transition md:text-base ${
+            className={`rounded px-5 py-2 text-sm font-medium transition md:text-base ${
               view === "night" ? "bg-white text-black" : "text-white/80 hover:text-white"
             }`}
           >
@@ -525,7 +541,7 @@ function HybridEnergyManagement() {
       ScrollTrigger.create({
         trigger: pinTarget,
         start: "top top",
-        end: "+=180%",
+        end: "+=30%",
         pin: pinTarget,
         pinSpacing: true,
         anticipatePin: 1,
@@ -542,8 +558,8 @@ function HybridEnergyManagement() {
 
   // Word-by-word scrub reveal for the active-mode description. Re-attaches
   // whenever `active` changes (React remounts the <p>, so GSAP has to rebind
-  // to the fresh DOM nodes). Reveal finishes at ~130% of the pin, leaving a
-  // ~50% "read" buffer before the pin releases at 180%.
+  // to the fresh DOM nodes). Scrub range is kept to +=15% (~150px on a 1080p
+  // viewport) so a single wheel-notch / trackpad swipe covers the full reveal.
   useIsomorphicLayoutEffect(() => {
     const pinTarget = pinRef.current;
     if (!pinTarget) return;
@@ -560,8 +576,8 @@ function HybridEnergyManagement() {
         scrollTrigger: {
           trigger: pinTarget,
           start: "top top",
-          end: "+=130%",
-          scrub: 0.4,
+          end: "+=15%",
+          scrub: 0.2,
           invalidateOnRefresh: true,
         },
       });
@@ -571,74 +587,180 @@ function HybridEnergyManagement() {
   }, [active]);
 
   return (
-    <section ref={pinRef} className="flex h-screen w-full flex-col overflow-hidden pb-6 pt-24 md:pb-8 md:pt-28">
-      <Shell className="flex flex-1 min-h-0 flex-col">
-        {/*
-          Top block — text left, image right. `flex-1 min-h-0` lets this row
-          absorb the space above the tabs so the image scales to fit.
-        */}
-        <div className="grid flex-1 min-h-0 gap-6 md:grid-cols-2 md:items-center md:gap-12">
-          {/* Left column — heading + description stacked */}
-          <AnimateIn className="flex flex-col justify-center">
-            <h2 className="heading-lg">
+    <section
+      ref={pinRef}
+      className="relative flex h-screen w-full flex-col overflow-hidden pb-6 pt-24 md:pb-8 md:pt-28"
+    >
+      {/* Ambient radial glow — adds depth to the stage without added noise */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(55% 70% at 72% 42%, rgba(34,211,238,0.08) 0%, transparent 60%)",
+        }}
+      />
+
+      <Shell className="relative flex flex-1 min-h-0 flex-col">
+        {/* 2-column editorial grid.
+            LEFT column: sticky stacked content — eyebrow, heading, description,
+                        active-mode detail (number + name + body with word reveal),
+                        mode selector as big list rows.
+            RIGHT column: big centered image hero with chips + lines + target
+                         markers. No framed panel — the image floats in the
+                         section background. */}
+        <div className="grid flex-1 min-h-0 gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
+          {/* LEFT — editorial content */}
+          <AnimateIn className="flex min-h-0 flex-col">
+            <p className="eyebrow">Operating Modes</p>
+            <h2 className="mt-3 heading-lg">
               HYBRID<br />ENERGY MANAGEMENT
             </h2>
-            <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70 md:mt-6 md:text-base">
-              Seamlessly balances power between solar, grid, battery, and connected loads to maximise efficiency,
-              reliability, and energy availability.
+
+            {/* Mode selector — vertical list, each row is a big clickable
+                target with number + name + tagline. Active row has a filled
+                left bar and brighter text. Reads as a table of contents. */}
+            <div
+              role="tablist"
+              aria-label="Operating mode"
+              className="mt-6 flex flex-col md:mt-8"
+            >
+              {MODES.map((m) => {
+                const isActive = m.id === active;
+                return (
+                  <button
+                    key={m.id}
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActive(m.id)}
+                    className={`group relative flex items-center gap-4 border-b border-white/10 py-3 text-left transition-colors last:border-b-0 ${
+                      isActive ? "text-white" : "text-white/55 hover:text-white/85"
+                    }`}
+                  >
+                    <span
+                      aria-hidden
+                      className={`absolute left-0 top-1/2 h-6 w-[2px] -translate-y-1/2 bg-gradient-to-b from-cyan-400 to-emerald-300 transition-opacity duration-300 ${
+                        isActive ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                    <span className="pl-3 font-display text-xs font-medium tracking-[0.22em] text-white/40">
+                      {m.num}
+                    </span>
+                    <span className="font-display text-base font-semibold md:text-lg">
+                      {m.label}
+                    </span>
+                    <span className="ml-auto text-[11px] text-white/40 md:text-xs">
+                      {m.tagline}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active mode description with word reveal */}
+            <p
+              key={activeMode.id}
+              className="mt-6 max-w-xl text-sm leading-relaxed text-white/70 md:mt-8 md:text-base"
+            >
+              {activeWords.map((word, i) => (
+                <Fragment key={i}>
+                  <span data-hem-word className="inline-block">
+                    {word}
+                  </span>
+                  {i < activeWords.length - 1 ? " " : ""}
+                </Fragment>
+              ))}
             </p>
           </AnimateIn>
 
-          {/* Right column — image, scales down to fit vertically */}
-          <div className="flex min-h-0 items-center justify-center overflow-hidden">
-            <img
-              src="/images/Hybrid-energy.png"
-              alt="SOURCE hybrid energy management diagram"
-              className="h-full max-h-[420px] w-auto max-w-full object-contain"
-            />
-          </div>
-        </div>
+          {/* RIGHT — big image hero. No frame, just the image floating in
+              the section bg. Chips + lines + targets anchored to an inner
+              aspect-locked box that matches the image bounds. */}
+          <div className="relative flex min-h-0 items-center justify-center">
+            <div className="relative aspect-[16/11] h-full max-h-full w-full max-w-[720px]">
+              <img
+                src="/images/Hybrid-energy.png"
+                alt="SOURCE hybrid energy management diagram"
+                className="absolute inset-0 h-full w-full object-contain"
+              />
 
-        {/* Bottom block — tabs + active-mode description, centered */}
-        <div className="mt-6 flex flex-col items-center md:mt-8">
-          <div
-            role="tablist"
-            aria-label="Operating mode"
-            className="grid w-full max-w-3xl grid-cols-2 gap-3 md:grid-cols-4"
-          >
-            {MODES.map((m) => {
-              const isActive = m.id === active;
-              return (
-                <button
+              {/* Per-mode overlay — crossfades on mode change */}
+              {MODES.map((m) => (
+                <div
                   key={m.id}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActive(m.id)}
-                  className={`rounded-full border px-5 py-2.5 text-sm font-medium transition md:text-base ${
-                    isActive
-                      ? "border-white bg-white text-black"
-                      : "border-white/15 text-white/70 hover:border-white/30 hover:text-white"
-                  }`}
+                  aria-hidden={m.id !== active}
+                  className="pointer-events-none absolute inset-0 transition-opacity duration-500 ease-out"
+                  style={{ opacity: m.id === active ? 1 : 0 }}
                 >
-                  {m.label}
-                </button>
-              );
-            })}
-          </div>
+                  <svg
+                    className="absolute inset-0 h-full w-full"
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                  >
+                    {m.metrics.map((chip, i) => (
+                      <line
+                        key={i}
+                        x1={chip.line.x1}
+                        y1={chip.line.y1}
+                        x2={chip.line.x2}
+                        y2={chip.line.y2}
+                        stroke={chip.dotHex}
+                        strokeOpacity="0.55"
+                        strokeWidth="0.3"
+                        strokeDasharray="1.2 0.8"
+                        strokeLinecap="round"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="0"
+                          to="-4"
+                          dur="1.4s"
+                          repeatCount="indefinite"
+                        />
+                      </line>
+                    ))}
+                  </svg>
 
-          <p
-            key={activeMode.id}
-            className="mt-5 max-w-2xl text-center text-sm leading-relaxed text-white/70 md:mt-6 md:text-base"
-          >
-            {activeWords.map((word, i) => (
-              <Fragment key={i}>
-                <span data-hem-word className="inline-block">
-                  {word}
-                </span>
-                {i < activeWords.length - 1 ? " " : ""}
-              </Fragment>
-            ))}
-          </p>
+                  {m.metrics.map((chip, i) => (
+                    <span
+                      key={`t-${i}`}
+                      className="absolute flex h-2 w-2 -translate-x-1/2 -translate-y-1/2"
+                      style={{ left: `${chip.line.x2}%`, top: `${chip.line.y2}%` }}
+                    >
+                      <span
+                        className="absolute inset-0 animate-ping rounded-full opacity-70"
+                        style={{ background: chip.dotHex, animationDelay: `${i * 300}ms` }}
+                      />
+                      <span
+                        className="relative h-2 w-2 rounded-full"
+                        style={{ background: chip.dotHex, boxShadow: `0 0 8px ${chip.dotHex}` }}
+                      />
+                    </span>
+                  ))}
+
+                  {m.metrics.map((chip, i) => (
+                    <div
+                      key={`c-${i}`}
+                      className={`absolute ${chip.pos} rounded-md border border-white/15 bg-black/60 px-3 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-md`}
+                      style={{
+                        transform: m.id === active ? "translateY(0)" : "translateY(6px)",
+                        transition: "transform 500ms ease-out",
+                        transitionDelay: `${i * 60}ms`,
+                        pointerEvents: m.id === active ? "auto" : "none",
+                      }}
+                    >
+                      <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-white/55">
+                        {chip.label}
+                      </div>
+                      <div className={`mt-0.5 text-xs font-semibold md:text-sm ${chip.accent}`}>
+                        {chip.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </Shell>
     </section>
@@ -653,9 +775,10 @@ function KeyFeatures() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Initial state — header dimmed to 0, image slightly off + dim, features hidden.
+      // Initial state — header dimmed to 0, image dim + slightly scaled down
+      // (no horizontal offset so it doesn't slide in from the right), features hidden.
       gsap.set("[data-kf-header]", { autoAlpha: 0, y: 20 });
-      gsap.set("[data-kf-image]", { autoAlpha: 0, xPercent: 8, scale: 0.96 });
+      gsap.set("[data-kf-image]", { autoAlpha: 0, scale: 0.96 });
       gsap.set("[data-kf-item]", { autoAlpha: 0, y: 24 });
 
       const tl = gsap.timeline({
@@ -672,7 +795,7 @@ function KeyFeatures() {
       });
 
       tl.to("[data-kf-header]", { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0)
-        .to("[data-kf-image]", { autoAlpha: 1, xPercent: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 0.1)
+        .to("[data-kf-image]", { autoAlpha: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 0.1)
         .to(
           "[data-kf-item]",
           {
@@ -809,19 +932,17 @@ function SmartFeatures() {
         gsap.set(line, { strokeDasharray: len, strokeDashoffset: len });
       });
 
-      // MASTER TIMELINE — pinned to the section, scrubbed to scroll.
-      // Each card reveals, then its inner animation plays, THEN the next
-      // card starts. Total ≈ 7 slots so nothing plays out invisibly.
+      // MASTER TIMELINE — scrubbed to scroll, no pin.
+      // Full card sequence plays through within a single scroll gesture
+      // (~1 viewport of scroll). Animations themselves are unchanged;
+      // only the trigger strategy (removed pin, tightened end) differs.
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
           trigger: section,
-          start: "top top",
-          end: "+=300%", // pin for 3 viewport heights of scroll
-          pin: true,
-          pinSpacing: true,
+          start: "top 65%",
+          end: "+=100%",
           scrub: 0.6,
-          anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
@@ -899,7 +1020,7 @@ function SmartFeatures() {
             line,
             {
               strokeDashoffset: 0,
-              duration: 0.7,
+              duration: 1.8,
               ease: "power2.inOut",
             },
             innerAt
@@ -912,9 +1033,9 @@ function SmartFeatures() {
             cardAreas,
             {
               autoAlpha: 0,
-              duration: 0.5,
+              duration: 1.2,
             },
-            innerAt + 0.25
+            innerAt + 0.6
           );
         }
 
@@ -926,11 +1047,11 @@ function SmartFeatures() {
               autoAlpha: 0,
               scale: 0,
               transformOrigin: "center",
-              duration: 0.25,
-              stagger: 0.05,
+              duration: 0.4,
+              stagger: 0.15,
               ease: "back.out(2)",
             },
-            innerAt + 0.5
+            innerAt + 1.3
           );
         }
 
@@ -984,12 +1105,11 @@ function SmartFeatures() {
       <Shell>
         <div className="grid gap-6 md:grid-cols-[1.4fr_1fr] md:items-end md:gap-12">
           <div>
-            <p data-smart-eyebrow className="eyebrow">Smart Features</p>
-            <h2 data-smart-heading className="mt-3 heading-lg">Intelligent by design.</h2>
+            <h2 data-smart-heading className="heading-lg">SMART FEATURES</h2>
           </div>
           <p
             data-smart-sub
-            className="max-w-md text-sm leading-relaxed text-white/70 md:ml-auto md:pb-2 md:text-right md:text-base"
+            className="max-w-md text-sm leading-relaxed text-white/70 md:ml-auto md:pb-2 md:text-left md:text-base"
           >
             Advanced technologies engineered to maximize efficiency, reliability, and intelligent energy management.
           </p>
@@ -1021,13 +1141,28 @@ function SmartFeatures() {
             <GridUsageVisual />
           </SmartCard>
 
-          {/* Row 2 col 2 — Adaptive Charging (image) */}
+          {/* Row 2 col 2 — Adaptive Charging (text left, image right) */}
           <SmartCard>
-            <ImageVisual
-              src="/images/source-adapti.png"
-              title="ADAPTIVE CHARGING"
-              alignTitle="top"
-            />
+            <div className="flex h-full w-full items-center">
+              {/* Title on the left */}
+              <div className="flex-[0.9] pl-5 pr-0 text-left md:pl-6">
+                <p className="font-display text-lg font-semibold uppercase leading-tight tracking-wide text-white md:text-2xl">
+                  ADAPTIVE
+                </p>
+                <p className="font-display text-lg font-semibold uppercase leading-tight tracking-wide text-white md:text-2xl">
+                  CHARGING
+                </p>
+              </div>
+              {/* Image on the right */}
+              <div className="relative h-full flex-[1.1]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/source-adapti.png"
+                  alt="Adaptive Charging"
+                  className="absolute inset-0 h-full w-full object-contain object-left-bottom pl-2 pr-3 pt-3 md:pl-3 md:pr-4 md:pt-4"
+                />
+              </div>
+            </div>
           </SmartCard>
 
           {/* Row 2 col 3 — AI Optimization Logic */}
@@ -1280,12 +1415,12 @@ function AiVisual() {
       {/* AI block — gradient border via padded wrapper (crisper than border-image) */}
       <div
         data-ai-block
-        className="relative rounded-[22px] p-[2px] md:p-[2.5px]"
+        className="relative rounded-[16px] p-[2px]"
         style={{ background: AI_GRADIENT }}
       >
-        <div className="rounded-[20px] bg-bg-card px-6 py-2 md:px-8 md:py-3">
+        <div className="rounded-[14px] bg-bg-card px-4 py-1.5 md:px-5 md:py-2">
           <span
-            className="font-display text-[3.5rem] font-bold leading-none tracking-tight md:text-[5rem]"
+            className="font-display text-[2.25rem] font-bold leading-none tracking-tight md:text-[3.25rem]"
             style={{
               background: AI_GRADIENT,
               WebkitBackgroundClip: "text",
@@ -1459,10 +1594,12 @@ function ModelDimensionsAndResources() {
             </p>
             <Link
               href="/contact"
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-black/85"
+              className="group mt-8 inline-flex flex-row-reverse items-center gap-3 rounded border border-black/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-black transition-all duration-300 ease-out hover:flex-row hover:border-black hover:bg-black hover:pl-4 hover:pr-1 hover:text-white"
             >
               Request a Quote
-              <ArrowRight className="h-3 w-3" />
+              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-black text-white transition-colors duration-300 ease-out group-hover:bg-white group-hover:text-black">
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
             </Link>
           </div>
 
@@ -1534,14 +1671,9 @@ const REMOTE_TABS: Array<{
 ];
 
 function RemoteControl() {
-  const [active, setActive] = useState(REMOTE_TABS[0].id);
-  const current = REMOTE_TABS.find((t) => t.id === active) ?? REMOTE_TABS[0];
+  const [active, setActive] = useState(0);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const descRef = useRef<HTMLParagraphElement | null>(null);
-  const descWords = current.body.split(" ");
 
-  // Pin the section — created once, independent of the active tab so tab
-  // clicks don't tear down and rebuild the pin (which would jump the scroll).
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -1550,7 +1682,7 @@ function RemoteControl() {
       ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: "+=120%",
+        end: "+=80%",
         pin: section,
         pinSpacing: true,
         anticipatePin: 1,
@@ -1566,111 +1698,100 @@ function RemoteControl() {
     };
   }, []);
 
-  // Word reveal — scrubbed across the pinned range. Re-runs on tab change so
-  // the new description's spans are wired up. Pin releases only after this
-  // timeline finishes (both share the same +=120% end).
-  useIsomorphicLayoutEffect(() => {
-    const section = sectionRef.current;
-    const desc = descRef.current;
-    if (!section || !desc) return;
-
-    const ctx = gsap.context(() => {
-      const words = desc.querySelectorAll("[data-rc-word]");
-      gsap.set(words, { autoAlpha: 0.15 });
-      gsap.to(words, {
-        autoAlpha: 1,
-        ease: "none",
-        stagger: { each: 0.05 },
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=120%",
-          scrub: 0.5,
-        },
-      });
-    }, section);
-
-    return () => ctx.revert();
-  }, [current.id]);
-
   return (
     <section
       ref={sectionRef}
-      className="flex h-screen w-full flex-col overflow-hidden pb-6 pt-24 md:pb-10 md:pt-28"
+      className="flex h-screen w-full flex-col overflow-hidden pb-6 pt-16 md:pb-10 md:pt-20"
     >
-      <Shell className="flex flex-1 min-h-0 flex-col">
-        {/* Image — takes remaining vertical space, cross-fades on tab change.
-            Active <img> drives the visible width (h-full w-auto → width follows
-            the image's intrinsic aspect). Inactive images are centered on top
-            with absolute positioning so they don't affect layout. */}
-        <div className="relative mx-auto flex flex-1 min-h-0 w-full items-center justify-center">
-          {REMOTE_TABS.map((tab) => {
-            const isActive = tab.id === active;
-            return (
-              <img
-                key={tab.id}
-                src={tab.image}
-                alt={tab.label}
-                aria-hidden={!isActive}
-                className={`h-full max-h-full w-auto max-w-full rounded-card object-contain transition-opacity duration-500 ${
-                  isActive
-                    ? "relative opacity-100"
-                    : "pointer-events-none absolute inset-0 mx-auto my-auto opacity-0"
-                }`}
-              />
-            );
-          })}
+      <Shell className="flex min-h-0 flex-1 flex-col">
+        {/* Header — compact */}
+        <div className="shrink-0 text-center">
+          <p className="eyebrow">The SOURCE App</p>
+          <h2 className="mt-2 heading-lg">Control, in your pocket.</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/60 md:text-[15px]">
+            Five tools to monitor, tune, and understand every watt flowing through your home — from anywhere.
+          </p>
         </div>
 
-        {/* Tabs — click to switch */}
-        <div
-          role="tablist"
-          aria-label="SOURCE app features"
-          className="mx-auto mt-4 flex w-full max-w-4xl flex-wrap items-end justify-center gap-x-8 gap-y-3 border-b border-white/[0.06] pb-3 md:mt-6 md:gap-x-12"
-        >
-          {REMOTE_TABS.map((tab) => {
-            const isActive = tab.id === active;
-            return (
-              <button
-                key={tab.id}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setActive(tab.id)}
-                className={`relative pb-3 text-sm font-medium transition-colors md:text-base ${
-                  isActive ? "text-white" : "text-white/50 hover:text-white/80"
-                }`}
-              >
-                {tab.label}
-                {isActive && (
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-0 -bottom-[13px] mx-auto h-px w-full bg-white"
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
+        {/* Content fills the remaining viewport space */}
+        <div className="mt-6 grid min-h-0 flex-1 gap-6 md:mt-8 md:grid-cols-2 md:items-center md:gap-14 lg:gap-20">
+          {/* LEFT — tab list with inline description */}
+          <div className="flex flex-col">
+            {REMOTE_TABS.map((tab, i) => {
+              const isActive = i === active;
+              return (
+                <div key={tab.id} className="border-b border-white/[0.06]">
+                  <button
+                    type="button"
+                    onClick={() => setActive(i)}
+                    className="group flex w-full items-center justify-between gap-4 py-3 text-left md:py-3.5"
+                  >
+                    <span className="flex items-center gap-5">
+                      <span
+                        className={`font-display text-xs font-semibold tabular-nums tracking-wider transition-colors ${
+                          isActive ? "text-white" : "text-white/30"
+                        }`}
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span
+                        className={`text-base font-medium transition-colors md:text-lg ${
+                          isActive ? "text-white" : "text-white/50 group-hover:text-white/80"
+                        }`}
+                      >
+                        {tab.label}
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden
+                      className={`h-px transition-all ${
+                        isActive ? "w-10 bg-white" : "w-0 bg-white/0"
+                      }`}
+                    />
+                  </button>
 
-        {/* Description — swaps to match the active tab, words reveal on scroll */}
-        <p
-          key={current.id}
-          ref={descRef}
-          className="mx-auto mt-4 max-w-3xl text-center text-xs leading-relaxed text-white/70 md:mt-6 md:text-sm lg:text-base"
-        >
-          {descWords.map((word, i) => (
-            <Fragment key={i}>
-              <span data-rc-word className="inline-block">{word}</span>
-              {i < descWords.length - 1 ? " " : ""}
-            </Fragment>
-          ))}
-        </p>
+                  {/* Inline description — expands under the active row */}
+                  <div
+                    className="grid overflow-hidden transition-[grid-template-rows] duration-500 ease-out"
+                    style={{ gridTemplateRows: isActive ? "1fr" : "0fr" }}
+                  >
+                    <div className="min-h-0">
+                      <p className="pb-4 pl-11 pr-4 text-xs leading-relaxed text-white/70 md:text-sm">
+                        {tab.body}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* RIGHT — phone image, capped so it never dominates the layout */}
+          <div className="relative mx-auto flex h-full max-h-[520px] w-full items-center justify-center">
+            {REMOTE_TABS.map((tab, i) => {
+              const isActive = i === active;
+              return (
+                <img
+                  key={tab.id}
+                  src={tab.image}
+                  alt={tab.label}
+                  aria-hidden={!isActive}
+                  className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ${
+                    isActive ? "opacity-100" : "pointer-events-none opacity-0"
+                  }`}
+                />
+              );
+            })}
+          </div>
+        </div>
       </Shell>
     </section>
   );
 }
 
 function WhereSourceWorks() {
+  const [active, setActive] = useState(0);
+  const current = APPLICATIONS[active];
   const pinRef = useRef<HTMLElement | null>(null);
 
   useIsomorphicLayoutEffect(() => {
@@ -1699,47 +1820,95 @@ function WhereSourceWorks() {
   return (
     <section
       ref={pinRef}
-      className="flex min-h-screen w-full flex-col justify-center overflow-hidden py-16 md:py-24"
+      className="flex h-screen w-full flex-col overflow-hidden pb-8 pt-16 md:pb-12 md:pt-20"
     >
-      <Shell>
-        <AnimateIn className="text-center">
-          <h2 className="heading-lg">Where SOURCE works.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/70 md:text-base">
+      <Shell className="flex flex-1 min-h-0 flex-col">
+        {/* Header — fixed-height block centred at the top */}
+        <AnimateIn className="mx-auto max-w-3xl shrink-0 text-center">
+          <p className="eyebrow">Applications</p>
+          <h2 className="mt-2 heading-lg">Where SOURCE works.</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-xs leading-relaxed text-white/70 md:text-sm">
             From homes and businesses to industrial facilities and remote locations, SOURCE delivers intelligent
             power management wherever it's needed.
           </p>
         </AnimateIn>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {APPLICATIONS.map((a) => (
-            <div
-              key={a.title}
-              className="group flex flex-col overflow-hidden rounded-[22px] border border-white/15 bg-[#0a0a0a] p-4"
-            >
-              {/* Image — inset within the card, contain-fit so the whole
-                  illustration is visible without cropping. */}
-              <div
-                aria-hidden
-                className="aspect-[4/3] w-full overflow-hidden rounded-[14px] bg-[#111]"
-                style={{
-                  backgroundImage: `url('${a.image}')`,
-                  backgroundSize: "contain",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-
-              {/* Title + short description below the image */}
-              <div className="px-2 pb-2 pt-5">
-                <h3 className="text-lg font-semibold text-white md:text-xl">
-                  {a.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/60 md:text-[15px]">
-                  {a.body}
-                </p>
-              </div>
+        {/* Content row — fills remaining viewport height */}
+        <div className="mt-6 grid flex-1 min-h-0 gap-6 md:mt-8 md:grid-cols-[1.3fr_1fr] md:items-stretch md:gap-10">
+          {/* Left — image fills column height, border hugs the actual image.
+              Active <img> is relative so its intrinsic aspect drives width;
+              inactive imgs sit absolutely centred for the cross-fade. */}
+          <div className="flex min-h-0 flex-col">
+            <div className="relative mx-auto flex min-h-0 flex-1 items-center justify-center">
+              {APPLICATIONS.map((a, i) => {
+                const isActive = i === active;
+                return (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    key={a.title}
+                    src={a.image}
+                    alt={a.title}
+                    aria-hidden={!isActive}
+                    className={`max-h-full max-w-full rounded-card border border-white/20 object-contain transition-opacity duration-500 ease-out ${
+                      isActive
+                        ? "relative h-full w-auto opacity-100"
+                        : "pointer-events-none absolute inset-0 m-auto h-full w-auto opacity-0"
+                    }`}
+                  />
+                );
+              })}
             </div>
-          ))}
+            <div key={`copy-${current.title}`} className="mt-3 shrink-0 animate-[fadeInUp_0.4s_ease-out] md:mt-4">
+              <h3 className="text-lg font-semibold text-white md:text-xl">{current.title}</h3>
+              <p className="mt-1 max-w-xl text-xs leading-relaxed text-white/70 md:text-sm">
+                {current.body}
+              </p>
+            </div>
+          </div>
+
+          {/* Right — numbered switcher list, vertically centred in available height */}
+          <div className="flex min-h-0 flex-col justify-center">
+            <div className="divide-y divide-white/10 border-y border-white/10">
+              {APPLICATIONS.map((a, i) => {
+                const isActive = i === active;
+                const num = String(i + 1).padStart(2, "0");
+                return (
+                  <button
+                    key={a.title}
+                    type="button"
+                    onClick={() => setActive(i)}
+                    aria-pressed={isActive}
+                    className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-6 py-3.5 text-left transition-colors md:py-4"
+                  >
+                    <span
+                      className={`font-display text-xs tracking-[0.2em] transition-colors md:text-sm ${
+                        isActive ? "text-white" : "text-white/40"
+                      }`}
+                    >
+                      {num}
+                    </span>
+                    <span
+                      className={`text-base font-semibold transition-colors md:text-lg ${
+                        isActive ? "text-white" : "text-white/60 hover:text-white"
+                      }`}
+                    >
+                      {a.title}
+                    </span>
+                    <span
+                      aria-hidden
+                      className={`grid h-7 w-7 place-items-center rounded border transition-all ${
+                        isActive
+                          ? "border-white bg-white text-black"
+                          : "border-white/20 text-white/60"
+                      }`}
+                    >
+                      <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </Shell>
     </section>
@@ -1750,9 +1919,6 @@ const MONITORING_P1 =
   "Monitor, control, and optimize your energy ecosystem from anywhere with the SOURCE app. Gain real-time visibility into system performance, switch between Eco, Backup, and Performance modes, receive instant alerts and diagnostics, track grid behavior, and measure energy savings, cost reductions, and sustainability impact.";
 const MONITORING_P2 =
   "Designed for homes, commercial facilities, small industries, and remote sites, SOURCE delivers intelligent energy management, reliable backup power, and operational efficiency across a wide range of applications.";
-const MONITORING_P1_WORDS = MONITORING_P1.split(" ");
-const MONITORING_P2_WORDS = MONITORING_P2.split(" ");
-
 function MonitoringSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -1761,33 +1927,18 @@ function MonitoringSection() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Initial hidden state — everything reveals during the pin.
-      gsap.set("[data-mon-heading]", { autoAlpha: 0, y: 30 });
-      gsap.set("[data-mon-p1-word], [data-mon-p2-word]", { autoAlpha: 0.15 });
-      gsap.set("[data-mon-apps]", { autoAlpha: 0, y: 20 });
-
-      const p1Words = gsap.utils.toArray<HTMLElement>("[data-mon-p1-word]");
-      const p2Words = gsap.utils.toArray<HTMLElement>("[data-mon-p2-word]");
-
-      // One master timeline scrubbed to the pin range — pin releases only
-      // after every stage (heading, both paragraph words, app store) is done.
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=200%",
-          pin: section,
-          pinSpacing: true,
-          anticipatePin: 1,
-          scrub: 0.5,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      tl.to("[data-mon-heading]", { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0);
-      tl.to(p1Words, { autoAlpha: 1, ease: "none", duration: 0.4, stagger: { each: 0.06 } }, 0.4);
-      tl.to(p2Words, { autoAlpha: 1, ease: "none", duration: 0.4, stagger: { each: 0.06 } }, "+=0.2");
-      tl.to("[data-mon-apps]", { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" }, "+=0.15");
+      // Simple fade-up on scroll into view — no pin, no scrub reveal.
+      gsap.from(
+        "[data-mon-image], [data-mon-heading], [data-mon-apps], [data-mon-p1], [data-mon-p2]",
+        {
+          autoAlpha: 0,
+          y: 30,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: { trigger: section, start: "top 75%" },
+        }
+      );
     }, section);
 
     const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -1799,84 +1950,78 @@ function MonitoringSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="flex min-h-screen flex-col justify-center pb-12 pt-28 md:pb-20 md:pt-32">
+    <section ref={sectionRef} className="py-20 md:py-28">
       <Shell>
-        <div className="grid gap-10 md:grid-cols-[1fr_1.1fr] md:items-center md:gap-16">
-          {/* Left — phone mockup image */}
-          <div className="flex items-center justify-center">
-            <img
-              src="/images/platsore-appstore.png"
-              alt="SOURCE monitoring app on iPhone with QR code"
-              className="max-h-[560px] w-auto object-contain"
-            />
-          </div>
+        {/* Phone mockups centred at the top */}
+        <div data-mon-image className="flex items-center justify-center">
+          <img
+            src="/images/platsore-appstore.png"
+            alt="SOURCE monitoring app on iPhone with QR code"
+            className="max-h-[560px] w-auto object-contain"
+          />
+        </div>
 
-          {/* Right — heading, description, app store */}
+        {/* Two-column layout below the image.
+            Left column: heading + QR / app badges.
+            Right column: two description paragraphs. */}
+        <div className="mt-12 grid gap-10 md:mt-16 md:grid-cols-2 md:items-start md:gap-16">
           <div>
             <h2 data-mon-heading className="heading-lg">
-              Monitoring, Control &amp; Applications
+              MONITORING, CONTROL<br />&amp; APPLICATIONS
             </h2>
 
-            <p
-              data-mon-p1
-              className="mt-6 max-w-xl text-sm leading-relaxed text-white/70 md:text-base"
-            >
-              {MONITORING_P1_WORDS.map((word, i) => (
-                <Fragment key={i}>
-                  <span data-mon-p1-word className="inline-block">{word}</span>
-                  {i < MONITORING_P1_WORDS.length - 1 ? " " : ""}
-                </Fragment>
-              ))}
-            </p>
-
-            <p
-              data-mon-p2
-              className="mt-6 max-w-xl text-sm leading-relaxed text-white/70 md:text-base"
-            >
-              {MONITORING_P2_WORDS.map((word, i) => (
-                <Fragment key={i}>
-                  <span data-mon-p2-word className="inline-block">{word}</span>
-                  {i < MONITORING_P2_WORDS.length - 1 ? " " : ""}
-                </Fragment>
-              ))}
-            </p>
-
-            {/* App store block: QR code + badges */}
-            <div data-mon-apps className="mt-10 flex items-center gap-5">
-              <div className="rounded-lg bg-white p-3">
-                <img
-                  src="/images/QRcode.png"
-                  alt="Scan QR code to download the SOURCE app"
-                  className="h-24 w-24 object-contain"
-                />
-                <p className="mt-1 text-center text-[9px] text-black/80">Scan QR to download</p>
-              </div>
-
-              <div className="flex flex-col gap-2">
+            <div data-mon-apps className="mt-12 flex items-stretch gap-4 md:mt-16">
+              {/* Two stacked store badges */}
+              <div className="flex flex-1 flex-col gap-3 sm:flex-initial">
                 <a
                   href="#"
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-black px-4 py-2.5 text-xs text-white transition hover:border-white/30"
+                  className="inline-flex h-[52px] items-center gap-2 rounded-lg border border-white/15 bg-black px-4 text-white transition hover:border-white/30"
                 >
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor" aria-hidden>
                     <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
                   </svg>
                   <span className="flex flex-col leading-tight">
-                    <span className="text-[9px] text-white/70">Download on the</span>
+                    <span className="text-[10px] text-white/70">Download on the</span>
                     <span className="text-sm font-semibold">App Store</span>
                   </span>
                 </a>
                 <a
                   href="#"
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-black px-4 py-2.5 text-xs text-white transition hover:border-white/30"
+                  className="inline-flex h-[52px] items-center gap-2 rounded-lg border border-white/15 bg-black px-4 text-white transition hover:border-white/30"
                 >
-                  <img src="/icon/playstore.png" alt="" className="h-5 w-5 object-contain" aria-hidden />
+                  <img src="/icon/playstore.png" alt="" className="h-6 w-6 object-contain" aria-hidden />
                   <span className="flex flex-col leading-tight">
-                    <span className="text-[9px] text-white/70">GET IT ON</span>
+                    <span className="text-[10px] text-white/70">GET IT ON</span>
                     <span className="text-sm font-semibold">Google Play</span>
                   </span>
                 </a>
               </div>
+
+              {/* QR card — matches the full height of both badges + gap */}
+              <div className="flex h-[116px] w-[116px] shrink-0 flex-col items-center justify-center rounded-lg border border-white/15 bg-white p-2">
+                <img
+                  src="/images/QRcode.png"
+                  alt="Scan QR code to download the SOURCE app"
+                  className="h-[72px] w-[72px] object-contain"
+                />
+                <p className="mt-1 text-center text-[8px] font-medium leading-tight text-black/70">Scan QR to download</p>
+              </div>
             </div>
+          </div>
+
+          <div>
+            <p
+              data-mon-p1
+              className="max-w-xl text-sm leading-relaxed text-white/70 md:text-base"
+            >
+              {MONITORING_P1}
+            </p>
+            <p
+              data-mon-p2
+              className="mt-6 max-w-xl text-sm leading-relaxed text-white/70 md:text-base"
+            >
+              {MONITORING_P2}
+            </p>
           </div>
         </div>
       </Shell>
@@ -1951,9 +2096,13 @@ function FAQ() {
               Still have questions? Our team is here to help.
             </p>
             <Link
-              href="/contact"
-              className="mt-3 inline-block text-[10px] font-semibold uppercase tracking-[0.2em] text-white underline underline-offset-8 transition hover:text-white/70 md:text-xs"
+              href="mailto:contact@amectechnology.com"
+              className="group mt-4 inline-flex items-center gap-2 rounded border border-white/25 bg-white/[0.04] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-black"
             >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
               Email us
             </Link>
           </div>
@@ -2072,13 +2221,13 @@ function ClosingCTA() {
             <div data-closing-cta className="flex flex-col gap-3">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90"
+                className="inline-flex items-center justify-center rounded bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90"
               >
                 Request a Quote
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/5 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                className="inline-flex items-center justify-center rounded border border-white/25 bg-white/5 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10"
               >
                 Contact Us
               </Link>
@@ -2087,81 +2236,6 @@ function ClosingCTA() {
         </div>
       </div>
     </section>
-  );
-}
-
-const SOURCE_FOOTER_NAV = [
-  { label: "Home", href: "/" },
-  { label: "Product", href: "#product" },
-  { label: "Features", href: "#features" },
-  { label: "Applications", href: "#applications" },
-  { label: "Resources", href: "#resources" },
-];
-
-function SourceFooter() {
-  return (
-    <footer className="relative isolate overflow-hidden border-t border-white/[0.06] bg-bg pt-20 md:pt-28">
-      {/* Giant translucent SOURCE wordmark behind the content */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-6 flex select-none justify-center md:top-8"
-      >
-        <span className="font-display text-[26vw] font-bold leading-none tracking-[-0.04em] text-white/[0.04] md:text-[22vw]">
-          SOURCE
-        </span>
-      </div>
-
-      <div className="relative flex flex-col items-center px-6 pb-10 md:px-14">
-        <Logo className="justify-center" />
-
-        <nav
-          aria-label="SOURCE footer"
-          className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 md:mt-10 md:gap-x-14"
-        >
-          {SOURCE_FOOTER_NAV.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="text-sm text-white/80 transition-colors hover:text-white md:text-base"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      <div className="relative border-t border-white/[0.08]">
-        <div className="flex w-full flex-col items-center justify-between gap-4 px-6 py-6 text-xs text-white/50 md:flex-row md:px-14">
-          <p>© 2026 AMEC Technology. All Rights Reserved.</p>
-
-          <div className="flex items-center gap-5 text-white/60">
-            <a href="#" aria-label="Facebook" className="transition-colors hover:text-white">
-              <Facebook className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Instagram" className="transition-colors hover:text-white">
-              <Instagram className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="X (Twitter)" className="transition-colors hover:text-white">
-              <Twitter className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="LinkedIn" className="transition-colors hover:text-white">
-              <Linkedin className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="YouTube" className="transition-colors hover:text-white">
-              <YouTube className="h-4 w-4" />
-            </a>
-          </div>
-
-          <p className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
-            <span aria-hidden className="text-white/25">|</span>
-            <Link href="/terms" className="hover:text-white">Terms of Use</Link>
-            <span aria-hidden className="text-white/25">|</span>
-            <Link href="/cookies" className="hover:text-white">Cookies Policy</Link>
-          </p>
-        </div>
-      </div>
-    </footer>
   );
 }
 
