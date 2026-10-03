@@ -728,6 +728,28 @@ function ContactForm() {
 
 function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from("[data-faq-item]", {
+        autoAlpha: 0,
+        y: 40,
+        duration: 0.7,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section className="py-16 md:py-24">
@@ -740,12 +762,12 @@ function FAQ() {
             </p>
           </div>
 
-          <div className="divide-y divide-white/10 border-y border-white/10">
+          <div ref={listRef} className="divide-y divide-white/10 border-y border-white/10">
             {FAQ_ITEMS.map((item, i) => {
               const isOpen = openIndex === i;
               const num = String(i + 1).padStart(2, "0");
               return (
-                <div key={item.q}>
+                <div key={item.q} data-faq-item>
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : i)}

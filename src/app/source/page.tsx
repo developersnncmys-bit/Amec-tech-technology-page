@@ -473,7 +473,7 @@ function SceneBand() {
   // Preload + decode both scene images on mount so the first opacity flip has
   // a fully-decoded bitmap sitting on a GPU layer — no first-paint pop.
   useEffect(() => {
-    const sources = ["/images/sourcemorning.png", "/images/sourcenight.png"];
+    const sources = ["/images/SourceMorning.png", "/images/Sourcenight.png"];
     sources.forEach((src) => {
       const img = new window.Image();
       img.src = src;
@@ -488,7 +488,7 @@ function SceneBand() {
     >
       {/* Single stable img element — src swap only, no transform. */}
       <img
-        src={view === "morning" ? "/images/sourcemorning.png" : "/images/sourcenight.png"}
+        src={view === "morning" ? "/images/SourceMorning.png" : "/images/Sourcenight.png"}
         alt=""
         aria-hidden
         decoding="sync"

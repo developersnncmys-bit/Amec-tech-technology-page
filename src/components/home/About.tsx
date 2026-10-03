@@ -73,7 +73,7 @@ export function About() {
       <div className="mx-auto w-full max-w-[1400px]">
         {/* Header — centered eyebrow + heading */}
         <AnimateIn className="flex flex-col items-center text-center">
-          <p className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-white md:text-base">
+          <p className="font-display text-base font-semibold uppercase tracking-[0.22em] text-white md:text-lg">
             About
           </p>
           <h2

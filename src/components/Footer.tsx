@@ -51,7 +51,7 @@ export function Footer() {
         <FooterColumn title="Verticals" items={VERTICALS} />
 
         <div>
-          <h3 className="text-sm font-semibold text-white">Contacts us</h3>
+          <h3 className="font-display text-base font-semibold uppercase tracking-[0.14em] text-white">Contacts us</h3>
           <ul className="mt-5 space-y-4 text-sm text-white/60">
             <li className="flex items-start gap-3">
               <Mail className="mt-0.5 h-4 w-4 shrink-0" />
@@ -88,7 +88,7 @@ export function Footer() {
 function FooterColumn({ title, items }: { title: string; items: { label: string; href: string }[] }) {
   return (
     <div>
-      <h3 className="text-sm font-semibold text-white">{title}</h3>
+      <h3 className="font-display text-base font-semibold uppercase tracking-[0.14em] text-white">{title}</h3>
       <ul className="mt-5 space-y-3 text-sm text-white/60">
         {items.map((item) => (
           <li key={item.href}>
