@@ -208,7 +208,15 @@ function Hero() {
           Tell us what you're working on — we'll route it to the right team.
         </p>
         <div data-hero-cta className="shrink-0">
-          <a href="#contact-form" className="btn-primary">Start a Conversation</a>
+          <a
+            href="#contact-form"
+            className="group inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-4 pr-1 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-1 hover:pr-4 hover:text-black"
+          >
+            Start a Conversation
+            <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </a>
         </div>
       </div>
     </section>
