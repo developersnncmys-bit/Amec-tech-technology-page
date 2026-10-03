@@ -2030,7 +2030,40 @@ function MonitoringSection() {
 }
 
 function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  // When switching from one open item to another, close the current one
+  // FIRST, let it fully collapse, then open the new one. If both animate
+  // simultaneously the layout shifts chaotically and the new item visually
+  // looks like it's opening from the wrong direction.
+  // Also pins the clicked button's viewport Y across the full ~1 s window
+  // so the question that was clicked stays put and the answer always
+  // visibly expands downward from under it.
+  const handleToggle = (i: number, button: HTMLButtonElement) => {
+    const isSame = openIndex === i;
+    const anchorY = button.getBoundingClientRect().top;
+
+    if (isSame) {
+      setOpenIndex(null);
+    } else if (openIndex !== null) {
+      // Close current, then open new after close animation finishes
+      setOpenIndex(null);
+      window.setTimeout(() => setOpenIndex(i), 520);
+    } else {
+      setOpenIndex(i);
+    }
+
+    const start = performance.now();
+    const tick = () => {
+      const nowY = button.getBoundingClientRect().top;
+      const delta = nowY - anchorY;
+      if (Math.abs(delta) > 0.5) {
+        window.scrollBy({ top: delta, behavior: "auto" });
+      }
+      if (performance.now() - start < 1100) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
 
   return (
     <section className="py-16 md:py-24">
@@ -2053,7 +2086,7 @@ function FAQ() {
                 <div key={item.q}>
                   <button
                     type="button"
-                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    onClick={(e) => handleToggle(i, e.currentTarget)}
                     aria-expanded={isOpen}
                     className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-6 py-6 text-left transition-colors"
                   >
@@ -2074,15 +2107,13 @@ function FAQ() {
                   </button>
 
                   <div
-                    className="grid overflow-hidden transition-[grid-template-rows] duration-500 ease-out"
-                    style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+                    className="overflow-hidden transition-[max-height] duration-500 ease-out"
+                    style={{ maxHeight: isOpen ? "500px" : "0px" }}
                   >
-                    <div className="min-h-0">
-                      <div className="grid grid-cols-[auto_1fr_auto] gap-6 pb-6">
-                        <span aria-hidden />
-                        <p className="text-xs leading-relaxed text-white/70 md:text-sm">{item.a}</p>
-                        <span aria-hidden />
-                      </div>
+                    <div className="grid grid-cols-[auto_1fr_auto] gap-6 pb-6">
+                      <span aria-hidden />
+                      <p className="text-xs leading-relaxed text-white/70 md:text-sm">{item.a}</p>
+                      <span aria-hidden />
                     </div>
                   </div>
                 </div>

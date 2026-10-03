@@ -109,13 +109,13 @@ export function Hero() {
             <div className="max-w-[70%] text-left">
               <p
                 data-hero-eyebrow
-                className="eyebrow md:!text-[38px] md:!leading-none md:!tracking-[0.14em] md:!text-white/80"
+                className="eyebrow md:!text-[30px] md:!leading-none md:!tracking-[0.14em] md:!text-white/80"
               >
                 AMEC
               </p>
               <h1
                 data-hero-title
-                className="mt-1 heading-xl md:!mt-2 md:!text-[52px] md:!leading-[1.06]"
+                className="mt-1 heading-xl md:!mt-2 md:!text-[64px] md:!leading-[1.06]"
               >
                 {"TECHNOLOGY".split("").map((c, i) => (
                   <span key={i} className="inline-block">{c}</span>

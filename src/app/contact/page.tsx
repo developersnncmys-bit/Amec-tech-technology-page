@@ -727,8 +727,39 @@ function ContactForm() {
 // ---------------------------------------------------------------------------
 
 function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+
+  // Mirrors the Source page FAQ behaviour so every click reads as the
+  // answer expanding downward from under the clicked question:
+  //   1. If a different item is already open, close it first and wait for
+  //      the collapse animation to finish before opening the new one.
+  //   2. Pin the clicked button's viewport Y across the full close+open
+  //      window so layout shifts above/below don't drag it around.
+  const handleToggle = (i: number, button: HTMLButtonElement) => {
+    const isSame = openIndex === i;
+    const anchorY = button.getBoundingClientRect().top;
+
+    if (isSame) {
+      setOpenIndex(null);
+    } else if (openIndex !== null) {
+      setOpenIndex(null);
+      window.setTimeout(() => setOpenIndex(i), 520);
+    } else {
+      setOpenIndex(i);
+    }
+
+    const start = performance.now();
+    const tick = () => {
+      const nowY = button.getBoundingClientRect().top;
+      const delta = nowY - anchorY;
+      if (Math.abs(delta) > 0.5) {
+        window.scrollBy({ top: delta, behavior: "auto" });
+      }
+      if (performance.now() - start < 1100) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
 
   useIsomorphicLayoutEffect(() => {
     const el = listRef.current;
@@ -770,7 +801,7 @@ function FAQ() {
                 <div key={item.q} data-faq-item>
                   <button
                     type="button"
-                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    onClick={(e) => handleToggle(i, e.currentTarget)}
                     aria-expanded={isOpen}
                     className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-6 py-6 text-left transition-colors"
                   >
@@ -791,17 +822,15 @@ function FAQ() {
                   </button>
 
                   <div
-                    className="grid overflow-hidden transition-[grid-template-rows] duration-500 ease-out"
-                    style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+                    className="overflow-hidden transition-[max-height] duration-500 ease-out"
+                    style={{ maxHeight: isOpen ? "500px" : "0px" }}
                   >
-                    <div className="min-h-0">
-                      <div className="grid grid-cols-[auto_1fr_auto] gap-6 pb-6">
-                        <span aria-hidden />
-                        <p className="text-xs leading-relaxed text-white/70 md:text-sm">
-                          {item.a}
-                        </p>
-                        <span aria-hidden />
-                      </div>
+                    <div className="grid grid-cols-[auto_1fr_auto] gap-6 pb-6">
+                      <span aria-hidden />
+                      <p className="text-xs leading-relaxed text-white/70 md:text-sm">
+                        {item.a}
+                      </p>
+                      <span aria-hidden />
                     </div>
                   </div>
                 </div>

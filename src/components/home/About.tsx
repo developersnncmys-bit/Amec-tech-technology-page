@@ -102,7 +102,7 @@ export function About() {
         {/* 2-column layout — big tall image LEFT, small image + caption RIGHT. */}
         <div
           data-about-fade
-          className="mx-auto mt-14 grid max-w-5xl gap-6 md:mt-20 md:grid-cols-2 md:gap-6"
+          className="mx-auto mt-14 grid max-w-7xl gap-6 md:mt-20 md:grid-cols-2 md:gap-6"
         >
           {/* LEFT: big image — square-ish, taller than before */}
           <div className="relative aspect-square w-full overflow-hidden rounded-card border border-white/[0.06] bg-bg-card md:aspect-square">
