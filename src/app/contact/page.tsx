@@ -737,7 +737,7 @@ function FAQ() {
     const ctx = gsap.context(() => {
       gsap.from("[data-faq-item]", {
         autoAlpha: 0,
-        y: 40,
+        y: -40,
         duration: 0.7,
         stagger: 0.12,
         ease: "power3.out",
