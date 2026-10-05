@@ -10,8 +10,10 @@ type NavItem = { href: string; label: string; disabled?: boolean };
 const NAV: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/source", label: "Source" },
-  { href: "/oem-engineering", label: "OEM Engineering", disabled: true },
-  { href: "/powertrain-battery", label: "Powertrain & Battery", disabled: true },
+  { href: "/oem-engineering", label: "OEM Engineering" },
+  { href: "/powertrain-battery", label: "Powertrain & Battery" },
+  { href: "/performance-accumulator", label: "Performance Accumulator" },
+  // { href: "/early-warning", label: "Early Warning" },
 ];
 
 export function Header() {

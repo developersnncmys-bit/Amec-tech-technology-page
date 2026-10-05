@@ -495,6 +495,16 @@ function SceneBand() {
         fetchPriority="high"
         className="absolute inset-0 h-full w-full object-cover"
       />
+      {/* Subtle bottom-only overlay — keeps the sky bright, darkens the ground
+          just enough to make the toggle + caption readable. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 100%)",
+        }}
+      />
       <div className="relative flex flex-col items-center gap-6 px-6 pb-20 text-center md:px-14 md:pb-28">
         <div className="flex justify-center gap-2 rounded border border-white/15 p-1">
           <button
@@ -1792,36 +1802,14 @@ function RemoteControl() {
 function WhereSourceWorks() {
   const [active, setActive] = useState(0);
   const current = APPLICATIONS[active];
-  const pinRef = useRef<HTMLElement | null>(null);
-
-  useIsomorphicLayoutEffect(() => {
-    const pinTarget = pinRef.current;
-    if (!pinTarget) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: pinTarget,
-        start: "top top",
-        end: "+=100%",
-        pin: pinTarget,
-        pinSpacing: true,
-        anticipatePin: 1,
-      });
-    }, pinTarget);
-
-    const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
-
-    return () => {
-      window.clearTimeout(refreshId);
-      ctx.revert();
-    };
-  }, []);
+  // Pin removed — RemoteControl above already pins for +=80%, and two
+  // consecutive full-viewport pins compound their pin-spacers which makes
+  // the two sections visually overlap during the handoff. Section still
+  // uses h-screen so the layout feels pinned-like as the user scrolls
+  // through it.
 
   return (
-    <section
-      ref={pinRef}
-      className="flex h-screen w-full flex-col overflow-hidden pb-8 pt-16 md:pb-12 md:pt-20"
-    >
+    <section className="flex h-screen w-full flex-col overflow-hidden pb-8 pt-16 md:pb-12 md:pt-20">
       <Shell className="flex flex-1 min-h-0 flex-col">
         {/* Header — fixed-height block centred at the top */}
         <AnimateIn className="mx-auto max-w-3xl shrink-0 text-center">

@@ -619,14 +619,14 @@ function ContactForm() {
           <label htmlFor="name" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
             Full name
           </label>
-          <input id="name" name="name" type="text" placeholder="Ada Lovelace" className={`mt-2 ${field("name")}`} aria-invalid={!!errors.name} />
+          <input id="name" name="name" type="text" placeholder="Enter your full name" className={`mt-2 ${field("name")}`} aria-invalid={!!errors.name} />
           {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name}</p>}
         </div>
         <div>
           <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
             Email
           </label>
-          <input id="email" name="email" type="email" placeholder="you@company.com" className={`mt-2 ${field("email")}`} aria-invalid={!!errors.email} />
+          <input id="email" name="email" type="email" placeholder="Enter your email" className={`mt-2 ${field("email")}`} aria-invalid={!!errors.email} />
           {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
         </div>
       </div>
@@ -636,13 +636,13 @@ function ContactForm() {
           <label htmlFor="company" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
             Company <span className="text-white/40">(optional)</span>
           </label>
-          <input id="company" name="company" type="text" placeholder="Company name" className={`mt-2 ${field("company")}`} />
+          <input id="company" name="company" type="text" placeholder="Enter your company name" className={`mt-2 ${field("company")}`} />
         </div>
         <div>
           <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
             Phone <span className="text-white/40">(optional)</span>
           </label>
-          <input id="phone" name="phone" type="tel" placeholder="+91 80 4000 0000" className={`mt-2 ${field("phone")}`} />
+          <input id="phone" name="phone" type="tel" placeholder="Enter your phone number" className={`mt-2 ${field("phone")}`} />
         </div>
       </div>
 
