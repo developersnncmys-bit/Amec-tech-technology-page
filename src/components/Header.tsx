@@ -13,7 +13,8 @@ const NAV: NavItem[] = [
   { href: "/oem-engineering", label: "OEM Engineering" },
   { href: "/powertrain-battery", label: "Powertrain & Battery" },
   { href: "/performance-accumulator", label: "Performance Accumulator" },
-  // { href: "/early-warning", label: "Early Warning" },
+  { href: "/early-warning", label: "Early Warning" },
+  { href: "/pressure-washer-kit", label: "Pressure Washer Kit" },
 ];
 
 export function Header() {
