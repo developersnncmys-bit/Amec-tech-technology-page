@@ -2354,6 +2354,11 @@ function FAQ() {
       if (performance.now() - start < 1100) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
+
+    // FAQ height changes shift every section below it — refresh ScrollTrigger
+    // after the accordion animation settles so pinned sections (ClosingCTA)
+    // recalculate against the new document height instead of the cached one.
+    window.setTimeout(() => ScrollTrigger.refresh(), 600);
   };
 
   return (
