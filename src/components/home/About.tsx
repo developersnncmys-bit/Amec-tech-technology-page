@@ -91,10 +91,10 @@ export function About() {
           </h2>
         </AnimateIn>
 
-        {/* Description — centered column, left-aligned text */}
+        {/* Description — centered column, left-aligned text. */}
         <p
           data-about-fade
-          className="mx-auto mt-10 max-w-3xl text-left font-sans text-base leading-[1.7] text-white/85 md:mt-14"
+          className="mx-auto mt-10 max-w-4xl text-left font-sans text-base leading-[1.7] text-white/70 md:mt-14"
         >
           {DESC_TEXT}
         </p>
@@ -102,7 +102,7 @@ export function About() {
         {/* 2-column layout — big tall image LEFT, small image + caption RIGHT. */}
         <div
           data-about-fade
-          className="mx-auto mt-14 grid max-w-7xl gap-6 md:mt-20 md:grid-cols-2 md:gap-6"
+          className="mx-auto mt-14 grid max-w-4xl gap-6 md:mt-20 md:grid-cols-2 md:gap-6"
         >
           {/* LEFT: big image — square-ish, taller than before */}
           <div className="relative aspect-square w-full overflow-hidden rounded-card border border-white/[0.06] bg-bg-card md:aspect-square">
@@ -119,8 +119,8 @@ export function About() {
           </div>
 
           {/* RIGHT: small image on top, caption text below */}
-          <div className="flex flex-col gap-6">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-card border border-white/[0.06] bg-bg-card md:aspect-[3/2]">
+          <div className="flex h-full flex-col gap-6">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-card border border-white/[0.06] bg-bg-card md:aspect-[5/4]">
               <div
                 className="absolute inset-0"
                 style={{
@@ -132,7 +132,7 @@ export function About() {
                 aria-hidden
               />
             </div>
-            <p className="font-sans text-base leading-[1.7] text-white/85">
+            <p className="mt-auto font-sans text-base leading-[1.7] text-white/60">
               {CAPTION_TEXT}
             </p>
           </div>
@@ -141,7 +141,7 @@ export function About() {
         {/* Closing — centered column, left-aligned text */}
         <p
           data-about-fade
-          className="mx-auto mt-14 max-w-3xl text-left font-sans text-base leading-[1.7] text-white/85 md:mt-20"
+          className="mx-auto mt-14 max-w-4xl text-left font-sans text-base leading-[1.7] text-white/60 md:mt-20"
         >
           {CLOSING_TEXT}
         </p>

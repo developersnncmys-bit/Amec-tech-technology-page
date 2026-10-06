@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 
 type NavItem = { href: string; label: string; disabled?: boolean };
@@ -12,26 +12,46 @@ const NAV: NavItem[] = [
   { href: "/source", label: "Source" },
   { href: "/oem-engineering", label: "OEM Engineering" },
   { href: "/powertrain-battery", label: "Powertrain & Battery" },
-  { href: "/performance-accumulator", label: "Performance Accumulator" },
-  { href: "/early-warning", label: "Early Warning" },
-  { href: "/pressure-washer-kit", label: "Pressure Washer Kit" },
 ];
 
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  // Hidden once the user has scrolled past the first viewport (i.e. past the
-  // Hero section on every page).
   const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
   useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
     const onScroll = () => {
+      const current = window.scrollY;
+      const direction = current > lastScrollY.current ? "down" : "up";
       // 80px of grace so the navbar lingers slightly past the Hero fold.
-      setHidden(window.scrollY > window.innerHeight - 80);
+      const pastHero = current > window.innerHeight - 80;
+
+      const revealEl = document.getElementById("nav-reveal");
+      // If the page has an explicit <section id="nav-reveal"> (e.g. home's
+      // TechnologyCards), use its top. Otherwise fall back to ~2 viewport
+      // heights, which approximates the top of the 3rd section on standard
+      // product pages. This prevents the navbar from reappearing on any
+      // upscroll past the hero on pages that don't declare the id.
+      const revealTop = revealEl
+        ? revealEl.getBoundingClientRect().top + window.scrollY
+        : window.innerHeight * 2;
+
+      if (!pastHero) {
+        setHidden(false);
+      } else if (direction === "up" && current <= revealTop) {
+        setHidden(false);
+      } else if (direction === "down") {
+        setHidden(true);
+      }
+
+      lastScrollY.current = current;
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -40,7 +60,7 @@ export function Header() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <header
@@ -52,7 +72,7 @@ export function Header() {
       <div className="pointer-events-auto w-full max-w-[1400px]">
         {/* Floating bar — frosted white glass to match Figma */}
         <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150 md:px-6 md:py-4">
-          <div className="shrink-0">
+          <div className="flex shrink-0 items-center self-center">
             <Logo variant="light" />
           </div>
 
@@ -91,7 +111,7 @@ export function Header() {
           <div className="flex shrink-0 items-center gap-3">
             <Link
               href="/contact"
-              className="hidden rounded bg-white px-5 py-2 font-display text-sm font-medium text-black transition hover:bg-white/90 md:inline-flex"
+              className="hidden rounded bg-white px-5 py-2 font-display text-sm font-medium text-black transition hover:bg-white/90 md:inline-flex lg:text-base"
             >
               Contact
             </Link>

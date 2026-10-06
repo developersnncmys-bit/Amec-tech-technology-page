@@ -2,7 +2,6 @@
 
 import { Fragment, useRef } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
-import { ArrowRight } from "@/components/Icons";
 
 const INTRO_TEXT =
   "AMEC TECHNOLOGY is the engineering execution arm of AMEC Group. We develop production ready systems across electric mobility, renewable energy, and OEM engineering—bridging concepts and deployment through strong engineering fundamentals, validation, and scalable design.";
@@ -109,7 +108,7 @@ export function Hero() {
             <div className="max-w-[70%] text-left">
               <p
                 data-hero-eyebrow
-                className="eyebrow md:!text-[30px] md:!leading-none md:!tracking-[0.14em] md:!text-white/80"
+                className="eyebrow md:!text-[48px] md:!leading-none md:!tracking-[0.12em] md:!font-semibold md:!text-white"
               >
                 AMEC
               </p>
@@ -129,15 +128,8 @@ export function Hero() {
               </p>
             </div>
             <div data-hero-cta className="shrink-0 self-end">
-              <button
-                type="button"
-                onClick={scrollToIntro}
-                className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
-              >
+              <button type="button" onClick={scrollToIntro} className="btn-hero-primary">
                 Explore more
-                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </span>
               </button>
             </div>
           </div>
@@ -146,7 +138,7 @@ export function Hero() {
       <div id="technology-intro" className="shell mt-16 mb-6 md:mt-24 md:mb-10">
         <p
           data-intro
-          className="mx-auto max-w-4xl text-center font-display text-lg leading-relaxed text-white/70 md:text-[22px]"
+          className="mx-auto max-w-4xl text-left font-display text-lg leading-relaxed text-white/70 md:text-[22px]"
         >
           {INTRO_WORDS.map((word, i) => (
             <Fragment key={i}>
@@ -156,7 +148,11 @@ export function Hero() {
               >
                 {word}
               </span>
-              {i < INTRO_WORDS.length - 1 ? " " : ""}
+              {i < INTRO_WORDS.length - 1
+                ? word === "Group."
+                  ? <br />
+                  : " "
+                : ""}
             </Fragment>
           ))}
         </p>

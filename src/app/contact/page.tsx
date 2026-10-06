@@ -208,13 +208,7 @@ function Hero() {
           Tell us what you're working on — we'll route it to the right team.
         </p>
         <div data-hero-cta className="shrink-0">
-          <a
-            href="#contact-form"
-            className="group inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
-          >
-            <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-              <ArrowRight className="h-3.5 w-3.5" />
-            </span>
+          <a href="#contact-form" className="btn-hero-primary">
             Start a Conversation
           </a>
         </div>
@@ -259,7 +253,7 @@ function Intro() {
   return (
     <section ref={ref} className="w-full py-20 md:py-28">
       <Shell>
-        <p className="mx-auto max-w-4xl text-center font-display text-lg leading-relaxed text-white/70 md:text-2xl">
+        <p className="mx-auto max-w-4xl text-left font-display text-lg leading-relaxed text-white/70 md:text-2xl">
           {INTRO_WORDS.map((word, i) => (
             <Fragment key={i}>
               <span data-intro-word className="inline-block">{word}</span>
@@ -287,7 +281,7 @@ function Channels() {
       // Header stays visible when the section enters — fade it in once on
       // scroll-into-view so it's fully present by the time the pin engages.
       gsap.from(
-        ["[data-channel-eyebrow]", "[data-channel-heading] span", "[data-channel-sub]"],
+        ["[data-channel-heading] span", "[data-channel-sub]"],
         {
           autoAlpha: 0,
           y: 24,
@@ -369,8 +363,7 @@ function Channels() {
       <div className="relative">
         <Shell>
           <div className="max-w-2xl">
-            <p data-channel-eyebrow className="eyebrow">Channels</p>
-            <h2 data-channel-heading className="mt-3 heading-lg">
+            <h2 data-channel-heading className="heading-lg">
               {headingWords.map((word, i) => (
                 <Fragment key={i}>
                   <span className="inline-block">{word}</span>
@@ -468,8 +461,7 @@ function ContactSection() {
         <div className="grid gap-12 md:grid-cols-[1fr_1.4fr] md:gap-16">
           {/* Left — info */}
           <div data-contact-info className="md:sticky md:top-28 md:self-start">
-            <p className="eyebrow">Direct line</p>
-            <h2 className="mt-3 heading-lg">Tell us about your project.</h2>
+            <h2 className="heading-lg">Tell us about your project.</h2>
             <p className="mt-6 max-w-md text-sm leading-relaxed text-white/70 md:text-base">
               Fill out the form and we'll match your enquiry with the engineer best suited to help.
               Typical response time: one business day.
@@ -712,7 +704,7 @@ function ContactForm() {
         <button
           type="submit"
           disabled={state === "submitting"}
-          className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
+          className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
         >
           {state === "submitting" ? "Sending…" : "Send message"}
           <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
@@ -795,7 +787,7 @@ function FAQ() {
       <Shell>
         <div className="grid gap-12 md:grid-cols-[1fr_1.6fr_0.8fr] md:gap-14">
           <div className="md:sticky md:top-28 md:self-start">
-            <h2 className="heading-lg">F.A.Q</h2>
+            <h2 className="heading-lg">FREQUENTLY ASKED QUESTIONS</h2>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-white/70 md:text-base">
               Quick answers to the questions we hear most often from new customers and partners.
             </p>
@@ -820,12 +812,17 @@ function FAQ() {
                       {item.q}
                     </span>
                     <span
-                      className={`grid h-6 w-6 place-items-center rounded-full border transition ${
-                        isOpen ? "border-white bg-white text-black" : "border-white/25 text-transparent"
+                      className={`relative grid h-7 w-7 place-items-center rounded-full border transition ${
+                        isOpen ? "border-white bg-white text-black" : "border-white/40 text-white"
                       }`}
                       aria-hidden
                     >
-                      <span className="h-2 w-2 rounded-full bg-current" />
+                      <span className="block h-[2px] w-3 bg-current" />
+                      <span
+                        className={`absolute block h-3 w-[2px] bg-current transition-transform duration-300 ${
+                          isOpen ? "scale-y-0" : "scale-y-100"
+                        }`}
+                      />
                     </span>
                   </button>
 
@@ -889,14 +886,6 @@ function ClosingCTA() {
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
-      });
-
-      gsap.from("[data-close-eyebrow]", {
-        autoAlpha: 0,
-        y: -20,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: section, start: "top 70%" },
       });
 
       gsap.from("[data-close-cta]", {
@@ -989,7 +978,6 @@ function ClosingCTA() {
       />
 
       <div className="relative flex flex-col items-center gap-8 px-6 text-center md:px-14">
-        <p data-close-eyebrow className="eyebrow">One message away</p>
         <h2 className="heading-xl max-w-6xl">
           {CLOSING_WORDS.map((word, i) => (
             <Fragment key={i}>
@@ -1001,7 +989,7 @@ function ClosingCTA() {
         <div data-close-cta>
           <a
             href="#contact-form"
-            className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+            className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
           >
             Start the Conversation
             <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">

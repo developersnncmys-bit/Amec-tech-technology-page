@@ -238,7 +238,7 @@ function Overview() {
   return (
     <section ref={sectionRef} className="w-full py-24 md:py-32">
       <Shell>
-        <h2 className="mx-auto max-w-3xl text-center font-display text-2xl font-semibold leading-snug text-white md:text-4xl">
+        <h2 className="mx-auto max-w-3xl text-left font-display text-2xl font-semibold leading-snug text-white md:text-4xl">
           {OVERVIEW_WORDS.map((w, i) => (
             <Fragment key={i}>
               <span data-ov-word className="inline-block">{w}</span>
@@ -248,7 +248,7 @@ function Overview() {
         </h2>
         <p
           data-ov-body
-          className="mx-auto mt-8 max-w-2xl text-center text-sm leading-relaxed text-white/60 md:text-base"
+          className="mx-auto mt-8 max-w-3xl text-left text-sm leading-relaxed text-white/60 md:text-base"
         >
           {OVERVIEW_BODY}
         </p>
@@ -292,11 +292,9 @@ function CapacityBand() {
         defaults: { ease: "power3.out" },
       });
 
-      tl.from("[data-cap-eyebrow]", { autoAlpha: 0, y: 16, duration: 0.5 })
-        .from(
+      tl.from(
           "[data-cap-number]",
-          { autoAlpha: 0, y: 60, duration: 0.9, ease: "back.out(1.4)" },
-          "-=0.2"
+          { autoAlpha: 0, y: 60, duration: 0.9, ease: "back.out(1.4)" }
         )
         .from("[data-cap-caption]", { autoAlpha: 0, y: 16, duration: 0.6 }, "-=0.5")
         .from("[data-cap-body]", { autoAlpha: 0, y: 16, duration: 0.6 }, "-=0.4")
@@ -350,11 +348,7 @@ function CapacityBand() {
               className="absolute -left-6 top-2 hidden h-24 w-[2px] bg-gradient-to-b from-white via-white/40 to-transparent md:block"
             />
 
-            <span data-cap-eyebrow className="eyebrow">
-              / Spec 01 — Capacity
-            </span>
-
-            <div data-cap-number className="mt-5 flex items-start md:mt-6">
+            <div data-cap-number className="flex items-start">
               <span className="font-display font-bold leading-none text-white" style={{ fontSize: "clamp(84px, 11vw, 180px)" }}>
                 100
               </span>
@@ -768,15 +762,7 @@ function ClosingCTA() {
         anticipatePin: 1,
       });
 
-      // Eyebrow + CTA button — fire once as section enters, no scrub
-      gsap.from("[data-close-eyebrow]", {
-        autoAlpha: 0,
-        y: -20,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: section, start: "top 70%" },
-      });
-
+      // CTA button — fires once as section enters, no scrub
       gsap.from("[data-close-cta]", {
         autoAlpha: 0,
         y: 30,
@@ -888,7 +874,6 @@ function ClosingCTA() {
       />
 
       <div className="relative flex flex-col items-center gap-8 px-6 text-center md:px-14">
-        <p data-close-eyebrow className="eyebrow">Build with us</p>
         <h2 className="heading-xl max-w-5xl">
           {CLOSING_WORDS.map((word, i) => (
             <Fragment key={i}>
@@ -908,7 +893,7 @@ function ClosingCTA() {
         <div data-close-cta>
           <Link
             href="/contact"
-            className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+            className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
           >
             Get in Touch
             <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">

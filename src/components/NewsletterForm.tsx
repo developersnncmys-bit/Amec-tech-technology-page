@@ -37,7 +37,7 @@ export function NewsletterForm() {
         : "border-white/15 focus:border-white/40 focus:ring-white/20";
 
   return (
-    <form className="mt-8 max-w-sm" onSubmit={handleSubmit} noValidate>
+    <form className="mt-8 max-w-xs" onSubmit={handleSubmit} noValidate>
       <label htmlFor="newsletter" className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80">
         STAY UPDATED
       </label>

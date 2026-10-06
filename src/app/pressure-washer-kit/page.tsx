@@ -710,47 +710,50 @@ function UltimatePerformance() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Starting state for the pin-driven reveal
       gsap.set("[data-up-heading], [data-up-sub]", { autoAlpha: 0, y: 24 });
       gsap.set("[data-up-image]", { autoAlpha: 0, scale: 0.92 });
       gsap.set("[data-up-item-left]", { autoAlpha: 0, x: -30 });
       gsap.set("[data-up-item-right]", { autoAlpha: 0, x: 30 });
 
-      // Master pinned timeline — scrubbed to scroll
-      const tl = gsap.timeline({
+      // Stage 1 — heading, sub, and product image fire as the section enters.
+      // Non-pinned, non-scrubbed: user keeps scrolling naturally.
+      const stage1 = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
           trigger: section,
-          start: "top top",
-          end: "+=180%",
-          pin: true,
-          pinSpacing: true,
-          scrub: 0.5,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
+          start: "top 75%",
+          toggleActions: "play none none reverse",
         },
       });
+      stage1
+        .to("[data-up-heading]", { autoAlpha: 1, y: 0, duration: 0.5 })
+        .to("[data-up-sub]", { autoAlpha: 1, y: 0, duration: 0.5 }, "-=0.3")
+        .to("[data-up-image]", { autoAlpha: 1, scale: 1, duration: 0.7 }, "-=0.3");
 
-      // 1. Heading + sub
-      tl.to("[data-up-heading]", { autoAlpha: 1, y: 0, duration: 0.4 }, 0);
-      tl.to("[data-up-sub]", { autoAlpha: 1, y: 0, duration: 0.4 }, 0.15);
+      // Stage 2 — left/right feature points slide in once the grid is in view.
+      // Trigger on the grid itself so this fires after stage 1 as the user
+      // continues scrolling. Then the section ends and scroll continues normally.
+      const grid = section.querySelector<HTMLElement>("[data-up-grid]");
+      if (grid) {
+        const stage2 = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          scrollTrigger: {
+            trigger: grid,
+            start: "top 70%",
+            toggleActions: "play none none reverse",
+          },
+        });
 
-      // 2. Image fades in and scales up
-      tl.to("[data-up-image]", { autoAlpha: 1, scale: 1, duration: 0.6 }, 0.3);
-
-      // 3. Points reveal in pairs — left and right at matching index slide in
-      //    from their respective sides toward center.
-      const leftItems = gsap.utils.toArray<HTMLElement>("[data-up-item-left]");
-      const rightItems = gsap.utils.toArray<HTMLElement>("[data-up-item-right]");
-      const base = 0.8;
-      const step = 0.5;
-
-      leftItems.forEach((item, i) => {
-        tl.to(item, { autoAlpha: 1, x: 0, duration: 0.5 }, base + i * step);
-        if (rightItems[i]) {
-          tl.to(rightItems[i], { autoAlpha: 1, x: 0, duration: 0.5 }, base + i * step);
-        }
-      });
+        const leftItems = gsap.utils.toArray<HTMLElement>("[data-up-item-left]");
+        const rightItems = gsap.utils.toArray<HTMLElement>("[data-up-item-right]");
+        leftItems.forEach((item, i) => {
+          const at = i * 0.12;
+          stage2.to(item, { autoAlpha: 1, x: 0, duration: 0.5 }, at);
+          if (rightItems[i]) {
+            stage2.to(rightItems[i], { autoAlpha: 1, x: 0, duration: 0.5 }, at);
+          }
+        });
+      }
     }, section);
 
     const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -779,7 +782,7 @@ function UltimatePerformance() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-8 md:mt-12 md:grid-cols-[1fr_1.1fr_1fr] md:items-center md:gap-8">
+        <div data-up-grid className="mt-10 grid gap-8 md:mt-12 md:grid-cols-[1fr_1.1fr_1fr] md:items-center md:gap-8">
           {/* LEFT features — title/body right-aligned, icon on the far right */}
           <div className="flex flex-col gap-6 md:gap-7">
             {PERF_FEATURES_LEFT.map((f) => (
@@ -1567,8 +1570,7 @@ function Testimonials() {
         {/* Header row — title on left, prev/next arrows on right */}
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end md:gap-10">
           <div>
-            <p data-ts-head className="eyebrow">Our Reviews</p>
-            <h2 data-ts-head className="mt-3 heading-lg">
+            <h2 data-ts-head className="heading-lg">
               WHAT OUR USERS SAY
             </h2>
             <p
@@ -1810,7 +1812,7 @@ function CTA() {
           <div data-cta-btn className="mt-10">
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
             >
               <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
                 <ArrowRight className="h-3.5 w-3.5" />

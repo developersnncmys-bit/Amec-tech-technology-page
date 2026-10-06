@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { AnimateIn } from "@/components/AnimateIn";
 import { ChevronLeft, ChevronRight } from "@/components/Icons";
 
@@ -15,7 +14,6 @@ const INDUSTRIES = [
 
 export function IndustriesCarousel() {
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const pinRef = useRef<HTMLElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
@@ -109,33 +107,6 @@ export function IndustriesCarousel() {
     };
   }, []);
 
-  // Pin the carousel in view so the user sees the full set of cards before
-  // scrolling continues. WhyAmec no longer pins (static alternating rows), so
-  // the previous pin-stacking collision no longer applies.
-  useIsomorphicLayoutEffect(() => {
-    const pinTarget = pinRef.current;
-    if (!pinTarget) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: pinTarget,
-        start: "top top",
-        end: "+=80%",
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      });
-    }, pinTarget);
-
-    const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
-
-    return () => {
-      window.clearTimeout(refreshId);
-      ctx.revert();
-    };
-  }, []);
-
   const scrollBy = (dir: 1 | -1) => {
     const el = trackRef.current;
     if (!el) return;
@@ -145,7 +116,7 @@ export function IndustriesCarousel() {
   };
 
   return (
-    <section ref={pinRef} className="flex min-h-screen flex-col justify-start pb-20 pt-14 md:pb-28 md:pt-20">
+    <section className="flex flex-col pb-20 pt-14 md:pb-28 md:pt-20">
       <div className="mx-auto w-full max-w-[1464px] px-6 md:px-14">
         <AnimateIn>
           <div className="flex flex-col items-center gap-4 text-center md:gap-6">

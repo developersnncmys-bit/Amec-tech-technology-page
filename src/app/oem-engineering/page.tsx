@@ -22,21 +22,21 @@ const FEATURED_PROJECTS = [
     body:
       "Experience powerful, portable cleaning without the need for power sockets or cables.",
     image: "/OEM/Promec Aquaforce high pressure Washer system.png",
-    href: "#",
+    href: "/pressure-washer-kit",
   },
   {
     title: "Ai-edge Super Surveillance & Prevention System",
     body:
       "Real-time surveillance and intelligent alerts for safer, smarter worksite monitoring.",
     image: "/OEM/Ai-edge Super Surveillance & Prevention System.png",
-    href: "#",
+    href: "/early-warning",
   },
   {
     title: "HV Performance Accumulators",
     body:
       "Advanced battery technology engineered for higher power density, thermal efficiency, and demanding EV performance.",
     image: "/OEM/HV Performance Accumulators.png",
-    href: "#",
+    href: "/performance-accumulator",
   },
 ];
 
@@ -262,7 +262,7 @@ function Hero() {
   return (
     <section
       ref={pinRef}
-      className="relative isolate h-screen w-full overflow-hidden bg-black"
+      className="relative isolate h-screen w-full overflow-hidden bg-bg"
     >
       {/* Full-bleed background video — autoplay, muted, loop */}
       <div data-oem-hero-image className="absolute inset-0">
@@ -286,7 +286,7 @@ function Hero() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.9) 88%, #000 100%), radial-gradient(60% 80% at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 60%)",
+            "linear-gradient(180deg, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.2) 40%, rgba(10,10,10,0.45) 80%, #0A0A0A 100%), radial-gradient(60% 80% at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 60%)",
         }}
       />
 
@@ -349,14 +349,14 @@ function Intro() {
   return (
     <section ref={sectionRef} className="py-20 md:py-28">
       <Shell>
-        <div className="mx-auto max-w-4xl text-center">
+        <div className="mx-auto max-w-4xl">
           <p
             data-oem-intro-lead
-            className="font-display text-lg leading-relaxed text-white md:text-2xl"
+            className="text-center font-display text-lg leading-relaxed text-white/50 md:text-2xl"
           >
             {INTRO_LEAD}
           </p>
-          <p className="mt-10 font-display text-base leading-relaxed text-white/60 md:text-xl">
+          <p className="mt-10 text-left font-display text-base leading-relaxed text-white/60 md:text-xl">
             {INTRO_BODY_WORDS.map((word, i) => (
               <Fragment key={i}>
                 <span
@@ -458,7 +458,7 @@ function FeaturedProjects() {
                 </p>
                 <Link
                   href={p.href}
-                  className="group/btn mt-2 inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 text-xs font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                  className="group/btn mt-2 inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-xs font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
                 >
                   <span className="grid h-6 w-6 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/btn:bg-black group-hover/btn:text-white">
                     <ArrowRight className="h-3 w-3" />
@@ -940,14 +940,6 @@ function EngagementModel() {
                   data-oem-em-card
                   className="relative overflow-hidden rounded-card border border-white/[0.08] bg-gradient-to-br from-white/[0.04] via-white/[0.02] to-transparent p-6 md:p-10"
                 >
-                  {/* Giant watermark number behind the content */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -right-4 -top-6 select-none font-display text-[10rem] font-bold leading-none text-white/[0.04] md:-right-6 md:-top-10 md:text-[16rem]"
-                  >
-                    {m.id}
-                  </span>
-
                   <div className="relative">
                     {/* Title row: number + title */}
                     <div className="flex items-baseline gap-5 md:gap-6">
@@ -1232,7 +1224,7 @@ function JustSendIt() {
                 </p>
                 <a
                   href="mailto:hello@amectechnology.com"
-                  className="group mt-5 inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
+                  className="group mt-5 inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
                 >
                   <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -1251,7 +1243,7 @@ function JustSendIt() {
                 </p>
                 <Link
                   href="#"
-                  className="group mt-5 inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
+                  className="group mt-5 inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
                 >
                   <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -1320,7 +1312,7 @@ function JustSendIt() {
               </p>
               <button
                 type="submit"
-                className="group inline-flex items-center gap-3 rounded border border-white/20 bg-white py-2.5 pl-1 pr-4 text-sm font-medium text-black transition-all duration-300 ease-out hover:flex-row-reverse hover:pl-4 hover:pr-1"
+                className="group inline-flex items-center gap-3 rounded border border-white/20 bg-white py-1 pl-1 pr-4 font-display text-sm font-medium text-black transition-all duration-300 ease-out hover:flex-row-reverse hover:pl-4 hover:pr-1"
               >
                 <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-black text-white transition-colors duration-300 ease-out group-hover:bg-black">
                   <ArrowRight className="h-3.5 w-3.5" />

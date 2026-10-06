@@ -12,9 +12,9 @@ const COMPANY = [
 ];
 
 const VERTICALS = [
-  { label: "Mobility", href: "/mobility" },
-  { label: "Technology", href: "/" },
-  { label: "Codex", href: "/codex" },
+  { label: "Source", href: "/source" },
+  { label: "OEM Engineering", href: "/oem-engineering" },
+  { label: "Powertrain & Battery", href: "/powertrain-battery" },
 ];
 
 export function Footer() {

@@ -677,7 +677,7 @@ function HowItWorks() {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=200%",
+          end: "+=100%",
           pin: true,
           pinSpacing: true,
           scrub: 0.5,
@@ -800,10 +800,9 @@ function MeshNetwork() {
     if (!el) return;
 
     const ctx = gsap.context(() => {
-      // Initial state — everything hidden, ready for the pinned reveal
-      gsap.set("[data-mn-heading]", { autoAlpha: 0, y: 24 });
-      gsap.set("[data-mn-sub]", { autoAlpha: 0, y: 20 });
-      gsap.set("[data-mn-device-wrap]", { autoAlpha: 0, scale: 0.9 });
+      // Only hide the content that reveals DURING the scrubbed pin. Heading,
+      // sub, and device float in on enter (separate trigger below) so the
+      // viewport is never blank while the user scrolls into the pin.
       gsap.set("[data-mn-node]", { autoAlpha: 0, scale: 0, transformOrigin: "center center" });
       gsap.set("[data-mn-label]", { autoAlpha: 0, y: 10 });
       gsap.set("[data-tr-heading]", { autoAlpha: 0, y: 20 });
@@ -817,7 +816,25 @@ function MeshNetwork() {
         gsap.set(path, { strokeDasharray: pathLen, strokeDashoffset: pathLen });
       }
 
-      // Master pinned timeline — scrub-driven reveal of everything
+      // Entrance — heading, sub, device float in as the section enters view,
+      // not scrubbed, not pinned. Fires once on enter / reverses on leave.
+      gsap.from(
+        ["[data-mn-heading]", "[data-mn-sub]", "[data-mn-device-wrap]"],
+        {
+          autoAlpha: 0,
+          y: 24,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Scrubbed pinned timeline — mesh graphic + THE RESULT reveal
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
@@ -832,17 +849,12 @@ function MeshNetwork() {
         },
       });
 
-      // 1. Heading + sub + device photo
-      tl.to("[data-mn-heading]", { autoAlpha: 1, y: 0, duration: 0.5 })
-        .to("[data-mn-sub]", { autoAlpha: 1, y: 0, duration: 0.5 }, "-=0.25")
-        .to("[data-mn-device-wrap]", { autoAlpha: 1, scale: 1, duration: 0.6 }, "-=0.3");
-
-      // 2. Mesh path draws in
+      // 1. Mesh path draws in
       if (path) {
-        tl.to(path, { strokeDashoffset: 0, duration: 1, ease: "power2.inOut" }, "-=0.1");
+        tl.to(path, { strokeDashoffset: 0, duration: 1, ease: "power2.inOut" });
       }
 
-      // 3. Nodes pop + labels fade in sequence
+      // 2. Nodes pop + labels fade in sequence
       tl.to("[data-mn-node]", {
         autoAlpha: 1,
         scale: 1,
@@ -857,7 +869,7 @@ function MeshNetwork() {
         stagger: 0.1,
       }, "<+0.15");
 
-      // 4. THE RESULT heading + chips + closing paragraph
+      // 3. THE RESULT heading + chips + closing paragraph
       tl.to("[data-tr-heading]", { autoAlpha: 1, y: 0, duration: 0.5 }, "+=0.1")
         .to("[data-tr-chip]", {
           autoAlpha: 1,
@@ -1794,7 +1806,7 @@ function Testimonials() {
           TRUSTED BY SECURITY PROFESSIONALS
         </h2>
         <div data-ts-head className="mt-5 flex items-center justify-center gap-3">
-          {/* 4.9/5 star rating — 4 full + 1 ~90% filled */}
+          {/* 4.5/5 star rating — 4 full + 1 half (last star clipped to 50%) */}
           <div className="relative inline-flex items-center">
             <div className="flex items-center gap-0.5 text-white/15">
               {[0, 1, 2, 3, 4].map((i) => (
@@ -1803,7 +1815,7 @@ function Testimonials() {
             </div>
             <div
               className="pointer-events-none absolute inset-0 flex items-center gap-0.5 overflow-hidden text-amber-400"
-              style={{ clipPath: "inset(0 2% 0 0)" }}
+              style={{ clipPath: "inset(0 10% 0 0)" }}
             >
               {[0, 1, 2, 3, 4].map((i) => (
                 <Star key={i} className="h-4 w-4" />
@@ -1999,14 +2011,6 @@ function ClosingCTA() {
         anticipatePin: 1,
       });
 
-      gsap.from("[data-cta-eyebrow]", {
-        autoAlpha: 0,
-        y: -20,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: pinTarget, start: "top 70%" },
-      });
-
       gsap.from("[data-cta-button]", {
         autoAlpha: 0,
         y: 30,
@@ -2093,7 +2097,6 @@ function ClosingCTA() {
         />
 
         <div className="relative flex flex-col items-center gap-8 px-6 text-center md:px-14">
-          <p data-cta-eyebrow className="eyebrow">Build with AMEC</p>
           <h2 className="heading-xl max-w-6xl">
             {CLOSING_WORDS.map((word, i) => (
               <Fragment key={i}>
@@ -2105,7 +2108,7 @@ function ClosingCTA() {
           <div data-cta-button>
             <Link
               href="/contact"
-              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
             >
               Get in Touch
               <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">

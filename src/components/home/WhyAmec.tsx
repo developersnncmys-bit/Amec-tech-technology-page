@@ -61,8 +61,7 @@ export function WhyAmec() {
       <div className="mx-auto w-full max-w-[1400px] px-6 md:px-14">
         {/* Header */}
         <AnimateIn className="text-center">
-          <span className="eyebrow">/ Our principles</span>
-          <h2 className="heading-lg mt-4">WHY AMEC TECHNOLOGY</h2>
+          <h2 className="heading-lg">WHY AMEC TECHNOLOGY</h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/70 md:text-base">
             Engineering-first innovation, deep technical expertise, and
             collaborative product development that transform ideas into
@@ -87,20 +86,6 @@ export function WhyAmec() {
                   }}
                 />
               ))}
-
-              {/* Progress rail (vertical) */}
-              <div className="absolute right-6 top-1/2 flex -translate-y-1/2 flex-col items-end gap-3">
-                {PILLARS.map((_, i) => (
-                  <span
-                    key={i}
-                    className={`block h-10 w-[2px] rounded-full transition-all duration-500 ease-out ${
-                      active === i
-                        ? "scale-y-100 bg-white"
-                        : "scale-y-75 bg-white/20"
-                    }`}
-                  />
-                ))}
-              </div>
             </div>
           </div>
 

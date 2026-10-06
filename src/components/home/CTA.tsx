@@ -29,15 +29,6 @@ export function CTA() {
         anticipatePin: 1,
       });
 
-      // Eyebrow drops in once as the section enters view (before the pin).
-      gsap.from("[data-cta-eyebrow]", {
-        autoAlpha: 0,
-        y: -20,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: pinTarget, start: "top 70%" },
-      });
-
       // Button bounces in once as the section enters view (before the pin).
       gsap.from("[data-cta-button]", {
         autoAlpha: 0,
@@ -148,7 +139,6 @@ export function CTA() {
           }}
         />
         <div className="relative flex flex-col items-center gap-8 px-6 text-center md:px-14">
-          <p data-cta-eyebrow className="eyebrow">Let's build together</p>
           <h2 className="heading-xl max-w-6xl">
             {HEADING_WORDS.map((word, i) => (
               <Fragment key={i}>
@@ -160,7 +150,7 @@ export function CTA() {
           <div data-cta-button>
             <Link
               href="/contact"
-              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
             >
               Get in Touch
               <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
@@ -181,10 +171,9 @@ export function CTA() {
           >
             <div className="relative flex h-full flex-col justify-between gap-8">
               <div>
-                <p className="eyebrow">Collaboration</p>
-                <h3 className="mt-3 text-2xl font-semibold md:text-3xl">Partner with<br />AMEC</h3>
+                <h3 className="text-2xl font-semibold md:text-3xl">Partner with<br />AMEC</h3>
               </div>
-              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
+              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
                 <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
                   <ArrowRight className="h-3.5 w-3.5" />
                 </span>
@@ -200,10 +189,9 @@ export function CTA() {
           >
             <div className="relative flex h-full flex-col justify-between gap-8">
               <div>
-                <p className="eyebrow">Careers</p>
-                <h3 className="mt-3 text-2xl font-semibold md:text-3xl">Build the<br />future with AMEC.</h3>
+                <h3 className="text-2xl font-semibold md:text-3xl">Build the<br />future with AMEC.</h3>
               </div>
-              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
+              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
                 <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
                   <ArrowRight className="h-3.5 w-3.5" />
                 </span>

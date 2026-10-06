@@ -537,12 +537,12 @@ function ProductPortfolio() {
                 </ul>
                 <Link
                   href="/contact"
-                  className="group/cta mt-5 inline-flex items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
+                  className="group/cta mt-5 inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
                 >
+                  Explore More
                   <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/cta:bg-black group-hover/cta:text-white">
                     <ArrowRight className="h-3.5 w-3.5" />
                   </span>
-                  Explore More
                 </Link>
               </article>
             ))}
@@ -634,8 +634,7 @@ function SystemArchitecture() {
         <div className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-16">
           {/* LEFT — eyebrow, title, description, numbered tab list */}
           <div className="flex flex-col">
-            <span className="eyebrow" data-sa-sub>/ Architecture</span>
-            <h2 data-sa-title className="mt-4 heading-lg">
+            <h2 data-sa-title className="heading-lg">
               SYSTEM<br />ARCHITECTURE
             </h2>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-white/60 md:text-base">
@@ -823,7 +822,7 @@ function TechnicalCapabilities() {
 
     const ctx = gsap.context(() => {
       // Header reveal
-      gsap.from("[data-tc-eyebrow], [data-tc-title], [data-tc-sub]", {
+      gsap.from("[data-tc-title], [data-tc-sub]", {
         autoAlpha: 0,
         y: 24,
         duration: 0.7,
@@ -896,8 +895,7 @@ function TechnicalCapabilities() {
         {/* Header — title left, subtitle right */}
         <div className="grid gap-6 md:grid-cols-2 md:items-end md:gap-16">
           <div>
-            <span data-tc-eyebrow className="eyebrow">/ What we bring</span>
-            <h2 data-tc-title className="mt-4 heading-lg">
+            <h2 data-tc-title className="heading-lg">
               TECHNICAL<br />CAPABILITIES
             </h2>
           </div>
@@ -982,15 +980,6 @@ function BuildCTA() {
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
-      });
-
-      // Eyebrow drops in once as the section enters view (before the pin).
-      gsap.from("[data-build-cta-eyebrow]", {
-        autoAlpha: 0,
-        y: -20,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: pinTarget, start: "top 70%" },
       });
 
       // Button bounces in once as the section enters view.
@@ -1093,7 +1082,6 @@ function BuildCTA() {
         />
 
         <div className="relative flex flex-col items-center gap-8 px-6 text-center md:px-14">
-          <p data-build-cta-eyebrow className="eyebrow">Build with AMEC</p>
           <h2 className="heading-xl max-w-6xl">
             {BUILD_CTA_WORDS.map((word, i) => (
               <Fragment key={i}>
@@ -1105,7 +1093,7 @@ function BuildCTA() {
           <div data-build-cta-button>
             <Link
               href="/contact"
-              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
             >
               Start Your EV Project
               <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
