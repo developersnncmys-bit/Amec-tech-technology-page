@@ -23,7 +23,7 @@ const PRODUCTS = [
   {
     tag: "BATTERY",
     title: "4kWh Liquid Battery",
-    image: "/powertrain/4kwh-liquid-battery.png",
+    image: "/Powertrain/4kwh-liquid-battery.png",
     bullets: [
       "Thermal stability & performance",
       "High-energy density for extended range",
@@ -33,7 +33,7 @@ const PRODUCTS = [
   {
     tag: "PLATFORM",
     title: "Aluminum Platform",
-    image: "/powertrain/Aluminium-platform.png",
+    image: "/Powertrain/Aluminium-platform.png",
     bullets: [
       "Lightweight & structurally optimized",
       "Seamless drivetrain integration",
@@ -43,7 +43,7 @@ const PRODUCTS = [
   {
     tag: "MOTOR",
     title: "7kW Drive Motor",
-    image: "/powertrain/7kw-drive-motor.png",
+    image: "/Powertrain/7kw-drive-motor.png",
     bullets: [
       "High-efficiency electric performance",
       "Optimised for urban mobility",
@@ -53,7 +53,7 @@ const PRODUCTS = [
   {
     tag: "CONTROLLER",
     title: "Drive Controller",
-    image: "/powertrain/Drive-controller.png",
+    image: "/Powertrain/Drive-controller.png",
     bullets: [
       "Smooth & precise torque delivery",
       "Efficiency optimization technology",
@@ -63,7 +63,7 @@ const PRODUCTS = [
   {
     tag: "CONTROL",
     title: "Power & Vehicle Control",
-    image: "/powertrain/Power%26-vehicle-control.png",
+    image: "/Powertrain/Power%26-vehicle-control.png",
     bullets: [
       "Centralized power distribution",
       "Intelligent safety logic & coordination",
@@ -73,7 +73,7 @@ const PRODUCTS = [
   {
     tag: "CHARGING",
     title: "Flash Charging System",
-    image: "/powertrain/Flash-charging.png",
+    image: "/Powertrain/Flash-charging.png",
     bullets: [
       "High-power fast charging solution",
       "Reduces downtime significantly",
@@ -83,7 +83,7 @@ const PRODUCTS = [
   {
     tag: "POWER",
     title: "12V Auxiliary Power",
-    image: "/powertrain/12w-auxilary-power.png",
+    image: "/Powertrain/12w-auxilary-power.png",
     bullets: [
       "Dedicated low-voltage power system",
       "Supports vehicle electronics & controls",
@@ -93,7 +93,7 @@ const PRODUCTS = [
   {
     tag: "PORTABLE",
     title: "Portable Dock Battery",
-    image: "/powertrain/Portable-doc-battery.png",
+    image: "/Powertrain/Portable-doc-battery.png",
     bullets: [
       "Compact & portable energy storage",
       "Easy dock-and-charge mechanism",
@@ -106,21 +106,21 @@ const ARCHITECTURE_TABS = [
   {
     id: "power-flow",
     label: "Power Flow Architecture",
-    image: "/powertrain/Power-flow-architecture.png",
+    image: "/Powertrain/Power-flow-architecture.png",
     body:
       "Ideal for startups looking to launch electric two-wheelers quickly using a proven, ready-to-integrate drivetrain platform.",
   },
   {
     id: "mechanical",
     label: "Mechanical Integration",
-    image: "/powertrain/Mechanical-integration.png",
+    image: "/Powertrain/Mechanical-integration.png",
     body:
       "Precision-engineered mechanical interfaces that drop into chassis designs with minimal rework, cutting integration time in half.",
   },
   {
     id: "electrical",
     label: "Electrical Architecture",
-    image: "/powertrain/Electrical%20Architecture.png",
+    image: "/Powertrain/Electrical%20Architecture.png",
     body:
       "Modular wiring and control topology that scales from single-vehicle prototypes to full-fleet production runs.",
   },
@@ -129,15 +129,15 @@ const ARCHITECTURE_TABS = [
 const APPLICATIONS = [
   {
     title: "Rapid Product Launch",
-    image: "/powertrain/Rapid%20Growth.png",
+    image: "/Powertrain/Rapid%20Growth.png",
   },
   {
     title: "EV Startups",
-    image: "/powertrain/EV-startups.png",
+    image: "/Powertrain/EV-startups.png",
   },
   {
     title: "Fleet Operators",
-    image: "/powertrain/Fleet-Operators.png",
+    image: "/Powertrain/Fleet-Operators.png",
   },
 ];
 
