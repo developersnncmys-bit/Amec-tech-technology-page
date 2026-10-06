@@ -1446,35 +1446,43 @@ function CompactModules() {
           </p>
         </div>
 
+        {/* Grid on mobile / md, flex row on lg so we can interleave "+"
+            connectors between adjacent cards. Connectors are hidden below
+            lg (where the 2-col layout would make them awkward). */}
         <div
           data-cm-grid
-          className="mt-12 grid gap-5 md:mt-16 md:grid-cols-2 lg:grid-cols-4 md:gap-6"
+          className="mt-12 grid gap-5 md:mt-16 md:grid-cols-2 md:gap-6 lg:flex lg:gap-0"
         >
-          {MODULES.map((m) => (
-            <article
-              key={m.title}
-              data-cm-card
-              className="relative flex flex-col rounded-2xl border border-white/[0.08] bg-bg-card p-6 md:p-7"
-            >
-              <span className="text-white">{m.icon}</span>
-              <h3 className="mt-10 font-display text-base font-semibold text-white md:text-lg">
-                {m.title}
-              </h3>
-              <p className="mt-3 text-xs leading-relaxed text-white/60 md:text-[13px]">
-                {m.body}
-              </p>
-
-              {/* Bottom-right "+" button — matches Figma */}
-              <button
-                type="button"
-                aria-label={`Learn more about ${m.title}`}
-                className="absolute bottom-5 right-5 grid h-7 w-7 place-items-center rounded-full border border-white/20 text-white/70 transition hover:border-white hover:text-white md:bottom-6 md:right-6"
+          {MODULES.map((m, i) => (
+            <Fragment key={m.title}>
+              <article
+                data-cm-card
+                className="relative flex flex-1 flex-col rounded-2xl border border-white/[0.08] bg-bg-card p-6 md:p-7"
               >
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-              </button>
-            </article>
+                <span className="text-white">{m.icon}</span>
+                <h3 className="mt-10 font-display text-base font-semibold text-white md:text-lg">
+                  {m.title}
+                </h3>
+                <p className="mt-3 text-xs leading-relaxed text-white/60 md:text-[13px]">
+                  {m.body}
+                </p>
+              </article>
+
+              {/* Between-card "+" connector — shown only on lg (horizontal
+                  layout). Reads as a modular "snap-together" seam. */}
+              {i < MODULES.length - 1 && (
+                <div
+                  aria-hidden
+                  className="hidden items-center justify-center px-3 lg:flex"
+                >
+                  <span className="grid h-8 w-8 place-items-center rounded-full border border-white/20 bg-bg-card text-white/70">
+                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </span>
+                </div>
+              )}
+            </Fragment>
           ))}
         </div>
       </Shell>

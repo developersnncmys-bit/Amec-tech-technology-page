@@ -262,7 +262,7 @@ function Hero() {
   return (
     <section
       ref={pinRef}
-      className="relative isolate h-screen w-full overflow-hidden bg-[#151515]"
+      className="relative isolate h-screen w-full overflow-hidden bg-black"
     >
       {/* Full-bleed background video — autoplay, muted, loop */}
       <div data-oem-hero-image className="absolute inset-0">
@@ -278,13 +278,15 @@ function Hero() {
         />
       </div>
 
-      {/* Readability overlay — gradient + spotlight so text stays legible */}
+      {/* Readability overlay — gradient + spotlight so text stays legible.
+          Bottom reaches fully-opaque black so the hero blends seamlessly
+          into the dark section below (no visible seam). */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.75) 100%), radial-gradient(60% 80% at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 60%)",
+            "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.9) 88%, #000 100%), radial-gradient(60% 80% at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 60%)",
         }}
       />
 
