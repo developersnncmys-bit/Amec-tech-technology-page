@@ -1224,12 +1224,15 @@ function JustSendIt() {
                 </p>
                 <a
                   href="mailto:hello@amectechnology.com"
-                  className="group mt-5 inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
+                  className="group relative mt-5 inline-flex items-center rounded border border-white/20 bg-transparent h-9 pl-9 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-9 hover:text-black"
                 >
-                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
+                  <span className="whitespace-nowrap">hello@amectechnology.com</span>
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute left-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover:left-[calc(100%-2rem)] group-hover:bg-black group-hover:text-white"
+                  >
                     <ArrowRight className="h-3.5 w-3.5" />
                   </span>
-                  hello@amectechnology.com
                 </a>
               </div>
 
@@ -1243,12 +1246,15 @@ function JustSendIt() {
                 </p>
                 <Link
                   href="#"
-                  className="group mt-5 inline-flex items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:border-white hover:bg-white hover:text-black"
+                  className="group relative mt-5 inline-flex items-center rounded border border-white/20 bg-transparent h-9 pl-9 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-9 hover:text-black"
                 >
-                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
+                  <span className="whitespace-nowrap">Job Openings</span>
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute left-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover:left-[calc(100%-2rem)] group-hover:bg-black group-hover:text-white"
+                  >
                     <ArrowRight className="h-3.5 w-3.5" />
                   </span>
-                  Job Openings
                 </Link>
               </div>
             </div>
@@ -1312,12 +1318,15 @@ function JustSendIt() {
               </p>
               <button
                 type="submit"
-                className="group inline-flex items-center gap-3 rounded border border-white/20 bg-white py-1 pl-1 pr-4 font-display text-sm font-medium text-black transition-all duration-300 ease-out hover:flex-row-reverse hover:pl-4 hover:pr-1"
+                className="group relative inline-flex items-center rounded border border-white/20 bg-white h-9 pl-9 pr-4 font-display text-sm font-medium text-black transition-all duration-500 ease-out hover:pl-4 hover:pr-9"
               >
-                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-black text-white transition-colors duration-300 ease-out group-hover:bg-black">
+                <span className="whitespace-nowrap">Submit Enquiry</span>
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute left-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center overflow-hidden rounded bg-black text-white transition-all duration-500 ease-out group-hover:left-[calc(100%-2rem)]"
+                >
                   <ArrowRight className="h-3.5 w-3.5" />
                 </span>
-                Submit Enquiry
               </button>
             </div>
           </form>

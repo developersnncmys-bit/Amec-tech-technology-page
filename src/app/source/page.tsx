@@ -2174,15 +2174,25 @@ function WhereSourceWorks() {
                       </span>
                     </button>
 
-                    {/* Collapsible description */}
+                    {/* Collapsible description — mirrors the button grid so
+                        the body text's left edge lines up with the title. */}
                     <div
                       className="grid overflow-hidden transition-[grid-template-rows] duration-500 ease-out"
                       style={{ gridTemplateRows: isActive ? "1fr" : "0fr" }}
                     >
                       <div className="min-h-0">
-                        <p className="pb-5 pl-14 pr-4 text-xs leading-relaxed text-white/70 md:text-sm">
-                          {a.body}
-                        </p>
+                        <div className="grid grid-cols-[auto_1fr_auto] gap-6">
+                          <span
+                            aria-hidden
+                            className="invisible font-display text-xs tracking-[0.2em] md:text-sm"
+                          >
+                            {num}
+                          </span>
+                          <p className="pb-5 pr-4 text-xs leading-relaxed text-white/70 md:text-sm">
+                            {a.body}
+                          </p>
+                          <span aria-hidden className="h-7 w-7" />
+                        </div>
                       </div>
                     </div>
                   </div>

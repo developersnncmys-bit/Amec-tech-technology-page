@@ -1293,7 +1293,9 @@ function ComparisonTable() {
     if (!el) return;
 
     const ctx = gsap.context(() => {
-      // Initial hidden state for everything the pinned timeline reveals
+      // Initial hidden state — everything starts hidden and reveals in sequence
+      // on a single scroll-trigger. No pin: section flows into the next naturally
+      // once the timeline completes.
       gsap.set("[data-ct-heading]", { autoAlpha: 0, y: 30, clipPath: "inset(100% 0 0 0)" });
       gsap.set("[data-ct-sub]", { autoAlpha: 0, y: 20 });
       gsap.set("[data-ct-traditional]", { autoAlpha: 0, x: -80 });
@@ -1307,7 +1309,9 @@ function ComparisonTable() {
       gsap.set("[data-ct-score-wrap]", { autoAlpha: 0, y: 20 });
       gsap.set("[data-ct-score-num]", { textContent: "0" });
 
-      // Pinned scrubbed master timeline — reveals everything as the user scrolls
+      // Pinned, scrubbed timeline — the section stays locked until EVERY point
+      // and the score are revealed, then the pin releases and scroll continues
+      // to the next section.
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
@@ -1334,7 +1338,7 @@ function ComparisonTable() {
       tl.to("[data-ct-vs]", { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.7, ease: "back.out(2)" }, "-=0.2")
         .to("[data-ct-trophy]", { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, "<+0.1");
 
-      // 4. Feature rows cascade — Traditional slides right, AMEC slides left, both fade in together
+      // 4. Feature rows cascade — Traditional slides right, AMEC slides left
       const tradFeats = gsap.utils.toArray<HTMLElement>("[data-ct-feat-trad]");
       const amecFeats = gsap.utils.toArray<HTMLElement>("[data-ct-feat-amec]");
       const bars = gsap.utils.toArray<HTMLElement>("[data-ct-bar]");
