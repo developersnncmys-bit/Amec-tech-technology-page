@@ -1700,10 +1700,31 @@ function RemoteControl() {
       });
     }, section);
 
+    // On Vercel the hero video + several images load after this effect runs,
+    // which shifts the layout and leaves the pin trigger stuck at the pre-load
+    // Y position — causing the pinned content to visually bleed into the
+    // (white) Resources section above. Refresh after each image in the section
+    // decodes, after window.load, and once more as a safety net.
     const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
+    const onLoad = () => ScrollTrigger.refresh();
+    if (document.readyState === "complete") {
+      window.setTimeout(onLoad, 50);
+    } else {
+      window.addEventListener("load", onLoad);
+    }
+    // Also refresh after each image inside this section finishes loading, so
+    // layout shifts from staggered image loads don't leave the pin stale.
+    const imgs = section.querySelectorAll("img");
+    const onImg = () => ScrollTrigger.refresh();
+    imgs.forEach((img) => {
+      if (img.complete) return;
+      img.addEventListener("load", onImg, { once: true });
+    });
 
     return () => {
       window.clearTimeout(refreshId);
+      window.removeEventListener("load", onLoad);
+      imgs.forEach((img) => img.removeEventListener("load", onImg));
       ctx.revert();
     };
   }, []);
