@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
@@ -1150,14 +1151,19 @@ function MarqueeRow({
             key={`${client.name}-${i}`}
             className="mx-4 flex h-20 w-40 shrink-0 items-center justify-center rounded-md bg-white px-6 py-4 md:mx-5 md:h-24 md:w-48"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={client.logo}
-              alt={client.name}
-              loading="lazy"
-              className="max-h-10 max-w-full object-contain md:max-h-14"
+            <div
+              className="relative h-10 w-full md:h-14"
               style={client.scale ? { transform: `scale(${client.scale})` } : undefined}
-            />
+            >
+              <Image
+                src={client.logo}
+                alt={client.name}
+                fill
+                sizes="192px"
+                className="object-contain"
+                loading="lazy"
+              />
+            </div>
           </div>
         ))}
       </div>

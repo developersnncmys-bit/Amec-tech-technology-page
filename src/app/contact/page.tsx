@@ -151,15 +151,19 @@ function Hero() {
       ref={pinRef}
       className="relative isolate flex h-screen w-full items-end overflow-hidden bg-[#151515]"
     >
-      {/* Full-bleed background video */}
+      {/* Full-bleed background video — poster shows instantly while the
+          video streams in. `preload="metadata"` skips downloading the full
+          file during initial HTML parse, so the page becomes interactive
+          sooner; the browser kicks off playback once autoplay triggers. */}
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src="/videos/Contact-hero.mp4"
+        poster="/images/Contact-hero-poster.jpg"
         autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         aria-hidden
       />
 
