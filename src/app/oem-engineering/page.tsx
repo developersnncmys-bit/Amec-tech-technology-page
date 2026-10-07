@@ -242,17 +242,16 @@ function Hero() {
       });
 
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from("[data-oem-hero-eyebrow]", { autoAlpha: 0, y: 20, duration: 0.6 })
-        .from(
-          "[data-oem-hero-title] span",
-          { autoAlpha: 0, y: 30, stagger: 0.08, duration: 0.9 },
-          "-=0.3"
-        )
-        .from(
-          "[data-oem-hero-image]",
-          { autoAlpha: 0, scale: 0.96, duration: 1.0 },
-          "-=0.6"
-        );
+      tl.from("[data-oem-hero-title] span", {
+        autoAlpha: 0,
+        y: 30,
+        stagger: 0.08,
+        duration: 0.9,
+      }).from(
+        "[data-oem-hero-image]",
+        { autoAlpha: 0, scale: 0.96, duration: 1.0 },
+        "-=0.6"
+      );
     }, pinTarget);
 
     const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -293,12 +292,9 @@ function Hero() {
         }}
       />
 
-      {/* Top-center eyebrow + title */}
+      {/* Top-center title */}
       <div className="absolute inset-x-0 top-0 flex flex-col items-center px-6 pt-28 text-center md:pt-36">
-        <p data-oem-hero-eyebrow className="eyebrow">
-          Engineering Services
-        </p>
-        <h1 data-oem-hero-title className="mt-3 heading-xl">
+        <h1 data-oem-hero-title className="heading-xl">
           {"OEM ENGINEERING".split(" ").map((word, i) => (
             <Fragment key={i}>
               <span className="inline-block">{word}</span>
@@ -1177,26 +1173,34 @@ function MarqueeRow({
 // Just Send It CTA — contact form
 // ---------------------------------------------------------------------------
 
+type OemFormState = "idle" | "submitting" | "success" | "error";
+
 function JustSendIt() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const [status, setStatus] = useState<"idle" | "success">("idle");
+  const [state, setState] = useState<OemFormState>("idle");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      gsap.from(
-        "[data-oem-cta-left], [data-oem-cta-form]",
-        {
-          autoAlpha: 0,
-          y: 30,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: { trigger: section, start: "top 80%" },
-        }
-      );
+      gsap.from("[data-oem-cta-left]", {
+        autoAlpha: 0,
+        x: -24,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: { trigger: section, start: "top 80%" },
+      });
+      gsap.from("[data-oem-cta-form]", {
+        autoAlpha: 0,
+        y: 36,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: { trigger: section, start: "top 80%" },
+      });
     }, section);
 
     return () => ctx.revert();
@@ -1204,168 +1208,237 @@ function JustSendIt() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setStatus("success");
-    (e.currentTarget as HTMLFormElement).reset();
-    window.setTimeout(() => setStatus("idle"), 4000);
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    const next: Record<string, string> = {};
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (!name) next.name = "Please enter your name.";
+    if (!email) next.email = "Please enter your email.";
+    else if (!EMAIL_RE.test(email)) next.email = "Please enter a valid email.";
+    if (!message) next.message = "Please add a short message.";
+
+    if (Object.keys(next).length) {
+      setErrors(next);
+      setState("error");
+      return;
+    }
+
+    setErrors({});
+    setState("submitting");
+    window.setTimeout(() => {
+      setState("success");
+      form.reset();
+    }, 700);
   };
 
+  const inputBase =
+    "w-full rounded-md border bg-white/[0.03] px-5 py-4 text-sm text-white placeholder:text-white/40 outline-none transition md:text-base";
+  const inputOk = "border-white/10 focus:border-white/40 focus:bg-white/[0.05]";
+  const inputErr = "border-red-400/60 focus:border-red-400";
+  const field = (name: string) =>
+    `${inputBase} ${errors[name] ? inputErr : inputOk}`;
+  const labelCls =
+    "block font-display text-sm font-semibold text-white md:text-base";
+
   return (
-    <section ref={sectionRef} className="py-20 md:py-28">
+    <section ref={sectionRef} id="just-send-it" className="w-full py-16 md:py-24">
       <Shell>
-        <div className="grid gap-12 md:grid-cols-[1fr_1.4fr] md:items-start md:gap-16">
-          {/* LEFT — big headline + hint (no container) */}
-          <div data-oem-cta-left className="flex flex-col gap-10">
-            <h2 className="heading-xl !normal-case">
-              Just<br />send it.
-            </h2>
+        <div className="overflow-hidden rounded-card border border-white/[0.08]">
+          <div className="grid md:grid-cols-[1fr_1.3fr]">
+            {/* LEFT — lighter card bg; title sits lower in the column; info blocks + buttons grouped at the bottom */}
+            <div data-oem-cta-left className="flex flex-col bg-bg-card p-7 md:p-12 lg:p-16">
+              <h2 className="mt-24 font-display font-semibold normal-case tracking-normal text-white text-[52px] leading-[1.05] md:mt-40 md:text-[72px]">
+                Just<br />send it.
+              </h2>
 
-            <div className="h-px w-full bg-white/10" />
+              {/* Bottom group — bifurcation line separates heading from info blocks + buttons */}
+              <div className="mt-auto flex flex-col gap-8 pt-16">
+                <div className="h-px w-full bg-white/15" aria-hidden />
+                <div className="grid gap-8 text-sm leading-relaxed sm:grid-cols-2 sm:gap-6 md:text-[15px]">
+                  <div>
+                    <p className="font-semibold text-white">You don't like forms?</p>
+                    <p className="mt-2 max-w-[22ch] font-normal text-white/60">
+                      Partner with AMEC for end-to-end EV engineering — from concept to production-ready solutions.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white">Looking to do great work?</p>
+                    <p className="mt-2 max-w-[22ch] font-normal text-white/60">
+                      Have a project in mind? Reach out and our team will get back to you within 24 hours.
+                    </p>
+                  </div>
+                </div>
 
-            <div className="grid gap-8 sm:grid-cols-2 sm:gap-10">
-              <div>
-                <h3 className="text-sm font-semibold text-white md:text-base">
-                  You don't like forms?
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">
-                  Partner with AMEC for end-to-end EV engineering — from concept
-                  to production-ready solutions.
-                </p>
-                <a
-                  href="mailto:hello@amectechnology.com"
-                  className="group relative mt-5 inline-flex items-center rounded border border-white/20 bg-transparent h-9 pl-9 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-9 hover:text-black"
-                >
-                  <span className="whitespace-nowrap">hello@amectechnology.com</span>
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute left-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover:left-[calc(100%-2rem)] group-hover:bg-black group-hover:text-white"
+                <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
+                  <a
+                    href="mailto:hello@amectechnology.com"
+                    className="group/mail relative inline-flex h-10 w-fit items-center rounded border border-white/20 bg-transparent pl-11 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-11 hover:text-black"
                   >
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                </a>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-white md:text-base">
-                  Looking to do great work?
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">
-                  Have a project in mind? Reach out and our team will get back
-                  to you within 24 hours.
-                </p>
-                <Link
-                  href="#"
-                  className="group relative mt-5 inline-flex items-center rounded border border-white/20 bg-transparent h-9 pl-9 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-9 hover:text-black"
-                >
-                  <span className="whitespace-nowrap">Job Openings</span>
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute left-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover:left-[calc(100%-2rem)] group-hover:bg-black group-hover:text-white"
+                    <span className="whitespace-nowrap">hello@amectechnology.com</span>
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute left-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover/mail:left-[calc(100%-2.25rem)] group-hover/mail:bg-black group-hover/mail:text-white"
+                    >
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </a>
+                  <Link
+                    href="/careers"
+                    className="group/job relative inline-flex h-10 w-fit items-center rounded border border-white/20 bg-transparent pl-11 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-11 hover:text-black"
                   >
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                </Link>
+                    <span className="whitespace-nowrap">Job Openings</span>
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute left-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover/job:left-[calc(100%-2.25rem)] group-hover/job:bg-black group-hover/job:text-white"
+                    >
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </Link>
+                </div>
               </div>
+            </div>
+
+            {/* RIGHT — darker form panel */}
+            <div className="bg-[#121212] p-7 md:p-12 lg:p-16">
+              {state === "success" ? (
+                <div
+                  data-oem-cta-form
+                  className="flex flex-col items-start justify-center gap-6 rounded border border-white/[0.06] bg-white/[0.02] p-8"
+                >
+                  <span className="grid h-14 w-14 place-items-center rounded-full border border-white/15 bg-white/[0.03] text-white">
+                    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m5 12 5 5L20 7" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-white md:text-2xl">
+                      Thank you — we'll be in touch.
+                    </h3>
+                    <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70 md:text-base">
+                      Your message is on its way. Expect a reply within one business day.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setState("idle")}
+                    className="rounded border border-white/15 px-5 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/30 hover:bg-white/5"
+                  >
+                    Send another message
+                  </button>
+                </div>
+              ) : (
+                <form
+                  data-oem-cta-form
+                  noValidate
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-6"
+                >
+                  <div>
+                    <label htmlFor="oem-name" className={labelCls}>Full Name</label>
+                    <input
+                      id="oem-name"
+                      name="name"
+                      type="text"
+                      placeholder="Enter your name"
+                      className={`mt-2 ${field("name")}`}
+                      aria-invalid={!!errors.name}
+                    />
+                    {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name}</p>}
+                  </div>
+
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div>
+                      <label htmlFor="oem-email" className={labelCls}>Mail ID</label>
+                      <input
+                        id="oem-email"
+                        name="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        className={`mt-2 ${field("email")}`}
+                        aria-invalid={!!errors.email}
+                      />
+                      {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
+                    </div>
+                    <div>
+                      <label htmlFor="oem-phone" className={labelCls}>Phone Number</label>
+                      <input
+                        id="oem-phone"
+                        name="phone"
+                        type="tel"
+                        placeholder="Enter your phone number"
+                        className={`mt-2 ${field("phone")}`}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div>
+                      <label htmlFor="oem-company" className={labelCls}>Company / Organization</label>
+                      <input
+                        id="oem-company"
+                        name="company"
+                        type="text"
+                        placeholder="Enter your company name"
+                        className={`mt-2 ${field("company")}`}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="oem-type" className={labelCls}>Enquiry Type</label>
+                      <div className="relative mt-2">
+                        <select
+                          id="oem-type"
+                          name="area"
+                          defaultValue=""
+                          className={`${field("type")} cursor-pointer appearance-none pr-12`}
+                        >
+                          <option value="" disabled>
+                            Select your area of interest
+                          </option>
+                          {AREAS_OF_INTEREST.map((t) => (
+                            <option key={t} value={t} className="bg-bg-card text-white">
+                              {t}
+                            </option>
+                          ))}
+                        </select>
+                        <span aria-hidden className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-white/60">
+                          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                            <path d="m6 9 6 6 6-6" />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="oem-message" className={labelCls}>Message</label>
+                    <textarea
+                      id="oem-message"
+                      name="message"
+                      rows={5}
+                      placeholder="Enter your query details…"
+                      className={`mt-2 resize-none ${field("message")}`}
+                      aria-invalid={!!errors.message}
+                    />
+                    {errors.message && <p className="mt-1 text-xs text-red-400">{errors.message}</p>}
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={state === "submitting"}
+                    className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-5 font-display text-base font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60 md:text-lg"
+                  >
+                    {state === "submitting" ? "Submitting…" : "Submit Enquiry"}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
-
-          {/* RIGHT — form in its own card */}
-          <form
-            data-oem-cta-form
-            onSubmit={handleSubmit}
-            className="group/form grid grid-cols-1 gap-5 rounded-card border border-white/[0.06] bg-bg-card p-6 transition-[border-color,box-shadow] duration-300 hover:border-white/15 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] md:grid-cols-2 md:p-10"
-          >
-            <Field label="Full Name" placeholder="Enter your full name" name="name" />
-            <Field label="Mail ID" placeholder="Enter your email" name="email" type="email" />
-            <Field label="Phone Number" placeholder="Enter your phone number" name="phone" />
-            <Field
-              label="Company / Organization"
-              placeholder="Enter your company name"
-              name="company"
-            />
-
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">
-                Enquiry Type
-              </label>
-              <select
-                name="area"
-                defaultValue=""
-                className="w-full cursor-pointer rounded border border-white/15 bg-transparent px-4 py-3 text-sm text-white outline-none transition-all duration-200 hover:border-white/40 hover:bg-white/[0.03] focus:border-white/50 focus:ring-2 focus:ring-white/20"
-              >
-                <option value="" disabled className="bg-bg-card">
-                  Select an area of interest
-                </option>
-                {AREAS_OF_INTEREST.map((a) => (
-                  <option key={a} value={a} className="bg-bg-card">
-                    {a}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">
-                Message
-              </label>
-              <textarea
-                name="message"
-                rows={5}
-                placeholder="Share your query details"
-                className="w-full rounded border border-white/15 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-200 hover:border-white/40 hover:bg-white/[0.03] focus:border-white/50 focus:ring-2 focus:ring-white/20"
-              />
-            </div>
-
-            <div className="md:col-span-2 flex items-center justify-between gap-4">
-              <p
-                aria-live="polite"
-                className={`text-xs ${
-                  status === "success" ? "text-emerald-400" : "text-transparent"
-                }`}
-              >
-                Thanks — your enquiry is in. Our team will reply within 24h.
-              </p>
-              <button
-                type="submit"
-                className="group relative inline-flex items-center rounded border border-white/20 bg-white h-9 pl-9 pr-4 font-display text-sm font-medium text-black transition-all duration-500 ease-out hover:pl-4 hover:pr-9"
-              >
-                <span className="whitespace-nowrap">Submit Enquiry</span>
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute left-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center overflow-hidden rounded bg-black text-white transition-all duration-500 ease-out group-hover:left-[calc(100%-2rem)]"
-                >
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </button>
-            </div>
-          </form>
         </div>
       </Shell>
     </section>
-  );
-}
-
-function Field({
-  label,
-  placeholder,
-  name,
-  type = "text",
-}: {
-  label: string;
-  placeholder: string;
-  name: string;
-  type?: string;
-}) {
-  return (
-    <div className="group/field">
-      <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-colors duration-200 group-hover/field:text-white group-focus-within/field:text-white">
-        {label}
-      </label>
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        className="w-full rounded border border-white/15 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-200 hover:border-white/40 hover:bg-white/[0.03] focus:border-white/50 focus:ring-2 focus:ring-white/20"
-      />
-    </div>
   );
 }

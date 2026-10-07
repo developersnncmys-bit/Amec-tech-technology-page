@@ -60,11 +60,11 @@ const LOCATIONS = [
     body:
       "Research & Development. Industrial production, process control and preparation for assembly.",
     city: "Bangalore, Karnataka",
-    address: "Electronics City Phase 1,\nBangalore – 560 100, India",
+    address: "HSR Layout,\nBengaluru, Karnataka 560102",
     mapHref:
-      "https://www.google.com/maps/search/?api=1&query=Electronics+City+Phase+1+Bangalore",
+      "https://www.google.com/maps/search/?api=1&query=HSR+Layout+Bengaluru+560102",
     mapEmbed:
-      "https://www.google.com/maps?q=Electronics+City+Phase+1+Bangalore+560100&output=embed",
+      "https://www.google.com/maps?q=HSR+Layout+Bengaluru+Karnataka+560102&output=embed",
   },
 ];
 
@@ -347,26 +347,26 @@ function HiringHR() {
           <form
             data-hiring-item
             onSubmit={onSubmit}
-            className="flex w-full items-center gap-3 rounded border border-white/15 bg-white/[0.03] px-5 py-2 transition-colors hover:border-white/30 focus-within:border-white/40 md:ml-auto md:max-w-md"
+            className="flex w-full items-center gap-4 rounded-2xl border border-white/15 bg-black px-6 py-4 transition-colors hover:border-white/30 focus-within:border-white/40 md:ml-auto md:max-w-md"
           >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/60">
+            <span className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-white md:text-base">
               Email
             </span>
-            <span aria-hidden className="h-5 w-px bg-white/15" />
+            <span aria-hidden className="h-6 w-px bg-white/40" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               aria-label="Your email address for HR enquiry"
-              className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-white/40 outline-none md:text-[15px]"
+              className="flex-1 bg-transparent text-sm text-white placeholder:text-white/40 outline-none md:text-[15px]"
             />
             <button
               type="submit"
               aria-label="Send HR enquiry"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded bg-white text-black transition hover:bg-white/90"
+              className="shrink-0 text-white transition hover:text-white/70"
             >
-              <ArrowRight className="h-4 w-4 -rotate-45" />
+              <ArrowRight className="h-5 w-5 -rotate-45" />
             </button>
           </form>
         </div>
@@ -435,17 +435,17 @@ function WhereWeAre() {
             >
               <div className="flex flex-col gap-6 p-7 md:p-8">
                 <div>
-                  <h3 className="font-display text-base font-semibold uppercase tracking-[0.18em] text-white md:text-lg">
+                  <h3 className="font-display text-2xl font-semibold uppercase tracking-wide text-white md:text-[28px] md:leading-[1.15]">
                     {loc.label}
                   </h3>
-                  <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60 md:text-[15px]">
+                  <p className="mt-4 max-w-md text-sm leading-relaxed text-white/55 md:text-[15px]">
                     {loc.body}
                   </p>
                 </div>
 
-                <div className="text-sm leading-relaxed text-white/85 md:text-[15px]">
-                  <p className="font-semibold text-white">{loc.city}</p>
-                  <p className="mt-2 whitespace-pre-line text-white/60">
+                <div className="text-sm leading-relaxed text-white/55 md:text-[15px]">
+                  <p>{loc.city}</p>
+                  <p className="mt-2 whitespace-pre-line">
                     {loc.address}
                   </p>
                 </div>
@@ -549,7 +549,7 @@ function JustSendIt() {
   };
 
   const inputBase =
-    "w-full rounded border bg-white/[0.03] px-5 py-4 text-sm text-white placeholder:text-white/40 outline-none transition md:text-base";
+    "w-full rounded-md border bg-white/[0.03] px-5 py-4 text-sm text-white placeholder:text-white/40 outline-none transition md:text-base";
   const inputOk = "border-white/10 focus:border-white/40 focus:bg-white/[0.05]";
   const inputErr = "border-red-400/60 focus:border-red-400";
   const field = (name: string) =>
@@ -564,26 +564,27 @@ function JustSendIt() {
       className="w-full py-16 md:py-24"
     >
       <Shell>
-        <div className="overflow-hidden rounded-card border border-white/[0.08] bg-bg-card">
-          <div className="grid gap-10 p-7 md:grid-cols-[1fr_1.3fr] md:gap-12 md:p-12 lg:gap-16 lg:p-16">
-            {/* LEFT — title sits lower in the column; info blocks + buttons grouped at the bottom */}
-            <div data-jsi-left className="flex flex-col">
+        <div className="overflow-hidden rounded-card border border-white/[0.08]">
+          <div className="grid md:grid-cols-[1fr_1.3fr]">
+            {/* LEFT — lighter card bg; title sits lower in the column; info blocks + buttons grouped at the bottom */}
+            <div data-jsi-left className="flex flex-col bg-bg-card p-7 md:p-12 lg:p-16">
               <h2 className="mt-24 font-display font-semibold normal-case tracking-normal text-white text-[52px] leading-[1.05] md:mt-40 md:text-[72px]">
                 Just<br />send it.
               </h2>
 
-              {/* Bottom group — info blocks sit just above the buttons */}
+              {/* Bottom group — bifurcation line separates heading from info blocks + buttons */}
               <div className="mt-auto flex flex-col gap-8 pt-16">
+                <div className="h-px w-full bg-white/15" aria-hidden />
                 <div className="grid gap-8 text-sm leading-relaxed sm:grid-cols-2 sm:gap-6 md:text-[15px]">
                   <div>
-                    <p className="text-white/60">You don't like forms?</p>
-                    <p className="mt-2 max-w-[22ch] text-white">
+                    <p className="font-semibold text-white">You don't like forms?</p>
+                    <p className="mt-2 max-w-[22ch] font-normal text-white/60">
                       Partner with AMEC for end-to-end EV engineering — from concept to production-ready solutions.
                     </p>
                   </div>
                   <div>
-                    <p className="text-white/60">Looking to do great work?</p>
-                    <p className="mt-2 max-w-[22ch] text-white">
+                    <p className="font-semibold text-white">Looking to do great work?</p>
+                    <p className="mt-2 max-w-[22ch] font-normal text-white/60">
                       Have a project in mind? Reach out and our team will get back to you within 24 hours.
                     </p>
                   </div>
@@ -592,19 +593,25 @@ function JustSendIt() {
                 <div className="grid gap-3 sm:grid-cols-2 sm:gap-6">
                   <a
                     href="mailto:hello@amectechnology.com"
-                    className="group/mail inline-flex w-fit flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                    className="group/mail relative inline-flex h-10 w-fit items-center rounded border border-white/20 bg-transparent pl-11 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-11 hover:text-black"
                   >
-                    hello@amectechnology.com
-                    <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/mail:bg-black group-hover/mail:text-white">
+                    <span className="whitespace-nowrap">hello@amectechnology.com</span>
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute left-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover/mail:left-[calc(100%-2.25rem)] group-hover/mail:bg-black group-hover/mail:text-white"
+                    >
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
                   </a>
                   <Link
                     href="/careers"
-                    className="group/job inline-flex w-fit flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                    className="group/job relative inline-flex h-10 w-fit items-center rounded border border-white/20 bg-transparent pl-11 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-11 hover:text-black"
                   >
-                    Job Openings
-                    <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/job:bg-black group-hover/job:text-white">
+                    <span className="whitespace-nowrap">Job Openings</span>
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute left-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center overflow-hidden rounded bg-white text-black transition-all duration-500 ease-out group-hover/job:left-[calc(100%-2.25rem)] group-hover/job:bg-black group-hover/job:text-white"
+                    >
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
                   </Link>
@@ -612,7 +619,8 @@ function JustSendIt() {
               </div>
             </div>
 
-            {/* RIGHT — form */}
+            {/* RIGHT — darker form panel */}
+            <div className="bg-[#121212] p-7 md:p-12 lg:p-16">
             {state === "success" ? (
               <div
                 data-jsi-form
@@ -744,6 +752,7 @@ function JustSendIt() {
                 </button>
               </form>
             )}
+            </div>
           </div>
         </div>
       </Shell>

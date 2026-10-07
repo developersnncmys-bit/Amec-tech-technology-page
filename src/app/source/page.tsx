@@ -7,6 +7,7 @@ import { AnimateIn } from "@/components/AnimateIn";
 import { HeroCTA } from "@/components/HeroCTA";
 import { ArrowRight } from "@/components/Icons";
 import { Footer } from "@/components/Footer";
+import { LuZap, LuDroplet, LuShield, LuWrench, LuRotateCw, LuScanSearch } from "react-icons/lu";
 
 const SOURCE_IMG = "/images/Source.png";
 
@@ -88,57 +89,37 @@ const MODES: Array<{
   },
 ];
 
+// Reusable renderer for a PNG icon from /public/Source-icons
+// eslint-disable-next-line @next/next/no-img-element
+const KeyFeatureIcon = ({ src, alt }: { src: string; alt: string }) => (
+  // eslint-disable-next-line @next/next/no-img-element
+  <img src={src} alt={alt} className="h-full w-full object-contain" aria-hidden />
+);
+
 const KEY_FEATURES: Array<{ title: string; icon: React.ReactNode }> = [
   {
     title: "Smart Energy Intelligence",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" />
-      </svg>
-    ),
+    icon: <KeyFeatureIcon src="/Source-icons/Key-Smart Energy Intelligence.png" alt="Smart Energy Intelligence" />,
   },
   {
     title: "Dynamic Power Management",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 12a9 9 0 1 1-3.5-7.1" />
-        <path d="M21 3v6h-6" />
-      </svg>
-    ),
+    icon: <KeyFeatureIcon src="/Source-icons/Key-Dynamic Power Management.png" alt="Dynamic Power Management" />,
   },
   {
     title: "Grid Protection",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2 4 5v7c0 5 3.5 8.7 8 10 4.5-1.3 8-5 8-10V5l-8-3Z" />
-      </svg>
-    ),
+    icon: <KeyFeatureIcon src="/Source-icons/Key-grid-protection.png" alt="Grid Protection" />,
   },
   {
     title: "Liquid-Cooled Thermal System",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 3s6 7 6 12a6 6 0 0 1-12 0c0-5 6-12 6-12Z" />
-      </svg>
-    ),
+    icon: <KeyFeatureIcon src="/Source-icons/Key-Liquid-Cooled Thermal System.png" alt="Liquid-Cooled Thermal System" />,
   },
   {
     title: "Intelligent Auto Diagnostics",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-        <circle cx="11" cy="11" r="2" />
-      </svg>
-    ),
+    icon: <KeyFeatureIcon src="/Source-icons/key-Intelligent Auto Diagnostics.png" alt="Intelligent Auto Diagnostics" />,
   },
   {
     title: "Easy Service & Maintenance",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-2.4 2.5-2.5Z" />
-      </svg>
-    ),
+    icon: <KeyFeatureIcon src="/Source-icons/Key-Easy Service  & Maintenance.png" alt="Easy Service & Maintenance" />,
   },
 ];
 
@@ -307,7 +288,9 @@ function Hero() {
       {/* Top-center: eyebrow + main heading */}
       <div className="absolute inset-x-0 top-0 flex flex-col items-center px-6 pt-28 text-center md:pt-36">
         <AnimateIn>
-          <p className="eyebrow">Source</p>
+          <p className="eyebrow md:!text-[32px] md:!leading-none md:!tracking-[0.14em] md:!font-semibold md:!text-white">
+            Source
+          </p>
           <h1 className="mt-3 heading-xl">Hybrid Energy System</h1>
         </AnimateIn>
       </div>
@@ -344,42 +327,39 @@ function ProductOverview() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
+      // Initial state — block 1 active (bright), block 2 inactive (dim).
+      gsap.set("[data-block1-title]", { autoAlpha: 1 });
+      gsap.set("[data-block1-body]", { autoAlpha: 1 });
+      gsap.set("[data-block2-title]", { autoAlpha: 0.4 });
       gsap.set("[data-block2-word]", { autoAlpha: 0.15 });
-      gsap.set("[data-overview-rail]", { scaleY: 0.15, transformOrigin: "top" });
+      // Two indicator segments — one per row. Block 1 lit; block 2 dim.
+      gsap.set("[data-overview-ind-1]", { autoAlpha: 1 });
+      gsap.set("[data-overview-ind-2]", { autoAlpha: 0 });
 
-      // Pin removed — the earlier `pin: true` on this short +=30% range was
-      // colliding with the Hero's full-viewport pin above, leaving a dark
-      // dead-zone between the two sections. Scrub to natural scroll instead:
-      // the words brighten and the rail grows as the user scrolls past the
-      // second block, without the section being locked in place.
-      const st = {
+      // ---- Binary active-state toggle (no scrub) ----
+      // When the Problem It Solves title crosses the viewport center going down,
+      // the ENTIRE block swaps in one clean step: block 1 dims, block 2 lights up
+      // (title + full description together), and the indicator moves to the lower
+      // row. Reverse on scroll up. No scroll-based scrub, so no half-dim states.
+      ScrollTrigger.create({
         trigger: "[data-block2-trigger]",
-        start: "top 85%",
-        end: "top 30%",
-        scrub: 0.3,
-        invalidateOnRefresh: true,
-      } as const;
-
-      gsap.to("[data-block2-word]", {
-        autoAlpha: 1,
-        ease: "none",
-        stagger: { amount: 1 },
-        scrollTrigger: st,
-      });
-
-      // Vertical indicator rail — grows from the "Product Overview" title down
-      // to the "Problem It Solves" title as the second block reveals.
-      gsap.to("[data-overview-rail]", {
-        scaleY: 1,
-        ease: "none",
-        scrollTrigger: st,
-      });
-
-      // Problem title brightens in sync with its description.
-      gsap.to("[data-block2-title]", {
-        color: "rgba(255,255,255,1)",
-        ease: "none",
-        scrollTrigger: st,
+        start: "top 55%",
+        onEnter: () => {
+          gsap.to("[data-block1-title]", { autoAlpha: 0.4, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-block1-body]", { autoAlpha: 0.45, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-block2-title]", { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-block2-word]", { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-overview-ind-1]", { autoAlpha: 0, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-overview-ind-2]", { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+        },
+        onLeaveBack: () => {
+          gsap.to("[data-block1-title]", { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-block1-body]", { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-block2-title]", { autoAlpha: 0.4, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-block2-word]", { autoAlpha: 0.15, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-overview-ind-1]", { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+          gsap.to("[data-overview-ind-2]", { autoAlpha: 0, duration: 0.4, ease: "power2.out" });
+        },
       });
     }, section);
 
@@ -397,30 +377,38 @@ function ProductOverview() {
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr] md:items-center md:gap-16">
           <div className="grid grid-cols-[1fr_auto_1.4fr] gap-x-6 gap-y-16 md:gap-x-10 md:gap-y-24">
             {/* Row 1 — Product Overview title */}
-            <h2 className="font-display text-xl font-semibold text-white md:text-2xl">
+            <h2
+              data-block1-title
+              className="font-display text-xl font-semibold text-white md:text-2xl"
+            >
               Product Overview
             </h2>
-            {/* Continuous vertical divider — spans both rows, with active-block indicator */}
-            <div className="relative row-span-2 w-[3px]">
+            {/* Continuous dim rail with two bright indicator segments — one per row */}
+            <div className="relative row-span-2 grid w-[3px] grid-rows-2">
               <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-white/15" aria-hidden />
               <span
-                data-overview-rail
-                className="absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 bg-white"
+                data-overview-ind-1
+                className="relative left-1/2 h-full w-[3px] -translate-x-1/2 bg-white"
+                aria-hidden
+              />
+              <span
+                data-overview-ind-2
+                className="relative left-1/2 h-full w-[3px] -translate-x-1/2 bg-white"
                 aria-hidden
               />
             </div>
-            {/* Row 1 — description (always fully visible, bright) */}
+            {/* Row 1 — description. Both the bold SOURCE word and the rest
+                dim together when Problem It Solves becomes active. */}
             <p className="max-w-xl text-sm leading-relaxed text-white/85 md:text-base">
-              <span className="font-semibold text-white">SOURCE</span>
-              {OVERVIEW_TEXT.slice("SOURCE".length)}
+              <span data-block1-body className="font-semibold text-white">SOURCE</span>
+              <span data-block1-body>{OVERVIEW_TEXT.slice("SOURCE".length)}</span>
             </p>
 
             {/* Row 2 — Problem It Solves title (brightens on scrub reveal) */}
             <h2
               data-block2-title
               data-block2-trigger
-              className="font-display text-xl font-semibold md:text-2xl"
-              style={{ color: "rgba(255,255,255,0.55)" }}
+              className="font-display text-xl font-semibold text-white md:text-2xl"
             >
               Problem It Solves
             </h2>
@@ -457,82 +445,25 @@ function ProductOverview() {
 // One Energy Ecosystem — 3-column layer map (left list / centre image / right list)
 // ---------------------------------------------------------------------------
 
-// Icons for the right-side feature lists (3 states × 3 features each).
-// Clean lucide-inspired paths — tested shapes that render crisply at 20px.
-
-// STATE 1 — Foundation / Power Hardware
-// AI Energy Orchestration — CPU chip with brain-dot pattern
-const AiIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="5" y="5" width="14" height="14" rx="2" />
-    <rect x="9" y="9" width="6" height="6" />
-    <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4 7h2M4 17h2M18 7h2M18 17h2" />
-  </svg>
-);
-// Hybrid Power System — battery with lightning bolt
-const BatteryIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="2" y="7" width="16" height="10" rx="2" />
-    <path d="M22 11v2" />
-    <path d="m11 10-2 3h2.5l-1.5 2 3-3h-2l1-2z" fill="currentColor" stroke="none" />
-  </svg>
-);
-// Liquid-Cooled Design — solid water droplet
-const DropletIcon = (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M12 2.5s7 7.5 7 12.5a7 7 0 0 1-14 0c0-5 7-12.5 7-12.5Z" />
-  </svg>
+// Icons from /public/Source-icons — custom PNG set matched to the Figma design.
+// eslint-disable-next-line @next/next/no-img-element
+const OeeIcon = ({ src, alt }: { src: string; alt: string }) => (
+  // eslint-disable-next-line @next/next/no-img-element
+  <img src={src} alt={alt} className="h-full w-full object-contain" aria-hidden />
 );
 
-// STATE 2 — Intelligence / Energy Intelligence
-// Hybrid Architecture — bidirectional arrows (swap)
-const SwapIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M4 7h14" />
-    <path d="m15 4 3 3-3 3" />
-    <path d="M20 17H6" />
-    <path d="m9 14-3 3 3 3" />
-  </svg>
-);
-// IoT Diagnostics — speedometer / gauge
-const GaugeIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 14 15.5 9.5" />
-    <path d="M3 13a9 9 0 1 1 18 0" />
-    <circle cx="12" cy="14" r="1.2" fill="currentColor" stroke="none" />
-  </svg>
-);
-// Predictive Alerts — bell with clapper
-const BellIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9Z" />
-    <path d="M10 21a2 2 0 0 0 4 0" />
-  </svg>
-);
-
-// STATE 3 — Performance / Solar Efficiency Tech
-// Touchless CleanTech™ — 4-point sparkle twinkle
-const SparkleIcon = (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M12 2c0 5.5 4.5 10 10 10-5.5 0-10 4.5-10 10 0-5.5-4.5-10-10-10 5.5 0 10-4.5 10-10Z" />
-  </svg>
-);
-// Smart Cleaning — brush at angle
-const BrushIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="m14.5 3.5 6 6-9.5 9.5c-1.5 1.5-4 1.5-5.5 0s-1.5-4 0-5.5l9-10Z" />
-    <path d="m11 7 6 6" />
-  </svg>
-);
-// Sensor Intelligence — radio/signal waves emanating
-const SignalIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <circle cx="12" cy="18" r="1.5" fill="currentColor" stroke="none" />
-    <path d="M8.5 14.5a5 5 0 0 1 7 0" />
-    <path d="M5.5 11.5a9 9 0 0 1 13 0" />
-    <path d="M2.5 8.5a13 13 0 0 1 19 0" />
-  </svg>
-);
+// State 1 — Foundation / Power Hardware
+const AiIcon = <OeeIcon src="/Source-icons/AI Energy Orchestration.png" alt="AI Energy Orchestration" />;
+const BatteryIcon = <OeeIcon src="/Source-icons/Hybrid Power System.png" alt="Hybrid Power System" />;
+const DropletIcon = <OeeIcon src="/Source-icons/Liquid-Cooled Design.png" alt="Liquid-Cooled Design" />;
+// State 2 — Intelligence / Energy Intelligence
+const SwapIcon = <OeeIcon src="/Source-icons/Hybrid Architecture.png" alt="Hybrid Architecture" />;
+const GaugeIcon = <OeeIcon src="/Source-icons/IoT Diagnostics.png" alt="IoT Diagnostics" />;
+const BellIcon = <OeeIcon src="/Source-icons/Predictive Alerts.png" alt="Predictive Alerts" />;
+// State 3 — Performance / Solar Efficiency Tech
+const SparkleIcon = <OeeIcon src="/Source-icons/Touchless CleanTech™.png" alt="Touchless CleanTech" />;
+const BrushIcon = <OeeIcon src="/Source-icons/Smart Cleaning.png" alt="Smart Cleaning" />;
+const SignalIcon = <OeeIcon src="/Source-icons/Sensor Intelligence.png" alt="Sensor Intelligence" />;
 
 type EcosystemState = {
   layer: { eyebrow: string; title: string; body: string };
@@ -591,12 +522,13 @@ function OneEnergyEcosystem() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Pin for N × 80% scroll range — one slot per state. Snap keeps the
-      // user landing cleanly on each state rather than mid-transition.
+      // Pin for N × 40% scroll range — one short scroll per state so the
+      // user lands on the next state in a single wheel/trackpad swipe.
+      // Snap smoothly glides to the target state rather than snapping harshly.
       ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: `+=${ECOSYSTEM_STATES.length * 80}%`,
+        end: `+=${ECOSYSTEM_STATES.length * 40}%`,
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
@@ -606,8 +538,9 @@ function OneEnergyEcosystem() {
             const n = ECOSYSTEM_STATES.length;
             return Math.round(value * (n - 1)) / (n - 1);
           },
-          duration: 0.3,
-          ease: "power1.inOut",
+          duration: { min: 0.35, max: 0.6 },
+          delay: 0.08,
+          ease: "power2.inOut",
         },
         onUpdate: (self) => {
           const idx = Math.min(
@@ -657,39 +590,38 @@ function OneEnergyEcosystem() {
 
         {/* 3-column grid: left layer list | centre image | right features */}
         <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-[1fr_1.1fr_1fr] md:items-center md:gap-10 lg:gap-14">
-          {/* LEFT — three stacked layers, active one brightens, rail fills */}
-          <div className="relative flex flex-col gap-8 pl-5 md:gap-12 md:pl-6">
-            {/* Dim background rail */}
-            <span
-              aria-hidden
-              className="absolute left-0 top-0 h-full w-px bg-white/10"
-            />
-            {/* Active rail — height scales with active index */}
-            <span
-              aria-hidden
-              className="absolute left-[-1px] top-0 w-[3px] origin-top bg-gradient-to-b from-white via-white/60 to-white/20 transition-[height] duration-500 ease-out"
-              style={{
-                height: `${((active + 1) / ECOSYSTEM_STATES.length) * 100}%`,
-              }}
-            />
+          {/* LEFT — three stacked layers; each row has its own indicator segment
+              on its right edge. Only the active segment is bright white. */}
+          <div className="flex flex-col gap-10 md:gap-14">
             {ECOSYSTEM_STATES.map((s, i) => {
               const isActive = i === active;
               return (
                 <div
                   key={s.layer.title}
-                  className={`transition-opacity duration-500 ${
-                    isActive ? "opacity-100" : "opacity-35"
-                  }`}
+                  className="relative grid grid-cols-[1fr_auto] items-start gap-6 pr-6 md:pr-8"
                 >
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50 md:text-xs">
-                    {s.layer.eyebrow}
-                  </p>
-                  <h3 className="mt-3 font-display text-base font-semibold uppercase tracking-wide text-white md:text-lg">
-                    {s.layer.title}
-                  </h3>
-                  <p className="mt-2 max-w-xs text-xs leading-relaxed text-white/60 md:text-[13px]">
-                    {s.layer.body}
-                  </p>
+                  <div
+                    className={`transition-opacity duration-500 ${
+                      isActive ? "opacity-100" : "opacity-35"
+                    }`}
+                  >
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50 md:text-xs">
+                      {s.layer.eyebrow}
+                    </p>
+                    <h3 className="mt-3 font-display text-base font-semibold uppercase tracking-wide text-white md:text-lg">
+                      {s.layer.title}
+                    </h3>
+                    <p className="mt-2 max-w-xs text-xs leading-relaxed text-white/60 md:text-[13px]">
+                      {s.layer.body}
+                    </p>
+                  </div>
+                  {/* Per-row indicator — thin line, bright when active, dim otherwise */}
+                  <span
+                    aria-hidden
+                    className={`absolute right-0 top-0 h-full w-px transition-colors duration-500 ${
+                      isActive ? "bg-white" : "bg-white/15"
+                    }`}
+                  />
                 </div>
               );
             })}
@@ -722,8 +654,8 @@ function OneEnergyEcosystem() {
                 className="flex items-start gap-4 md:gap-5 opacity-0"
                 style={{ animation: `oeeFadeInUp 0.5s ease-out ${i * 0.08}s both` }}
               >
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.03] text-white md:h-10 md:w-10">
-                  <span className="h-5 w-5">{f.icon}</span>
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-white/[0.04] text-white md:h-14 md:w-14">
+                  <span className="h-8 w-8 md:h-9 md:w-9">{f.icon}</span>
                 </span>
                 <div className="min-w-0">
                   <h3 className="font-display text-base font-semibold text-white md:text-lg">
@@ -738,18 +670,6 @@ function OneEnergyEcosystem() {
           </div>
         </div>
 
-        {/* Progress dots */}
-        <div className="mt-10 flex justify-center gap-3 md:mt-14">
-          {ECOSYSTEM_STATES.map((_, i) => (
-            <span
-              key={i}
-              aria-hidden
-              className={`h-1 rounded-full transition-all duration-500 ${
-                i === active ? "w-10 bg-white" : "w-6 bg-white/25"
-              }`}
-            />
-          ))}
-        </div>
       </Shell>
 
       <style jsx>{`
@@ -820,13 +740,13 @@ function SceneBand() {
         fetchPriority="high"
         className="absolute inset-0 h-full w-full object-cover"
       />
-      {/* Bottom overlay — darkens the ground so the toggle + caption read clearly */}
+      {/* Bottom overlay — lightly darkens the ground so the toggle + caption read clearly */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0.9) 100%)",
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.55) 100%)",
         }}
       />
       <div className="relative flex flex-col items-center gap-6 px-6 pb-10 text-center md:px-14 md:pb-14">
@@ -1109,7 +1029,7 @@ function KeyFeatures() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen w-full flex-col overflow-hidden pb-10 pt-28 md:pb-16 md:pt-32"
+      className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden pb-8 pt-16 md:pb-12 md:pt-20"
     >
       {/* Ambient spotlight — matches Figma's dark-with-highlight look */}
       <div
@@ -1125,26 +1045,26 @@ function KeyFeatures() {
         <Shell>
           <div data-kf-header className="text-center">
             <h2 className="heading-lg">KEY FEATURES</h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/70 md:text-base">
+            <p className="mx-auto mt-4 max-w-2xl font-display text-sm font-semibold uppercase leading-relaxed tracking-[0.08em] text-white/70 md:text-base">
               Advanced technologies engineered to maximise efficiency, reliability, and intelligent energy management.
             </p>
           </div>
 
           {/* Surround layout: 3 features on left, product image in centre, 3 on right.
               On mobile collapses to a 2-col icon grid above the image. */}
-          <div className="mt-8 md:mt-10">
+          <div className="mt-10 md:mt-14">
             {/* Mobile: 2-col grid then image */}
-            <div className="grid grid-cols-2 gap-x-6 gap-y-6 md:hidden">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-8 md:hidden">
               {KEY_FEATURES.map((f) => (
                 <div key={f.title} data-kf-item className="flex flex-col items-center text-center">
-                  <span className="grid h-8 w-8 place-items-center text-white">{f.icon}</span>
-                  <h3 className="mt-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
+                  <span className="grid h-6 w-6 place-items-center text-white">{f.icon}</span>
+                  <h3 className="mt-3 font-display text-xs font-semibold uppercase tracking-[0.14em] text-white">
                     {f.title}
                   </h3>
                 </div>
               ))}
             </div>
-            <div className="mt-8 flex justify-center md:hidden">
+            <div className="mt-10 flex justify-center md:hidden">
               <img
                 src="/images/source-product2.png"
                 alt="SOURCE product render"
@@ -1155,11 +1075,13 @@ function KeyFeatures() {
             {/* Desktop: [left column] [image] [right column] */}
             <div className="hidden items-center gap-8 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-12 lg:gap-20">
               {/* Left column — features 0, 1, 2 (right-aligned) */}
-              <div className="flex flex-col items-end gap-10 lg:gap-14">
+              <div className="flex flex-col items-end gap-12 lg:gap-16">
                 {KEY_FEATURES.slice(0, 3).map((f) => (
                   <div key={f.title} data-kf-item className="flex flex-col items-center text-center">
-                    <span className="grid h-10 w-10 place-items-center text-white">{f.icon}</span>
-                    <h3 className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+                    <span className="grid h-6 w-6 place-items-center text-white lg:h-7 lg:w-7">
+                      {f.icon}
+                    </span>
+                    <h3 className="mt-6 font-display text-sm font-semibold uppercase tracking-[0.14em] text-white md:text-base">
                       {f.title}
                     </h3>
                   </div>
@@ -1171,16 +1093,18 @@ function KeyFeatures() {
                 <img
                   src="/images/source-product2.png"
                   alt="SOURCE product render"
-                  className="max-h-[340px] w-auto object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)] lg:max-h-[400px]"
+                  className="max-h-[380px] w-auto object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)] lg:max-h-[460px]"
                 />
               </div>
 
               {/* Right column — features 3, 4, 5 (left-aligned) */}
-              <div className="flex flex-col items-start gap-10 lg:gap-14">
+              <div className="flex flex-col items-start gap-12 lg:gap-16">
                 {KEY_FEATURES.slice(3, 6).map((f) => (
                   <div key={f.title} data-kf-item className="flex flex-col items-center text-center">
-                    <span className="grid h-10 w-10 place-items-center text-white">{f.icon}</span>
-                    <h3 className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+                    <span className="grid h-6 w-6 place-items-center text-white lg:h-7 lg:w-7">
+                      {f.icon}
+                    </span>
+                    <h3 className="mt-6 font-display text-sm font-semibold uppercase tracking-[0.14em] text-white md:text-base">
                       {f.title}
                     </h3>
                   </div>
@@ -1827,7 +1751,7 @@ function TechnicalSpecifications() {
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-6 py-6 text-left transition-colors hover:text-black/70"
                   >
-                    <span className={`text-lg md:text-xl ${isOpen ? "font-semibold text-black" : "font-medium text-black"}`}>
+                    <span className={`font-display text-lg md:text-xl ${isOpen ? "font-semibold text-black" : "font-medium text-black"}`}>
                       {group.group}
                     </span>
                     <span className="flex items-center gap-6">
@@ -1927,7 +1851,7 @@ function ModelDimensionsAndResources() {
                 href={r.href}
                 className="group flex items-center justify-between gap-6 py-6 transition-colors hover:text-black/60"
               >
-                <span className="text-lg font-medium text-black md:text-xl">{r.label}</span>
+                <span className="font-display text-lg font-medium text-black md:text-xl">{r.label}</span>
                 <span className="grid h-8 w-8 place-items-center rounded-full border border-black/20 text-black transition group-hover:border-black group-hover:bg-black group-hover:text-white">
                   <ArrowRight className="h-3 w-3" />
                 </span>
@@ -1981,6 +1905,13 @@ const REMOTE_TABS: Array<{
     body:
       "The platform tracks energy savings achieved through solar utilization and optimized energy management. Users gain clear insights into cost reductions, efficiency improvements, carbon footprint reduced, and long-term benefits.",
   },
+  {
+    id: "solar-panel-cleaning",
+    label: "Solar Panel Cleaning",
+    image: "/images/Source-6th-image.png",
+    body:
+      "Keep your panels performing at their best with smart cleaning control. Users can schedule cleaning cycles, trigger cleaning manually, and monitor cleaning status directly from the app.",
+  },
 ];
 
 function RemoteControl() {
@@ -2023,7 +1954,7 @@ function RemoteControl() {
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       <span
-                        className={`text-base font-medium transition-colors md:text-lg ${
+                        className={`font-display text-base font-medium transition-colors md:text-lg ${
                           isActive ? "text-white" : "text-white/50 group-hover:text-white/80"
                         }`}
                       >
@@ -2055,7 +1986,7 @@ function RemoteControl() {
           </div>
 
           {/* RIGHT — phone image, capped so it never dominates the layout */}
-          <div className="relative mx-auto flex h-full max-h-[520px] w-full items-center justify-center">
+          <div className="relative mx-auto flex h-full max-h-[520px] w-full items-center justify-center overflow-hidden rounded-card">
             {REMOTE_TABS.map((tab, i) => {
               const isActive = i === active;
               return (
@@ -2064,7 +1995,7 @@ function RemoteControl() {
                   src={tab.image}
                   alt={tab.label}
                   aria-hidden={!isActive}
-                  className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ${
+                  className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
                     isActive ? "opacity-100" : "pointer-events-none opacity-0"
                   }`}
                 />
@@ -2086,50 +2017,48 @@ function WhereSourceWorks() {
   // through it.
 
   return (
-    <section className="flex h-screen w-full flex-col overflow-hidden pb-8 pt-16 md:pb-12 md:pt-20">
-      <Shell className="flex flex-1 min-h-0 flex-col">
-        {/* Header — heading + description share the same left edge */}
-        <AnimateIn className="max-w-3xl shrink-0 text-left">
-          <h2 className="heading-lg">Where SOURCE works.</h2>
-          <p className="mt-3 max-w-2xl text-xs leading-relaxed text-white/70 md:text-sm">
+    <section className="w-full py-16 md:py-24">
+      <Shell>
+        {/* Header — heading on the left, description on the right.
+            items-start so the heading's cap-line aligns with the
+            description's first line. */}
+        <AnimateIn className="grid gap-4 md:grid-cols-[auto_1fr] md:items-start md:gap-10">
+          <h2 className="heading-lg">Where SOURCE works</h2>
+          <p className="max-w-md text-xs leading-relaxed text-white/70 md:ml-auto md:text-sm">
             From homes and businesses to industrial facilities and remote locations, SOURCE delivers intelligent
             power management wherever it's needed.
           </p>
         </AnimateIn>
 
-        {/* Content row — fills remaining viewport height */}
-        <div className="mt-6 grid flex-1 min-h-0 gap-6 md:mt-8 md:grid-cols-[1.3fr_1fr] md:items-stretch md:gap-10">
-          {/* Left — fixed-size card so the border + container never shift
-              when switching active image. All <img>s are absolutely stacked
-              and only opacity cross-fades. */}
-          <div className="flex min-h-0 flex-col">
-            <div className="relative min-h-0 flex-1 w-full overflow-hidden rounded-card border border-white/20">
-              {APPLICATIONS.map((a, i) => {
-                const isActive = i === active;
-                return (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    key={a.title}
-                    src={a.image}
-                    alt={a.title}
-                    aria-hidden={!isActive}
-                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${
-                      isActive ? "opacity-100" : "pointer-events-none opacity-0"
-                    }`}
-                  />
-                );
-              })}
-            </div>
+        {/* Content row — image owns the taller height; accordion stretches to match */}
+        <div className="mt-10 grid gap-6 md:mt-20 md:grid-cols-[1.3fr_1fr] md:items-stretch md:gap-10">
+          {/* Left — image container. Taller fixed height so the card has more presence. */}
+          <div className="relative h-[320px] w-full overflow-hidden rounded-card border border-white/20 md:h-[360px]">
+            {APPLICATIONS.map((a, i) => {
+              const isActive = i === active;
+              return (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  key={a.title}
+                  src={a.image}
+                  alt={a.title}
+                  aria-hidden={!isActive}
+                  className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${
+                    isActive ? "opacity-100" : "pointer-events-none opacity-0"
+                  }`}
+                />
+              );
+            })}
           </div>
 
-          {/* Right — accordion list: title row + collapsible description */}
-          <div className="flex min-h-0 flex-col justify-center">
-            <div className="divide-y divide-white/10 border-y border-white/10">
+          {/* Right — accordion list: 4 items share the image's height equally. */}
+          <div className="h-full">
+            <div className="flex h-full flex-col divide-y divide-white/10 border-y border-white/10">
               {APPLICATIONS.map((a, i) => {
                 const isActive = i === active;
                 const num = String(i + 1).padStart(2, "0");
                 return (
-                  <div key={a.title}>
+                  <div key={a.title} className="flex flex-1 flex-col justify-center">
                     <button
                       type="button"
                       onClick={() => setActive(i)}
@@ -2144,7 +2073,7 @@ function WhereSourceWorks() {
                         {num}
                       </span>
                       <span
-                        className={`text-base font-semibold transition-colors md:text-lg ${
+                        className={`font-display text-base font-semibold transition-colors md:text-lg ${
                           isActive ? "text-white" : "text-white/60 hover:text-white"
                         }`}
                       >
@@ -2319,43 +2248,14 @@ function MonitoringSection() {
 
 function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const panelRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-  // When switching from one open item to another, close the current one
-  // FIRST, let it fully collapse, then open the new one. If both animate
-  // simultaneously the layout shifts chaotically and the new item visually
-  // looks like it's opening from the wrong direction.
-  // Also pins the clicked button's viewport Y across the full ~1 s window
-  // so the question that was clicked stays put and the answer always
-  // visibly expands downward from under it.
-  const handleToggle = (i: number, button: HTMLButtonElement) => {
-    const isSame = openIndex === i;
-    const anchorY = button.getBoundingClientRect().top;
-
-    if (isSame) {
-      setOpenIndex(null);
-    } else if (openIndex !== null) {
-      // Close current, then open new after close animation finishes
-      setOpenIndex(null);
-      window.setTimeout(() => setOpenIndex(i), 520);
-    } else {
-      setOpenIndex(i);
-    }
-
-    const start = performance.now();
-    const tick = () => {
-      const nowY = button.getBoundingClientRect().top;
-      const delta = nowY - anchorY;
-      if (Math.abs(delta) > 0.5) {
-        window.scrollBy({ top: delta, behavior: "auto" });
-      }
-      if (performance.now() - start < 1100) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-
+  const handleToggle = (i: number) => {
+    setOpenIndex((prev) => (prev === i ? null : i));
     // FAQ height changes shift every section below it — refresh ScrollTrigger
     // after the accordion animation settles so pinned sections (ClosingCTA)
     // recalculate against the new document height instead of the cached one.
-    window.setTimeout(() => ScrollTrigger.refresh(), 600);
+    window.setTimeout(() => ScrollTrigger.refresh(), 550);
   };
 
   return (
@@ -2379,14 +2279,14 @@ function FAQ() {
                 <div key={item.q}>
                   <button
                     type="button"
-                    onClick={(e) => handleToggle(i, e.currentTarget)}
+                    onClick={() => handleToggle(i)}
                     aria-expanded={isOpen}
                     className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-6 py-6 text-left transition-colors"
                   >
                     <span className={`text-[10px] tracking-[0.2em] transition-colors md:text-xs ${isOpen ? "text-white" : "text-white/40"}`}>
                       {num}
                     </span>
-                    <span className={`text-sm font-medium transition-colors md:text-base ${isOpen ? "text-white" : "text-white/85"}`}>
+                    <span className={`font-display text-sm font-semibold transition-colors md:text-base ${isOpen ? "text-white" : "text-white/85"}`}>
                       {item.q}
                     </span>
                     {/* Plus / minus toggle — horizontal bar stays, vertical bar
@@ -2409,8 +2309,15 @@ function FAQ() {
                   </button>
 
                   <div
+                    ref={(el) => {
+                      panelRefs.current[i] = el;
+                    }}
                     className="overflow-hidden transition-[max-height] duration-500 ease-out"
-                    style={{ maxHeight: isOpen ? "500px" : "0px" }}
+                    style={{
+                      maxHeight: isOpen
+                        ? `${panelRefs.current[i]?.scrollHeight ?? 0}px`
+                        : "0px",
+                    }}
                   >
                     <div className="grid grid-cols-[auto_1fr_auto] gap-6 pb-6">
                       <span aria-hidden />
@@ -2537,7 +2444,7 @@ function ClosingCTA() {
         >
           <div className="grid gap-8 md:grid-cols-[1.4fr_auto] md:items-center md:gap-12">
             <div>
-              <h2 data-closing-heading className="heading-xl normal-case">
+              <h2 data-closing-heading className="heading-lg normal-case">
                 Smart Solar Energy System
               </h2>
               <p data-closing-sub className="mt-4 max-w-2xl text-sm leading-relaxed text-white/80 md:text-base">

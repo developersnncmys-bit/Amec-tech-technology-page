@@ -171,7 +171,7 @@ export function CTA() {
           >
             <div className="relative flex h-full flex-col justify-between gap-8">
               <div>
-                <h3 className="text-2xl font-semibold md:text-3xl">Partner with<br />AMEC</h3>
+                <h3 className="font-display text-2xl font-semibold md:text-3xl">Partner with<br />AMEC</h3>
               </div>
               <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
                 <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
@@ -189,7 +189,7 @@ export function CTA() {
           >
             <div className="relative flex h-full flex-col justify-between gap-8">
               <div>
-                <h3 className="text-2xl font-semibold md:text-3xl">Build the<br />future with AMEC.</h3>
+                <h3 className="font-display text-2xl font-semibold md:text-3xl">Build the<br />future with AMEC</h3>
               </div>
               <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
                 <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">

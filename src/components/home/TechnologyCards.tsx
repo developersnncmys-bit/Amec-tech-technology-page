@@ -115,7 +115,7 @@ export function TechnologyCards() {
                 aria-hidden
               />
               <div className="p-5">
-                <h3 className="text-sm font-semibold text-white md:text-base">{card.title}</h3>
+                <h3 className="font-display text-sm font-semibold text-white md:text-base">{card.title}</h3>
                 <p className="mt-2 body text-xs md:text-[13px]">{card.body}</p>
                 <span
                   className="mt-4 inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover/card:flex-row group-hover/card:border-white group-hover/card:bg-white group-hover/card:pl-4 group-hover/card:pr-1 group-hover/card:text-black"

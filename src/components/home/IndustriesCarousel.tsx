@@ -9,7 +9,6 @@ const INDUSTRIES = [
   { title: "Renewable Energy", image: "/images/renewable-energy.png" },
   { title: "OEMs & Startups", image: "/images/OEM%20%26%20Startup.png" },
   { title: "Automotive EV", image: "/images/Automotive-EV.png" },
-  { title: "Defense", image: "/images/Industry.png" },
 ];
 
 export function IndustriesCarousel() {
@@ -152,11 +151,12 @@ export function IndustriesCarousel() {
                 }}
                 aria-hidden
               />
-              <h3 className="absolute inset-x-6 top-6 text-lg font-semibold text-white">{item.title}</h3>
+              <h3 className="absolute inset-x-6 top-6 font-display text-lg font-semibold text-white">{item.title}</h3>
             </div>
           ))}
         </div>
 
+        {/* Carousel nav arrows — hidden for now. Drag / swipe still works.
         <button
           onClick={() => scrollBy(-1)}
           disabled={!canScrollLeft}
@@ -173,6 +173,7 @@ export function IndustriesCarousel() {
         >
           <ChevronRight className="h-5 w-5" />
         </button>
+        */}
       </div>
     </section>
   );
