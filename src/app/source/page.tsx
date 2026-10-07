@@ -1045,7 +1045,7 @@ function KeyFeatures() {
         <Shell>
           <div data-kf-header className="text-center">
             <h2 className="heading-lg">KEY FEATURES</h2>
-            <p className="mx-auto mt-4 max-w-2xl font-display text-sm font-semibold uppercase leading-relaxed tracking-[0.08em] text-white/70 md:text-base">
+            <p className="mx-auto mt-4 max-w-2xl font-poppins text-sm font-regular leading-relaxed tracking-[0.08em] text-white/70 md:text-base">
               Advanced technologies engineered to maximise efficiency, reliability, and intelligent energy management.
             </p>
           </div>
