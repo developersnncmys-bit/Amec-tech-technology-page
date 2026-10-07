@@ -147,8 +147,11 @@ const CAPABILITIES = [
     body:
       "A fully engineered drivetrain platform that significantly reduces development time and integration complexity.",
     icon: (
+      // Stacked layers
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 7h18M3 12h18M3 17h18" />
+        <path d="M12 3 2 8l10 5 10-5-10-5Z" />
+        <path d="m2 13 10 5 10-5" />
+        <path d="m2 18 10 5 10-5" />
       </svg>
     ),
   },
@@ -157,11 +160,17 @@ const CAPABILITIES = [
     body:
       "Configurable battery capacities, control strategies, and system parameters to meet specific vehicle or operational requirements.",
     icon: (
+      // Sliders / filter
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="6" cy="6" r="2.5" />
-        <circle cx="18" cy="12" r="2.5" />
-        <circle cx="6" cy="18" r="2.5" />
-        <path d="M8.5 6H21M3 12h12.5M8.5 18H21" />
+        <line x1="21" y1="4" x2="14" y2="4" />
+        <line x1="10" y1="4" x2="3" y2="4" />
+        <line x1="21" y1="12" x2="12" y2="12" />
+        <line x1="8" y1="12" x2="3" y2="12" />
+        <line x1="21" y1="20" x2="16" y2="20" />
+        <line x1="12" y1="20" x2="3" y2="20" />
+        <line x1="14" y1="2" x2="14" y2="6" />
+        <line x1="8" y1="10" x2="8" y2="14" />
+        <line x1="16" y1="18" x2="16" y2="22" />
       </svg>
     ),
   },
@@ -170,8 +179,10 @@ const CAPABILITIES = [
     body:
       "Integrated liquid cooling architecture designed to maintain optimal operating temperatures for battery and power electronics under demanding conditions.",
     icon: (
+      // Fan
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 3s6 7 6 12a6 6 0 0 1-12 0c0-5 6-12 6-12Z" />
+        <path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z" />
+        <circle cx="12" cy="12" r="1.2" />
       </svg>
     ),
   },
@@ -180,8 +191,11 @@ const CAPABILITIES = [
     body:
       "Each subsystem is developed and validated through structured testing and real-world evaluation to ensure performance, safety, and reliability.",
     icon: (
+      // Clipboard with checkmark
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="m5 12 5 5L20 7" />
+        <rect x="8" y="2" width="8" height="4" rx="1" />
+        <path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3" />
+        <path d="m9 14 2 2 4-4" />
       </svg>
     ),
   },
@@ -190,8 +204,10 @@ const CAPABILITIES = [
     body:
       "The platform is engineered with safety-first principles, incorporating protection mechanisms, fault handling, and compliance-ready design practices aligned with industry standards.",
     icon: (
+      // Shield with checkmark
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2 4 5v7c0 5 3.5 8.7 8 10 4.5-1.3 8-5 8-10V5l-8-3Z" />
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+        <path d="m9 12 2 2 4-4" />
       </svg>
     ),
   },
