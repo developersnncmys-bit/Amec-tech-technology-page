@@ -2,6 +2,7 @@
 
 import { Fragment, useRef } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
+import { HeroCTA } from "@/components/HeroCTA";
 
 const INTRO_TEXT =
   "AMEC TECHNOLOGY is the engineering execution arm of AMEC Group. We develop production ready systems across electric mobility, renewable energy, and OEM engineering—bridging concepts and deployment through strong engineering fundamentals, validation, and scalable design.";
@@ -128,9 +129,7 @@ export function Hero() {
               </p>
             </div>
             <div data-hero-cta className="shrink-0 self-end">
-              <button type="button" onClick={scrollToIntro} className="btn-hero-primary">
-                Explore more
-              </button>
+              <HeroCTA onClick={scrollToIntro} label="Explore more" variant="primary" arrow={false} />
             </div>
           </div>
       </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { AnimateIn } from "@/components/AnimateIn";
+import { HeroCTA } from "@/components/HeroCTA";
 import { ArrowRight } from "@/components/Icons";
 import { Footer } from "@/components/Footer";
 
@@ -318,8 +319,8 @@ function Hero() {
             Seamlessly manage solar, grid, and battery power for maximum efficiency and uninterrupted energy.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/contact" className="btn-hero-primary">Request a Quote</Link>
-            <Link href="/contact" className="btn-hero-ghost">Talk to an Expert</Link>
+            <HeroCTA href="/contact" label="Request a Quote" variant="primary" arrow={false} />
+            <HeroCTA href="/contact" label="Talk to an Expert" arrow={false} />
           </div>
         </AnimateIn>
       </div>
@@ -2098,13 +2099,11 @@ function WhereSourceWorks() {
 
         {/* Content row — fills remaining viewport height */}
         <div className="mt-6 grid flex-1 min-h-0 gap-6 md:mt-8 md:grid-cols-[1.3fr_1fr] md:items-stretch md:gap-10">
-          {/* Left — image fills column height, border hugs the actual image.
-              Active <img> is relative so its intrinsic aspect drives width;
-              inactive imgs sit absolutely centred for the cross-fade.
-              Left-aligned (no mx-auto) so the card's left edge matches the
-              heading's left edge above. */}
+          {/* Left — fixed-size card so the border + container never shift
+              when switching active image. All <img>s are absolutely stacked
+              and only opacity cross-fades. */}
           <div className="flex min-h-0 flex-col">
-            <div className="relative flex min-h-0 flex-1 items-center justify-start">
+            <div className="relative min-h-0 flex-1 w-full overflow-hidden rounded-card border border-white/20">
               {APPLICATIONS.map((a, i) => {
                 const isActive = i === active;
                 return (
@@ -2114,10 +2113,8 @@ function WhereSourceWorks() {
                     src={a.image}
                     alt={a.title}
                     aria-hidden={!isActive}
-                    className={`max-h-full max-w-full rounded-card border border-white/20 object-contain transition-opacity duration-500 ease-out ${
-                      isActive
-                        ? "relative h-full w-auto opacity-100"
-                        : "pointer-events-none absolute inset-0 m-auto h-full w-auto opacity-0"
+                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${
+                      isActive ? "opacity-100" : "pointer-events-none opacity-0"
                     }`}
                   />
                 );

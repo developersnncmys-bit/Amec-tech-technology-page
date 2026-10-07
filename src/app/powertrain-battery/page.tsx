@@ -288,7 +288,7 @@ function Hero() {
       <div className="absolute inset-x-0 top-0 flex justify-center px-6 pt-28 text-center md:pt-36">
         <h1
           data-hero-title
-          className="font-display text-4xl font-semibold leading-[1.05] text-white md:text-6xl lg:text-7xl"
+          className="font-display text-4xl font-semibold uppercase leading-[1.05] text-white md:text-6xl lg:text-7xl"
         >
           Powertrain And Battery
         </h1>

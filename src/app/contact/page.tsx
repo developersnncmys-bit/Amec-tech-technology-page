@@ -3,77 +3,70 @@
 import Link from "next/link";
 import { Fragment, useRef, useState, type FormEvent } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
-import { AnimateIn } from "@/components/AnimateIn";
 import { Footer } from "@/components/Footer";
-import { ArrowRight, Mail, MapPin, Phone } from "@/components/Icons";
+import { HeroCTA } from "@/components/HeroCTA";
+import { ArrowRight, Mail, Phone } from "@/components/Icons";
 
 // ---------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------
 
 const INQUIRY_TYPES = [
+  "Sales/Partnership",
+  "OEM/Product Development",
+  "Mobility & EV Solutions",
+  "Renewable Energy System",
+  "Career/Human Resources",
+  "Support/Service",
   "General Enquiry",
-  "Product — SOURCE",
-  "OEM Engineering",
-  "Powertrain & Battery",
-  "Partnerships",
-  "Careers",
-  "Media & Press",
 ];
 
-const CHANNELS = [
+const CONTACT_CHANNELS = [
   {
-    label: "Request a Quote",
-    body: "Pricing, lead times, and configuration for SOURCE and OEM projects.",
-    href: "#contact-form",
-    accent: "quote",
+    title: "Sales & Partnership",
+    body: "For product enquiries, partnerships, and commercial discussions.",
+    phone: "+91 7887870040",
+    phoneHref: "tel:+917887870040",
+    email: "sales@amectechnology.com",
   },
   {
-    label: "Talk to an Expert",
-    body: "Deep-dive technical calls with engineering on integration and compliance.",
-    href: "#contact-form",
-    accent: "expert",
+    title: "Support & Service Enquiries",
+    body: "For product support, service requests, and technical assistance.",
+    phone: "+91 8405840555",
+    phoneHref: "tel:+918405840555",
+    email: "service@amectechnology.com",
   },
   {
-    label: "Partner with AMEC",
-    body: "Strategic partnerships, distribution, and system integrator programs.",
-    href: "#contact-form",
-    accent: "partner",
-  },
-  {
-    label: "Press & Media",
-    body: "Press kits, interviews, and brand assets for media coverage.",
-    href: "mailto:contact@company.com",
-    accent: "press",
+    title: "Accounts & Payments",
+    body: "For billing, invoices, payments, and finance-related communication.",
+    email: "finance@amectechnology.com",
   },
 ];
 
-const FAQ_ITEMS = [
+const LOCATIONS = [
   {
-    q: "How quickly will I hear back after submitting the form?",
-    a: "Our team responds to all enquiries within one business day. For urgent technical questions, use the Talk to an Expert channel — those requests are routed directly to engineering.",
+    label: "Head Office & Factory",
+    body:
+      "Manufacturing & Assembly. Head operations, production facility and global dispatch.",
+    city: "Nagpur, Maharashtra",
+    address: "MIDC Industrial Area,\nNagpur – 440 022, India",
+    mapHref:
+      "https://www.google.com/maps/search/?api=1&query=MIDC+Industrial+Area+Nagpur",
+    mapEmbed:
+      "https://www.google.com/maps?q=MIDC+Industrial+Area+Nagpur+440022&output=embed",
   },
   {
-    q: "Where is AMEC Technology headquartered?",
-    a: "AMEC Technology operates out of our head office at 794 McAllister St, San Francisco. Visits are by appointment — drop us a line and we'll set it up.",
-  },
-  {
-    q: "Do you ship SOURCE outside India?",
-    a: "Yes. SOURCE is engineered to IEC and regional compliance standards for international deployment. Export logistics, certifications, and warranty are coordinated per-market during the quote process.",
-  },
-  {
-    q: "Can you support custom OEM powertrain or energy builds?",
-    a: "Absolutely. OEM Engineering is one of our core practices — we work with you from concept through validation to a production-ready system, including scalable design and compliance documentation.",
-  },
-  {
-    q: "How do I apply for a role at AMEC?",
-    a: "Visit the Careers page for open roles. If you don't see your role listed, use the Careers channel on this page — we review every application and keep interesting profiles on file.",
+    label: "AMEC Labs",
+    body:
+      "Research & Development. Industrial production, process control and preparation for assembly.",
+    city: "Bangalore, Karnataka",
+    address: "Electronics City Phase 1,\nBangalore – 560 100, India",
+    mapHref:
+      "https://www.google.com/maps/search/?api=1&query=Electronics+City+Phase+1+Bangalore",
+    mapEmbed:
+      "https://www.google.com/maps?q=Electronics+City+Phase+1+Bangalore+560100&output=embed",
   },
 ];
-
-const INTRO_TEXT =
-  "Whether you're specifying SOURCE for a project, exploring an OEM collaboration, or just want to understand what we build — the fastest path is a direct conversation. Tell us about the problem, and the right engineer will get back to you.";
-const INTRO_WORDS = INTRO_TEXT.split(" ");
 
 // ---------------------------------------------------------------------------
 // Page
@@ -83,11 +76,10 @@ export default function ContactPage() {
   return (
     <>
       <Hero />
-      <Intro />
-      <Channels />
-      <ContactSection />
-      <FAQ />
-      <ClosingCTA />
+      <ContactChannels />
+      <HiringHR />
+      <WhereWeAre />
+      <JustSendIt />
       <Footer />
     </>
   );
@@ -102,7 +94,8 @@ function Shell({ children, className = "" }: { children: React.ReactNode; classN
 }
 
 // ---------------------------------------------------------------------------
-// Hero
+// Hero — kept with the existing full-bleed video, text content updated to
+// match the new Figma copy.
 // ---------------------------------------------------------------------------
 
 function Hero() {
@@ -123,10 +116,14 @@ function Hero() {
       });
 
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from("[data-hero-eyebrow]", { autoAlpha: 0, y: 20, duration: 0.6 })
-        .from("[data-hero-title] span", { autoAlpha: 0, y: 24, stagger: 0.06, duration: 0.8 }, "-=0.3")
-        .from("[data-hero-sub]", { autoAlpha: 0, y: 16, duration: 0.6 }, "-=0.4")
-        .from("[data-hero-cta]", { autoAlpha: 0, y: 12, duration: 0.5 }, "-=0.3");
+      tl.from("[data-hero-title] span", {
+        autoAlpha: 0,
+        y: 32,
+        stagger: 0.08,
+        duration: 0.8,
+      })
+        .from("[data-hero-sub]", { autoAlpha: 0, y: 20, duration: 0.6 }, "-=0.5")
+        .from("[data-hero-cta]", { autoAlpha: 0, y: 12, duration: 0.5 }, "-=0.4");
 
       gsap.to("[data-hero-glow]", {
         xPercent: 10,
@@ -146,15 +143,14 @@ function Hero() {
     };
   }, []);
 
+  const titleLines = ["Let's Make", "The Future Exciting", "Together"];
+
   return (
     <section
       ref={pinRef}
-      className="relative isolate flex h-screen w-full items-end overflow-hidden bg-[#151515]"
+      className="relative isolate h-screen w-full overflow-hidden bg-[#151515]"
     >
-      {/* Full-bleed background video — poster shows instantly while the
-          video streams in. `preload="metadata"` skips downloading the full
-          file during initial HTML parse, so the page becomes interactive
-          sooner; the browser kicks off playback once autoplay triggers. */}
+      {/* Full-bleed background video */}
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src="/videos/Contact-hero.mp4"
@@ -167,8 +163,7 @@ function Hero() {
         aria-hidden
       />
 
-      {/* Readability overlay — subtle vignette so text stays legible without
-          flattening the video. */}
+      {/* Readability overlay */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -178,7 +173,7 @@ function Hero() {
         }}
       />
 
-      {/* Ambient radial glow — floats slowly over the video for depth */}
+      {/* Ambient radial glow */}
       <div
         data-hero-glow
         aria-hidden
@@ -189,238 +184,40 @@ function Hero() {
         }}
       />
 
-      {/* Top-center — eyebrow + title */}
-      <div className="absolute inset-x-0 top-0 flex flex-col items-center px-6 pt-28 text-center md:pt-36">
-        <p data-hero-eyebrow className="eyebrow">Contact</p>
-        <h1 data-hero-title className="mt-3 heading-xl">
-          {"LET'S BUILD TOGETHER".split(" ").map((word, i) => (
-            <Fragment key={i}>
-              <span className="inline-block">{word}</span>
-              {i < 2 ? " " : ""}
-            </Fragment>
-          ))}
-        </h1>
-      </div>
-
-      {/* Bottom row — description on the left, CTA on the right */}
-      <div className="relative flex w-full flex-col gap-6 px-6 pb-12 md:flex-row md:items-end md:justify-between md:gap-10 md:px-14 md:pb-16">
-        <p
-          data-hero-sub
-          className="max-w-xl text-base leading-relaxed text-white/85 md:text-lg"
-        >
-          One form, one direct path to the engineers who build AMEC Technology.
-          Tell us what you're working on — we'll route it to the right team.
-        </p>
-        <div data-hero-cta className="shrink-0">
-          <a href="#contact-form" className="btn-hero-primary">
-            Start a Conversation
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Intro — scroll-scrub word reveal
-// ---------------------------------------------------------------------------
-
-function Intro() {
-  const ref = useRef<HTMLElement | null>(null);
-
-  useIsomorphicLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const ctx = gsap.context(() => {
-      // Tight scrub range (~15% of viewport) so a single wheel-notch /
-      // trackpad swipe scrubs the full reveal — no pin, no forced empty space.
-      const words = gsap.utils.toArray<HTMLElement>("[data-intro-word]");
-      gsap.set(words, { autoAlpha: 0.14 });
-      gsap.to(words, {
-        autoAlpha: 1,
-        ease: "none",
-        stagger: { amount: 1 },
-        scrollTrigger: {
-          trigger: el,
-          start: "top 75%",
-          end: "top 60%",
-          scrub: 0.3,
-          invalidateOnRefresh: true,
-        },
-      });
-    }, el);
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section ref={ref} className="w-full py-20 md:py-28">
-      <Shell>
-        <p className="mx-auto max-w-4xl text-left font-display text-lg leading-relaxed text-white/70 md:text-2xl">
-          {INTRO_WORDS.map((word, i) => (
-            <Fragment key={i}>
-              <span data-intro-word className="inline-block">{word}</span>
-              {i < INTRO_WORDS.length - 1 ? " " : ""}
-            </Fragment>
-          ))}
-        </p>
-      </Shell>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Channels — numbered "ways to reach us" cards
-// ---------------------------------------------------------------------------
-
-function Channels() {
-  const ref = useRef<HTMLElement | null>(null);
-
-  useIsomorphicLayoutEffect(() => {
-    const section = ref.current;
-    if (!section) return;
-
-    const ctx = gsap.context(() => {
-      // Header stays visible when the section enters — fade it in once on
-      // scroll-into-view so it's fully present by the time the pin engages.
-      gsap.from(
-        ["[data-channel-heading] span", "[data-channel-sub]"],
-        {
-          autoAlpha: 0,
-          y: 24,
-          duration: 0.7,
-          stagger: 0.08,
-          ease: "power3.out",
-          scrollTrigger: { trigger: section, start: "top 80%" },
-        }
-      );
-
-      // Cards start hidden — all four reveal together on the first scroll
-      // gesture inside the pin.
-      gsap.set("[data-channel-card]", { autoAlpha: 0, y: 60, scale: 0.94 });
-
-      // Pin the section briefly. The first scroll gesture plays the full
-      // card cascade (quick stagger across all four cards), then the pin
-      // releases. ScrollTrigger ties the timeline to the pin range so a
-      // single scroll completes the whole reveal.
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "+=100%",
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        // Fires once per direction when the user first scrolls into the pin —
-        // triggers a non-scrubbed animation that plays all cards in one go.
-        onEnter: () => {
-          gsap.to("[data-channel-card]", {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.12,
-            ease: "back.out(1.4)",
-            overwrite: true,
-          });
-        },
-        onEnterBack: () => {
-          gsap.to("[data-channel-card]", {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.6,
-            stagger: 0.08,
-            ease: "power3.out",
-            overwrite: true,
-          });
-        },
-      });
-    }, section);
-
-    const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
-
-    return () => {
-      window.clearTimeout(refreshId);
-      ctx.revert();
-    };
-  }, []);
-
-  const headingWords = "Four ways to reach us.".split(" ");
-
-  return (
-    <section
-      ref={ref}
-      className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden py-16 md:py-24"
-    >
-      {/* Ambient spotlight — adds depth during the pin */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(55% 65% at 50% 40%, rgba(255,255,255,0.05) 0%, transparent 60%)",
-        }}
-      />
-
-      <div className="relative">
+      {/* Content — title left, description right, CTA under title */}
+      <div className="relative flex h-full items-center">
         <Shell>
-          <div className="max-w-2xl">
-            <h2 data-channel-heading className="heading-lg">
-              {headingWords.map((word, i) => (
-                <Fragment key={i}>
-                  <span className="inline-block">{word}</span>
-                  {i < headingWords.length - 1 ? " " : ""}
-                </Fragment>
-              ))}
-            </h2>
-            <p
-              data-channel-sub
-              className="mt-5 text-sm leading-relaxed text-white/70 md:text-base"
-            >
-              Pick the channel that matches your intent. Each one routes to the right desk — no
-              generic inboxes, no round-robin tickets.
-            </p>
-          </div>
+          <div className="grid gap-10 md:grid-cols-[1.1fr_1fr] md:items-center md:gap-16">
+            {/* LEFT — title + CTA */}
+            <div>
+              <h1 data-hero-title className="heading-xl">
+                {titleLines.map((line, i) => (
+                  <Fragment key={i}>
+                    <span className="inline-block">{line}</span>
+                    {i < titleLines.length - 1 ? <br /> : null}
+                  </Fragment>
+                ))}
+              </h1>
+              <div data-hero-cta className="mt-8 md:mt-10">
+                <HeroCTA
+                  href="#just-send-it"
+                  label="Get in touch"
+                  variant="primary"
+                  arrow={false}
+                />
+              </div>
+            </div>
 
-          <div className="mt-12 grid gap-5 md:mt-16 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-            {CHANNELS.map((c, i) => (
-              <Link
-                key={c.label}
-                href={c.href}
-                data-channel-card
-                className="group relative flex flex-col justify-between overflow-hidden rounded-card border border-white/[0.06] bg-bg-card p-6 transition-colors hover:border-white/20 md:p-7"
-              >
-                <div>
-                  <span
-                    data-channel-num
-                    className="inline-block font-display text-xs font-semibold text-white/40 md:text-sm"
-                  >
-                    0{i + 1}
-                  </span>
-                  <h3
-                    data-channel-title
-                    className="mt-6 text-lg font-semibold text-white md:text-xl"
-                  >
-                    {c.label}
-                  </h3>
-                  <p
-                    data-channel-body
-                    className="mt-3 text-sm leading-relaxed text-white/60 md:text-[15px]"
-                  >
-                    {c.body}
-                  </p>
-                </div>
-                <span
-                  data-channel-cta
-                  className="mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/70 transition-colors group-hover:text-white"
-                >
-                  Open channel
-                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </span>
-              </Link>
-            ))}
+            {/* RIGHT — description */}
+            <p
+              data-hero-sub
+              className="max-w-xl text-sm leading-relaxed text-white/80 md:text-base"
+            >
+              Whether you're exploring a collaboration, have a business enquiry,
+              or are interested in joining AMEC, our team is here to help. Reach
+              out to us through the appropriate contact below, and we'll ensure
+              your message reaches the right team.
+            </p>
           </div>
         </Shell>
       </div>
@@ -429,25 +226,288 @@ function Channels() {
 }
 
 // ---------------------------------------------------------------------------
-// Contact section — form + info side-by-side
+// Contact Channels — 3-card grid: Sales / Support / Accounts
 // ---------------------------------------------------------------------------
 
-function ContactSection() {
-  const ref = useRef<HTMLElement | null>(null);
+function ContactChannels() {
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   useIsomorphicLayoutEffect(() => {
-    const el = ref.current;
+    const el = sectionRef.current;
     if (!el) return;
 
     const ctx = gsap.context(() => {
-      gsap.from("[data-contact-info]", {
+      gsap.from("[data-channel-card]", {
+        autoAlpha: 0,
+        y: 36,
+        duration: 0.7,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 80%" },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="w-full py-16 md:py-20">
+      <Shell>
+        <div className="grid gap-5 md:grid-cols-3 md:gap-6">
+          {CONTACT_CHANNELS.map((c) => (
+            <article
+              key={c.title}
+              data-channel-card
+              className="group flex flex-col rounded-card border border-white/[0.08] bg-bg-card p-7 transition-colors hover:border-white/20 md:p-8"
+            >
+              <h3 className="font-display text-base font-semibold text-white md:text-lg">
+                {c.title}
+              </h3>
+              <p className="mt-4 flex-1 text-sm leading-relaxed text-white/60 md:text-[15px]">
+                {c.body}
+              </p>
+
+              <ul className="mt-8 space-y-3 border-t border-white/[0.06] pt-5 text-sm text-white/80 md:text-[15px]">
+                {c.phone && c.phoneHref && (
+                  <li className="flex items-center gap-3">
+                    <Phone className="h-4 w-4 shrink-0 text-white/60" />
+                    <a
+                      href={c.phoneHref}
+                      className="transition-colors hover:text-white"
+                    >
+                      {c.phone}
+                    </a>
+                  </li>
+                )}
+                <li className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 shrink-0 text-white/60" />
+                  <a
+                    href={`mailto:${c.email}`}
+                    className="transition-colors hover:text-white"
+                  >
+                    {c.email}
+                  </a>
+                </li>
+              </ul>
+            </article>
+          ))}
+        </div>
+      </Shell>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Hiring & HR Support — title/description on the left, email input on the right
+// ---------------------------------------------------------------------------
+
+function HiringHR() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [email, setEmail] = useState("");
+
+  useIsomorphicLayoutEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from("[data-hiring-item]", {
+        autoAlpha: 0,
+        y: 24,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 85%" },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const target = email.trim()
+      ? `mailto:hr@amectechnology.com?subject=HR%20Enquiry&body=From%3A%20${encodeURIComponent(email)}`
+      : "mailto:hr@amectechnology.com";
+    window.location.href = target;
+  };
+
+  return (
+    <section ref={sectionRef} className="w-full py-12 md:py-16">
+      <Shell>
+        <div className="grid gap-8 border-y border-white/[0.08] py-10 md:grid-cols-[1fr_1fr] md:items-center md:gap-16 md:py-14">
+          <div data-hiring-item>
+            <h2 className="font-display text-2xl font-semibold text-white md:text-3xl">
+              Hiring & HR Support
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-white/60 md:text-base">
+              For recruitment, careers, and HR inquiries.
+            </p>
+          </div>
+
+          <form
+            data-hiring-item
+            onSubmit={onSubmit}
+            className="flex w-full items-center gap-3 rounded border border-white/15 bg-white/[0.03] px-5 py-2 transition-colors hover:border-white/30 focus-within:border-white/40 md:ml-auto md:max-w-md"
+          >
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/60">
+              Email
+            </span>
+            <span aria-hidden className="h-5 w-px bg-white/15" />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              aria-label="Your email address for HR enquiry"
+              className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-white/40 outline-none md:text-[15px]"
+            />
+            <button
+              type="submit"
+              aria-label="Send HR enquiry"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded bg-white text-black transition hover:bg-white/90"
+            >
+              <ArrowRight className="h-4 w-4 -rotate-45" />
+            </button>
+          </form>
+        </div>
+      </Shell>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Where We Are — 2 location cards with maps
+// ---------------------------------------------------------------------------
+
+function WhereWeAre() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from("[data-wwa-head]", {
+        autoAlpha: 0,
+        y: 20,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 80%" },
+      });
+      gsap.from("[data-wwa-card]", {
+        autoAlpha: 0,
+        y: 40,
+        duration: 0.7,
+        stagger: 0.14,
+        ease: "power3.out",
+        scrollTrigger: { trigger: "[data-wwa-grid]", start: "top 85%" },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="w-full py-16 md:py-24">
+      <Shell>
+        <div className="text-center">
+          <h2 data-wwa-head className="font-display text-2xl font-semibold uppercase tracking-wide text-white md:text-4xl">
+            Where We Are
+          </h2>
+          <p
+            data-wwa-head
+            className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/60 md:text-base"
+          >
+            Strategically located across India.
+          </p>
+        </div>
+
+        <div
+          data-wwa-grid
+          className="mt-12 grid gap-6 md:mt-16 md:grid-cols-2 md:gap-8"
+        >
+          {LOCATIONS.map((loc) => (
+            <article
+              key={loc.label}
+              data-wwa-card
+              className="group flex flex-col overflow-hidden rounded-card border border-white/[0.08] bg-bg-card transition-colors hover:border-white/20"
+            >
+              <div className="flex flex-col gap-6 p-7 md:p-8">
+                <div>
+                  <h3 className="font-display text-base font-semibold uppercase tracking-[0.18em] text-white md:text-lg">
+                    {loc.label}
+                  </h3>
+                  <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60 md:text-[15px]">
+                    {loc.body}
+                  </p>
+                </div>
+
+                <div className="text-sm leading-relaxed text-white/85 md:text-[15px]">
+                  <p className="font-semibold text-white">{loc.city}</p>
+                  <p className="mt-2 whitespace-pre-line text-white/60">
+                    {loc.address}
+                  </p>
+                </div>
+
+                <a
+                  href={loc.mapHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/btn inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                >
+                  View location
+                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/btn:bg-black group-hover/btn:text-white">
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </span>
+                </a>
+              </div>
+
+              {/* Embedded Google Map */}
+              <div className="relative mt-auto aspect-[16/9] w-full overflow-hidden bg-white/[0.04]">
+                <iframe
+                  src={loc.mapEmbed}
+                  title={`Map — ${loc.city}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full border-0 grayscale contrast-[1.05] [filter:invert(0.92)_hue-rotate(180deg)_grayscale(1)_contrast(0.95)]"
+                />
+              </div>
+            </article>
+          ))}
+        </div>
+      </Shell>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Just Send It — the main contact form
+// ---------------------------------------------------------------------------
+
+type FormState = "idle" | "submitting" | "success" | "error";
+
+function JustSendIt() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [state, setState] = useState<FormState>("idle");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  useIsomorphicLayoutEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from("[data-jsi-left]", {
         autoAlpha: 0,
         x: -24,
         duration: 0.8,
         ease: "power3.out",
         scrollTrigger: { trigger: el, start: "top 80%" },
       });
-      gsap.from("[data-contact-form]", {
+      gsap.from("[data-jsi-form]", {
         autoAlpha: 0,
         y: 36,
         duration: 0.8,
@@ -459,90 +519,6 @@ function ContactSection() {
     return () => ctx.revert();
   }, []);
 
-  return (
-    <section ref={ref} id="contact-form" className="relative w-full py-16 md:py-24">
-      <Shell>
-        <div className="grid gap-12 md:grid-cols-[1fr_1.4fr] md:gap-16">
-          {/* Left — info */}
-          <div data-contact-info className="md:sticky md:top-28 md:self-start">
-            <h2 className="heading-lg">Tell us about your project.</h2>
-            <p className="mt-6 max-w-md text-sm leading-relaxed text-white/70 md:text-base">
-              Fill out the form and we'll match your enquiry with the engineer best suited to help.
-              Typical response time: one business day.
-            </p>
-
-            <ul className="mt-10 space-y-5 text-sm md:text-base">
-              <li className="flex items-start gap-4 text-white/80">
-                <span className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-white">
-                  <Mail className="h-4 w-4" />
-                </span>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-                    Email
-                  </p>
-                  <a
-                    href="mailto:contact@company.com"
-                    className="mt-1 block transition-colors hover:text-white"
-                  >
-                    contact@company.com
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-4 text-white/80">
-                <span className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-white">
-                  <Phone className="h-4 w-4" />
-                </span>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-                    Phone
-                  </p>
-                  <a
-                    href="tel:+14146875892"
-                    className="mt-1 block transition-colors hover:text-white"
-                  >
-                    (414) 687 – 5892
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-4 text-white/80">
-                <span className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-white">
-                  <MapPin className="h-4 w-4" />
-                </span>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-                    Head office
-                  </p>
-                  <p className="mt-1">
-                    794 McAllister St
-                    <br />
-                    San Francisco, 94102
-                  </p>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          {/* Right — form card */}
-          <div
-            data-contact-form
-            className="rounded-card border border-white/[0.06] bg-bg-card p-6 md:p-10"
-          >
-            <ContactForm />
-          </div>
-        </div>
-      </Shell>
-    </section>
-  );
-}
-
-type FormState = "idle" | "submitting" | "success" | "error";
-
-function ContactForm() {
-  const [state, setState] = useState<FormState>("idle");
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -552,12 +528,10 @@ function ContactForm() {
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
-    const type = String(data.get("type") || "").trim();
 
     if (!name) next.name = "Please enter your name.";
     if (!email) next.email = "Please enter your email.";
     else if (!EMAIL_RE.test(email)) next.email = "Please enter a valid email.";
-    if (!type) next.type = "Please choose a topic.";
     if (!message) next.message = "Please add a short message.";
 
     if (Object.keys(next).length) {
@@ -568,440 +542,211 @@ function ContactForm() {
 
     setErrors({});
     setState("submitting");
-    // Simulated submission — replace with real endpoint when wired.
     window.setTimeout(() => {
       setState("success");
       form.reset();
     }, 700);
   };
 
-  if (state === "success") {
-    return (
-      <div className="flex min-h-[380px] flex-col items-center justify-center text-center">
-        <span className="grid h-14 w-14 place-items-center rounded-full border border-white/15 bg-white/5 text-white">
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-            <path d="m5 12 5 5L20 7" />
-          </svg>
-        </span>
-        <h3 className="mt-6 heading-md text-white">Thank you — we'll be in touch.</h3>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70 md:text-base">
-          Your message is on its way to the right team. Expect a reply within one business day.
-        </p>
-        <button
-          type="button"
-          onClick={() => setState("idle")}
-          className="mt-8 btn-ghost"
-        >
-          Send another message
-        </button>
-      </div>
-    );
-  }
-
   const inputBase =
-    "w-full rounded border bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/40 transition focus:outline-none focus:ring-2";
-  const inputOk =
-    "border-white/15 focus:border-white/40 focus:ring-white/20";
-  const inputErr =
-    "border-red-400/60 focus:border-red-400 focus:ring-red-400/30";
-
+    "w-full rounded border bg-white/[0.03] px-5 py-4 text-sm text-white placeholder:text-white/40 outline-none transition md:text-base";
+  const inputOk = "border-white/10 focus:border-white/40 focus:bg-white/[0.05]";
+  const inputErr = "border-red-400/60 focus:border-red-400";
   const field = (name: string) =>
     `${inputBase} ${errors[name] ? inputErr : inputOk}`;
-
-  return (
-    <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div className="grid gap-5 md:grid-cols-2">
-        <div>
-          <label htmlFor="name" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-            Full name
-          </label>
-          <input id="name" name="name" type="text" placeholder="Enter your full name" className={`mt-2 ${field("name")}`} aria-invalid={!!errors.name} />
-          {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name}</p>}
-        </div>
-        <div>
-          <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-            Email
-          </label>
-          <input id="email" name="email" type="email" placeholder="Enter your email" className={`mt-2 ${field("email")}`} aria-invalid={!!errors.email} />
-          {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
-        </div>
-      </div>
-
-      <div className="grid gap-5 md:grid-cols-2">
-        <div>
-          <label htmlFor="company" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-            Company <span className="text-white/40">(optional)</span>
-          </label>
-          <input id="company" name="company" type="text" placeholder="Enter your company name" className={`mt-2 ${field("company")}`} />
-        </div>
-        <div>
-          <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-            Phone <span className="text-white/40">(optional)</span>
-          </label>
-          <input id="phone" name="phone" type="tel" placeholder="Enter your phone number" className={`mt-2 ${field("phone")}`} />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="type" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-          What's it about?
-        </label>
-        <div className="relative mt-2">
-          <select
-            id="type"
-            name="type"
-            defaultValue=""
-            className={`${field("type")} appearance-none pr-10`}
-            aria-invalid={!!errors.type}
-          >
-            <option value="" disabled>
-              Select a topic
-            </option>
-            {INQUIRY_TYPES.map((t) => (
-              <option key={t} value={t} className="bg-bg-card text-white">
-                {t}
-              </option>
-            ))}
-          </select>
-          <span aria-hidden className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/60">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </span>
-        </div>
-        {errors.type && <p className="mt-1 text-xs text-red-400">{errors.type}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="message" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-          Message
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          rows={5}
-          placeholder="Tell us about your project, timelines, or questions…"
-          className={`mt-2 resize-none ${field("message")}`}
-          aria-invalid={!!errors.message}
-        />
-        {errors.message && <p className="mt-1 text-xs text-red-400">{errors.message}</p>}
-      </div>
-
-      <div className="flex items-start gap-3 pt-1">
-        <input
-          id="consent"
-          name="consent"
-          type="checkbox"
-          required
-          className="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-transparent accent-white"
-        />
-        <label htmlFor="consent" className="text-xs leading-relaxed text-white/60 md:text-[13px]">
-          I agree to AMEC's{" "}
-          <Link href="/privacy" className="underline underline-offset-4 hover:text-white">
-            Privacy Policy
-          </Link>{" "}
-          and consent to being contacted about my enquiry.
-        </label>
-      </div>
-
-      <div className="mt-2 flex flex-wrap items-center gap-4">
-        <button
-          type="submit"
-          disabled={state === "submitting"}
-          className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {state === "submitting" ? "Sending…" : "Send message"}
-          <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-            <ArrowRight className="h-3.5 w-3.5" />
-          </span>
-        </button>
-        <p className="text-xs text-white/50">
-          Prefer email?{" "}
-          <a href="mailto:contact@company.com" className="underline underline-offset-4 hover:text-white">
-            contact@company.com
-          </a>
-        </p>
-      </div>
-    </form>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// FAQ
-// ---------------------------------------------------------------------------
-
-function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const listRef = useRef<HTMLDivElement | null>(null);
-
-  // Mirrors the Source page FAQ behaviour so every click reads as the
-  // answer expanding downward from under the clicked question:
-  //   1. If a different item is already open, close it first and wait for
-  //      the collapse animation to finish before opening the new one.
-  //   2. Pin the clicked button's viewport Y across the full close+open
-  //      window so layout shifts above/below don't drag it around.
-  const handleToggle = (i: number, button: HTMLButtonElement) => {
-    const isSame = openIndex === i;
-    const anchorY = button.getBoundingClientRect().top;
-
-    if (isSame) {
-      setOpenIndex(null);
-    } else if (openIndex !== null) {
-      setOpenIndex(null);
-      window.setTimeout(() => setOpenIndex(i), 520);
-    } else {
-      setOpenIndex(i);
-    }
-
-    const start = performance.now();
-    const tick = () => {
-      const nowY = button.getBoundingClientRect().top;
-      const delta = nowY - anchorY;
-      if (Math.abs(delta) > 0.5) {
-        window.scrollBy({ top: delta, behavior: "auto" });
-      }
-      if (performance.now() - start < 1100) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  };
-
-  useIsomorphicLayoutEffect(() => {
-    const el = listRef.current;
-    if (!el) return;
-
-    const ctx = gsap.context(() => {
-      gsap.from("[data-faq-item]", {
-        autoAlpha: 0,
-        y: -40,
-        duration: 0.7,
-        stagger: 0.12,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-        },
-      });
-    }, el);
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section className="py-16 md:py-24">
-      <Shell>
-        <div className="grid gap-12 md:grid-cols-[1fr_1.6fr_0.8fr] md:gap-14">
-          <div className="md:sticky md:top-28 md:self-start">
-            <h2 className="heading-lg">FREQUENTLY ASKED QUESTIONS</h2>
-            <p className="mt-6 max-w-xs text-sm leading-relaxed text-white/70 md:text-base">
-              Quick answers to the questions we hear most often from new customers and partners.
-            </p>
-          </div>
-
-          <div ref={listRef} className="divide-y divide-white/10 border-y border-white/10">
-            {FAQ_ITEMS.map((item, i) => {
-              const isOpen = openIndex === i;
-              const num = String(i + 1).padStart(2, "0");
-              return (
-                <div key={item.q} data-faq-item>
-                  <button
-                    type="button"
-                    onClick={(e) => handleToggle(i, e.currentTarget)}
-                    aria-expanded={isOpen}
-                    className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-6 py-6 text-left transition-colors"
-                  >
-                    <span className={`text-[10px] tracking-[0.2em] transition-colors md:text-xs ${isOpen ? "text-white" : "text-white/40"}`}>
-                      {num}
-                    </span>
-                    <span className={`text-sm font-medium transition-colors md:text-base ${isOpen ? "text-white" : "text-white/85"}`}>
-                      {item.q}
-                    </span>
-                    <span
-                      className={`relative grid h-7 w-7 place-items-center rounded-full border transition ${
-                        isOpen ? "border-white bg-white text-black" : "border-white/40 text-white"
-                      }`}
-                      aria-hidden
-                    >
-                      <span className="block h-[2px] w-3 bg-current" />
-                      <span
-                        className={`absolute block h-3 w-[2px] bg-current transition-transform duration-300 ${
-                          isOpen ? "scale-y-0" : "scale-y-100"
-                        }`}
-                      />
-                    </span>
-                  </button>
-
-                  <div
-                    className="overflow-hidden transition-[max-height] duration-500 ease-out"
-                    style={{ maxHeight: isOpen ? "500px" : "0px" }}
-                  >
-                    <div className="grid grid-cols-[auto_1fr_auto] gap-6 pb-6">
-                      <span aria-hidden />
-                      <p className="text-xs leading-relaxed text-white/70 md:text-sm">
-                        {item.a}
-                      </p>
-                      <span aria-hidden />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="md:sticky md:top-28 md:self-start">
-            <p className="text-sm leading-relaxed text-white/70 md:text-base">
-              Still have questions? Our team is here to help.
-            </p>
-            <a
-              href="mailto:contact@amectechnology.com"
-              className="group mt-4 inline-flex items-center gap-2 rounded border border-white/25 bg-white/[0.04] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-black"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path d="m3 7 9 6 9-6" />
-              </svg>
-              Email us
-            </a>
-          </div>
-        </div>
-      </Shell>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Closing CTA
-// ---------------------------------------------------------------------------
-
-const CLOSING_HEADING = "A GOOD CONVERSATION STARTS WITH ONE MESSAGE.";
-const CLOSING_WORDS = CLOSING_HEADING.split(" ");
-
-function ClosingCTA() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-
-  useIsomorphicLayoutEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "+=100%",
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-      });
-
-      gsap.from("[data-close-cta]", {
-        autoAlpha: 0,
-        y: 30,
-        scale: 0.9,
-        duration: 0.7,
-        delay: 0.2,
-        ease: "back.out(1.6)",
-        scrollTrigger: { trigger: section, start: "top 70%" },
-      });
-
-      const words = gsap.utils.toArray<HTMLElement>("[data-close-word]");
-      gsap.set(words, { autoAlpha: 0.14 });
-      gsap.to(words, {
-        autoAlpha: 1,
-        ease: "none",
-        stagger: { amount: 1 },
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=30%",
-          scrub: 0.3,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      gsap.to("[data-close-glow]", {
-        xPercent: 8,
-        yPercent: -5,
-        duration: 9,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      const pulses = gsap.utils.toArray<HTMLElement>("[data-close-pulse]");
-      pulses.forEach((pulse, i) => {
-        gsap.set(pulse, { scale: 0.2, opacity: 0 });
-        gsap.to(pulse, {
-          scale: 1.4,
-          opacity: 0.5,
-          duration: 5,
-          repeat: -1,
-          ease: "sine.out",
-          delay: i * (5 / pulses.length),
-          keyframes: {
-            "0%": { scale: 0.2, opacity: 0 },
-            "20%": { opacity: 0.5 },
-            "100%": { scale: 1.4, opacity: 0 },
-          },
-        });
-      });
-    }, section);
-
-    const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
-
-    return () => {
-      window.clearTimeout(refreshId);
-      ctx.revert();
-    };
-  }, []);
+  const labelCls =
+    "block font-display text-sm font-semibold text-white md:text-base";
 
   return (
     <section
       ref={sectionRef}
-      className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-bg"
+      id="just-send-it"
+      className="w-full py-16 md:py-24"
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-      >
-        {[0, 1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            data-close-pulse
-            className="absolute aspect-square rounded-full border-2 border-white/25"
-            style={{ width: "60vmax" }}
-          />
-        ))}
-      </div>
-      <div
-        data-close-glow
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[70vmax] w-[70vmax] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 55%)",
-        }}
-      />
+      <Shell>
+        <div className="overflow-hidden rounded-card border border-white/[0.08] bg-bg-card">
+          <div className="grid gap-10 p-7 md:grid-cols-[1fr_1.3fr] md:gap-12 md:p-12 lg:gap-16 lg:p-16">
+            {/* LEFT — title sits lower in the column; info blocks + buttons grouped at the bottom */}
+            <div data-jsi-left className="flex flex-col">
+              <h2 className="mt-24 font-display font-semibold normal-case tracking-normal text-white text-[52px] leading-[1.05] md:mt-40 md:text-[72px]">
+                Just<br />send it.
+              </h2>
 
-      <div className="relative flex flex-col items-center gap-8 px-6 text-center md:px-14">
-        <h2 className="heading-xl max-w-6xl">
-          {CLOSING_WORDS.map((word, i) => (
-            <Fragment key={i}>
-              <span data-close-word className="inline-block">{word}</span>
-              {i < CLOSING_WORDS.length - 1 ? " " : ""}
-            </Fragment>
-          ))}
-        </h2>
-        <div data-close-cta>
-          <a
-            href="#contact-form"
-            className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
-          >
-            Start the Conversation
-            <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-              <ArrowRight className="h-3.5 w-3.5" />
-            </span>
-          </a>
+              {/* Bottom group — info blocks sit just above the buttons */}
+              <div className="mt-auto flex flex-col gap-8 pt-16">
+                <div className="grid gap-8 text-sm leading-relaxed sm:grid-cols-2 sm:gap-6 md:text-[15px]">
+                  <div>
+                    <p className="text-white/60">You don't like forms?</p>
+                    <p className="mt-2 max-w-[22ch] text-white">
+                      Partner with AMEC for end-to-end EV engineering — from concept to production-ready solutions.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-white/60">Looking to do great work?</p>
+                    <p className="mt-2 max-w-[22ch] text-white">
+                      Have a project in mind? Reach out and our team will get back to you within 24 hours.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <a
+                    href="mailto:hello@amectechnology.com"
+                    className="group/mail inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                  >
+                    hello@amectechnology.com
+                    <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/mail:bg-black group-hover/mail:text-white">
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </a>
+                  <Link
+                    href="/careers"
+                    className="group/job inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                  >
+                    Job Openings
+                    <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/job:bg-black group-hover/job:text-white">
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT — form */}
+            {state === "success" ? (
+              <div
+                data-jsi-form
+                className="flex flex-col items-start justify-center gap-6 rounded border border-white/[0.06] bg-white/[0.02] p-8"
+              >
+                <span className="grid h-14 w-14 place-items-center rounded-full border border-white/15 bg-white/[0.03] text-white">
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m5 12 5 5L20 7" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-white md:text-2xl">
+                    Thank you — we'll be in touch.
+                  </h3>
+                  <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70 md:text-base">
+                    Your message is on its way. Expect a reply within one business day.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setState("idle")}
+                  className="rounded border border-white/15 px-5 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/30 hover:bg-white/5"
+                >
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form
+                data-jsi-form
+                noValidate
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-6"
+              >
+                <div>
+                  <label htmlFor="jsi-name" className={labelCls}>Full Name</label>
+                  <input
+                    id="jsi-name"
+                    name="name"
+                    type="text"
+                    placeholder="Enter your name"
+                    className={`mt-2 ${field("name")}`}
+                    aria-invalid={!!errors.name}
+                  />
+                  {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name}</p>}
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <label htmlFor="jsi-email" className={labelCls}>Mail ID</label>
+                    <input
+                      id="jsi-email"
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      className={`mt-2 ${field("email")}`}
+                      aria-invalid={!!errors.email}
+                    />
+                    {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
+                  </div>
+                  <div>
+                    <label htmlFor="jsi-phone" className={labelCls}>Phone Number</label>
+                    <input
+                      id="jsi-phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      className={`mt-2 ${field("phone")}`}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <label htmlFor="jsi-company" className={labelCls}>Company / Organization</label>
+                    <input
+                      id="jsi-company"
+                      name="company"
+                      type="text"
+                      placeholder="Enter your company name"
+                      className={`mt-2 ${field("company")}`}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="jsi-type" className={labelCls}>Enquiry Type</label>
+                    <div className="relative mt-2">
+                      <select
+                        id="jsi-type"
+                        name="type"
+                        defaultValue=""
+                        className={`${field("type")} cursor-pointer appearance-none pr-12`}
+                      >
+                        <option value="" disabled>
+                          Select your area of interest
+                        </option>
+                        {INQUIRY_TYPES.map((t) => (
+                          <option key={t} value={t} className="bg-bg-card text-white">
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                      <span aria-hidden className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-white/60">
+                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="jsi-message" className={labelCls}>Message</label>
+                  <textarea
+                    id="jsi-message"
+                    name="message"
+                    rows={5}
+                    placeholder="Enter your query details…"
+                    className={`mt-2 resize-none ${field("message")}`}
+                    aria-invalid={!!errors.message}
+                  />
+                  {errors.message && <p className="mt-1 text-xs text-red-400">{errors.message}</p>}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={state === "submitting"}
+                  className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-5 font-display text-base font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60 md:text-lg"
+                >
+                  {state === "submitting" ? "Submitting…" : "Submit Enquiry"}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
+      </Shell>
     </section>
   );
 }

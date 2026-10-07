@@ -172,11 +172,13 @@ const CLIENTS = [
 ];
 
 const AREAS_OF_INTEREST = [
-  "OEM Engineering",
-  "Powertrain & Battery",
-  "SOURCE Energy System",
-  "Partnership",
-  "Other",
+  "Sales/Partnership",
+  "OEM/Product Development",
+  "Mobility & EV Solutions",
+  "Renewable Energy System",
+  "Career/Human Resources",
+  "Support/Service",
+  "General Enquiry",
 ];
 
 // ---------------------------------------------------------------------------
