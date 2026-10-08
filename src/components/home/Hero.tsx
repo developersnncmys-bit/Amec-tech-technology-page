@@ -85,7 +85,7 @@ export function Hero() {
               aria-hidden
             />
             <video
-              className="relative h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
               autoPlay
               loop
               muted

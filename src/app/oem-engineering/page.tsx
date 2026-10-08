@@ -268,7 +268,7 @@ function Hero() {
       {/* Full-bleed background video — autoplay, muted, loop */}
       <div data-oem-hero-image className="absolute inset-0">
         <video
-          className="h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
           src="/videos/OEM-hero.mp4"
           autoPlay
           muted
