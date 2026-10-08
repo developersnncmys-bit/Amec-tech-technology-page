@@ -279,14 +279,10 @@ function Hero() {
         />
       </div>
 
-      {/* Localized radial scrim behind the title for legibility */}
+      {/* Subtle full-bleed dark wash over the video */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 25% 50%, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0) 85%)",
-        }}
+        className="pointer-events-none absolute inset-0 bg-black/35"
       />
 
       {/* Left-aligned, vertically centered title */}

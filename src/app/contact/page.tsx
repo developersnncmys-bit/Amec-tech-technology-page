@@ -167,13 +167,19 @@ function Hero() {
         aria-hidden
       />
 
-      {/* Readability overlay */}
+      {/* Subtle full-bleed dark wash over the video */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-black/35"
+      />
+
+      {/* Localized radial scrim behind the title for legibility */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%)",
+            "radial-gradient(ellipse 60% 50% at 25% 50%, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0) 85%)",
         }}
       />
 
