@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { Footer } from "@/components/Footer";
-import { ArrowRight, ChevronLeft, ChevronRight } from "@/components/Icons";
+import { ArrowRight } from "@/components/Icons";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -22,9 +22,8 @@ const HERO_STATS: Array<{
     bottomLabel: "Continuous Use",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <rect x="2" y="7" width="16" height="10" rx="2" />
+        <rect x="2" y="7" width="18" height="10" rx="2" />
         <path d="M22 11v2" />
-        <path d="M6 10v4M10 10v4M14 10v4" />
       </svg>
     ),
   },
@@ -34,10 +33,11 @@ const HERO_STATS: Array<{
     bottomLabel: "Pressure Pump",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M3 8h11a3 3 0 1 0-3-3" />
-        <path d="M3 16h14a3 3 0 1 1-3 3" />
-        <path d="M3 12h18" />
-        <path d="m4 4 16 16" />
+        <path d="M10.513 4.856 13.12 2.17a.5.5 0 0 1 .86.46l-1.377 4.316" />
+        <path d="M15.656 10H20a1 1 0 0 1 .78 1.63l-1.72 1.998" />
+        <path d="M16.273 16.273 10.88 21.83a.5.5 0 0 1-.86-.46l1.47-4.604" />
+        <path d="M8.3 8.3 4 10a1 1 0 0 0-.78 1.63l5.24 6.09" />
+        <path d="m2 2 20 20" />
       </svg>
     ),
   },
@@ -47,9 +47,9 @@ const HERO_STATS: Array<{
     bottomLabel: "Sockets Needed",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M9 2v4M15 2v4" />
-        <path d="M7 6h10v6a5 5 0 0 1-10 0V6Z" />
-        <path d="M12 17v5" />
+        <path d="M12.8 19.6A2 2 0 1 0 14 16H2" />
+        <path d="M17.5 8a2.5 2.5 0 1 1 2 4H2" />
+        <path d="M9.8 4.4A2 2 0 1 1 11 8H2" />
       </svg>
     ),
   },
@@ -75,53 +75,54 @@ const USE_CASE_IMAGES = [
 // Icons for the Engineered for Ultimate Performance tiles — match Figma glyphs
 const PerfBatteryIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="2" y="7" width="16" height="10" rx="2" />
+    <rect x="2" y="7" width="18" height="10" rx="2" />
     <path d="M22 11v2" />
-    <path d="M6 10v4M10 10v4M14 10v4" />
+    <path d="M6 11v2" />
   </svg>
 );
 const PerfActivityIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M3 12h4l2-7 4 14 2-7h6" />
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
   </svg>
 );
 const PerfPlugSlashIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M9 2v4M15 2v4" />
-    <path d="M7 6h10v6a5 5 0 0 1-10 0V6Z" />
-    <path d="M12 17v5" />
-    <path d="m3 3 18 18" />
+    <polyline points="12.41 6.75 13 2 10.57 4.92" />
+    <polyline points="18.57 12.91 21 10 15.66 10" />
+    <polyline points="8 8 3 14 12 14 11 22 16 16" />
+    <line x1="2" y1="2" x2="22" y2="22" />
   </svg>
 );
 const PerfArrowUpIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 20V4" />
-    <path d="m6 10 6-6 6 6" />
+    <polygon points="3 11 22 2 13 21 11 13 3 11" />
   </svg>
 );
 const PerfChipIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="5" y="5" width="14" height="14" rx="2" />
+    <rect x="4" y="4" width="16" height="16" rx="2" />
     <rect x="9" y="9" width="6" height="6" />
-    <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4 7l2 2M18 15l2 2M4 17l2-2M18 9l2-2" />
+    <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
   </svg>
 );
 const PerfMedalIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <circle cx="12" cy="10" r="5" />
-    <path d="m8.5 14-1.5 7 5-3 5 3-1.5-7" />
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="10" r="3" />
+    <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
   </svg>
 );
 const PerfSunIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <circle cx="12" cy="12" r="4" />
-    <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M5.5 18.5l1.4-1.4M17.1 6.9l1.4-1.4" />
+    <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
   </svg>
 );
 const PerfRocketIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 2 7 9v6l5 3 5-3V9l-5-7Z" />
-    <path d="M9 15v4M15 15v4" />
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" y1="22.08" x2="12" y2="12" />
   </svg>
 );
 
@@ -274,12 +275,13 @@ const MODULES: Array<{ title: string; body: string; icon: React.ReactNode }> = [
     title: "Lithium-Ion Battery Pack",
     body:
       "Intelligent thermal vents and quick-charge support protect cell longevity.",
-    // Battery with lightning bolt — matches Figma glyph
+    // Battery-charging — split frame with bolt in the middle
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="h-6 w-6">
-        <rect x="2" y="7" width="14" height="10" rx="2" />
-        <path d="M20 10v4h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1Z" />
-        <path d="m10 9-2 3h2.5l-1.5 3 3-4H9.5l1.5-2Z" fill="currentColor" stroke="none" />
+        <path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2" />
+        <path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+        <path d="M22 11v2" />
+        <path d="m11 7-3 5h4l-3 5" />
       </svg>
     ),
   },
@@ -287,11 +289,18 @@ const MODULES: Array<{ title: string; body: string; icon: React.ReactNode }> = [
     title: "Heavy-Duty DC Pump",
     body:
       "Forged alloy pistons deliver stable maximum fluid flow and zero corrosion risk.",
-    // Settings gear/cog
+    // Cog — center circle with 8 teeth radiating
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="h-6 w-6">
         <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+        <path d="M12 2v3" />
+        <path d="M12 19v3" />
+        <path d="M4.22 4.22l2.12 2.12" />
+        <path d="M17.66 17.66l2.12 2.12" />
+        <path d="M2 12h3" />
+        <path d="M19 12h3" />
+        <path d="M4.22 19.78l2.12-2.12" />
+        <path d="M17.66 6.34l2.12-2.12" />
       </svg>
     ),
   },
@@ -299,10 +308,10 @@ const MODULES: Array<{ title: string; body: string; icon: React.ReactNode }> = [
     title: "Compact Water Tank Option",
     body:
       "Mount the onboard tank directly or drop the hose in any external vessel.",
-    // Water droplet — filled teardrop
+    // Water droplet — outlined teardrop
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="h-6 w-6">
-        <path d="M12 2.5s7 7.5 7 12.5a7 7 0 0 1-14 0c0-5 7-12.5 7-12.5Z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="h-6 w-6">
+        <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
       </svg>
     ),
   },
@@ -310,10 +319,10 @@ const MODULES: Array<{ title: string; body: string; icon: React.ReactNode }> = [
     title: "Dynamic Power Control",
     body:
       "Manage motor speeds dynamically using the tactile dual-mode pressure trigger.",
-    // Lightning bolt
+    // Lightning bolt — filled zap
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="h-6 w-6">
-        <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" />
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
       </svg>
     ),
   },
@@ -328,15 +337,13 @@ const TESTIMONIALS = [
     avatar: "/Pressure-washerkit/Image (Priya Nair).png",
   },
   {
-    body:
-      "Weekend trail ride ke baad bike pe stubborn mud jam jata tha. The 1400 PSI pressure is seriously impressive — radiator ke delicate fins ko bina damage kiye saari mitti saaf kar deta hai. Normal pressure washer se double fast ho gaya hai.",
+    body: "",
     name: "Vikram Reddy",
     role: "Auto Detailing Studio, Hyderabad",
     avatar: "/Pressure-washerkit/Image (Vikram Reddy).png",
   },
   {
-    body:
-      "Pehle Sunday car wash center pe 2 ghante line mein lagna padta tha. Ab ghar ke driveway pe 20 minutes mein complete DIY wash ho jata hai. Solid machine and powerful water throw!",
+    body: "",
     name: "Aditya Singh",
     role: "Off-Road Enthusiast, Jaipur",
     avatar: "/Pressure-washerkit/Image (Aditya Singh).png",
@@ -371,23 +378,45 @@ const TESTIMONIALS = [
   },
   {
     body:
-      "Fleet ke 20+ vehicles clean karne ke liye ye setup zabardast hai. Bina kisi power supply ke sab kuch handle ho raha hai. Operations cost significantly reduce ho gaya.",
+      "Pehle Sunday car wash center pe 2 ghante line mein lagna padta tha. Ab ghar ke driveway pe 20 minutes mein complete DIY wash ho jata hai. Solid machine and powerful water throw!",
     name: "Manoj Kumar",
     role: "Fortuner Owner, Chandigarh",
     avatar: "/Pressure-washerkit/Image (Manoj Kumar).png",
+  },
+  {
+    body:
+      "Weekend trail ride ke baad bike pe stubborn mud jam jata tha. The 1400 PSI pressure is seriously impressive — radiator ke delicate fins ko bina damage kiye saari mitti saaf kar deta hai.",
+    name: "Arjun Mehta",
+    role: "Bike Enthusiast, Pune",
+    avatar: "/Pressure-washerkit/Image (Vikram Reddy).png",
+  },
+  {
+    body:
+      "I run a mobile auto detailing setup in the city. Clients ke doorstep pe service deni padti hai, aur Aquaforce ne mera workflow completely change kar diya. No power dependency means no excuses.",
+    name: "Rohan Verma",
+    role: "Mobile Detailer, Noida",
+    avatar: "/Pressure-washerkit/Image (Karthik Rao).png",
+  },
+  {
+    body:
+      "Thar off-roading ke baad remote locations mein wash karna pehle impossible tha. Ab ek bucket aur Aquaforce lekar jaata hoon — jeep showroom condition mein wapas aati hai.",
+    name: "Siddharth Rana",
+    role: "Off-Road Adventurer, Dehradun",
+    avatar: "/Pressure-washerkit/Image (Aditya Singh).png",
   },
 ];
 
 // Explicit column distribution to match the Figma masonry — CSS columns
 // balances items by height which breaks the design, so we hand-pick which
-// testimonials live in each column.
+// testimonials live in each column. Col 2 and Col 3 get an extra card so
+// their first/last cards extend into the top/bottom fade zones.
 const TESTIMONIAL_COLUMNS = [
-  // Column 1 — short to medium cards
-  [TESTIMONIALS[0], TESTIMONIALS[4]],
-  // Column 2 — tallest column (Vikram's long card at top)
-  [TESTIMONIALS[1], TESTIMONIALS[3], TESTIMONIALS[7]],
-  // Column 3 — Aditya's shorter card at top, then Karthik, then Ananya
-  [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[6]],
+  // Column 1 — Priya, Rahul, Arjun (ends in bottom fade)
+  [TESTIMONIALS[0], TESTIMONIALS[4], TESTIMONIALS[8]],
+  // Column 2 — Vikram top (clips into top fade), Sneha, Manoj, Rohan (bottom fade)
+  [TESTIMONIALS[1], TESTIMONIALS[3], TESTIMONIALS[7], TESTIMONIALS[9]],
+  // Column 3 — Aditya top (clips into top fade), Karthik, Ananya, Siddharth (bottom fade)
+  [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[6], TESTIMONIALS[10]],
 ];
 
 // ---------------------------------------------------------------------------
@@ -489,12 +518,12 @@ function Hero() {
 
       <div className="relative w-full px-6 md:px-14">
         <div className="max-w-xl">
-          <h1 data-pw-hero-title className="heading-xl">
+          <h1 data-pw-hero-title className="heading-xl md:!text-[68px] md:!leading-[1.06]">
             Pressure Washer Kit
           </h1>
           <p
             data-pw-hero-sub
-            className="mt-5 text-sm leading-relaxed text-white/80 md:text-base"
+            className="mt-5 text-sm leading-relaxed text-white/80 md:text-[18px]"
           >
             Wash your car anywhere with the AMEC Aquaforce 1400 — a powerful,
             battery-powered portable pressure washer. No cables, no power
@@ -887,20 +916,23 @@ function WashWithoutLimits() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden py-20 md:py-28">
-      <Shell>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_1.3fr_1fr] md:items-center md:gap-6">
-          <div
-            data-wwl-image
-            className="relative aspect-[3/4] overflow-hidden rounded-xl bg-bg-card"
-          >
-            <img
-              src="/Pressure-washerkit/product-image-left.png"
-              alt="Person washing"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
+    <section
+      ref={sectionRef}
+      className="relative w-full overflow-hidden md:h-screen md:min-h-[720px]"
+    >
+      <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-[1fr_1.2fr_1fr] md:gap-0">
+        <div
+          data-wwl-image
+          className="relative aspect-[3/4] bg-bg-card md:aspect-auto md:h-full"
+        >
+          <img
+            src="/Pressure-washerkit/product-image-left.png"
+            alt="Person washing"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
 
+        <div className="flex items-center justify-center px-6 py-12 md:py-0">
           <div data-wwl-heading className="text-center">
             <h2 className="heading-lg">
               WASH WITHOUT
@@ -911,31 +943,44 @@ function WashWithoutLimits() {
               Aquaforce 1400
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2 md:mt-8 md:gap-3">
-              {WASH_CHIPS.map((c) => (
-                <span
-                  key={c}
-                  data-wwl-chip
-                  className="rounded-[4px] border border-white/15 bg-white/[0.03] px-4 py-2 font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80 md:text-xs"
-                >
-                  {c}
-                </span>
-              ))}
+            <div className="mt-6 flex flex-col items-center gap-2 md:mt-8 md:gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+                {WASH_CHIPS.slice(0, 2).map((c) => (
+                  <span
+                    key={c}
+                    data-wwl-chip
+                    className="rounded-xl border-2 border-white/30 bg-white/[0.03] px-5 py-2.5 font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80 md:text-xs"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+                {WASH_CHIPS.slice(2).map((c) => (
+                  <span
+                    key={c}
+                    data-wwl-chip
+                    className="rounded-xl border-2 border-white/30 bg-white/[0.03] px-5 py-2.5 font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80 md:text-xs"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-
-          <div
-            data-wwl-image
-            className="relative aspect-[3/4] overflow-hidden rounded-xl bg-bg-card"
-          >
-            <img
-              src="/Pressure-washerkit/product-image-right.png"
-              alt="Person washing"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
         </div>
-      </Shell>
+
+        <div
+          data-wwl-image
+          className="relative aspect-[3/4] bg-bg-card md:aspect-auto md:h-full"
+        >
+          <img
+            src="/Pressure-washerkit/product-image-right.png"
+            alt="Person washing"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
+      </div>
     </section>
   );
 }
@@ -1024,7 +1069,7 @@ function FourSteps() {
         <img
           src="/Pressure-washerkit/bg-image.png"
           alt="Aquaforce 1400 on a workbench"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-contain object-center"
         />
         <div
           aria-hidden
@@ -1037,14 +1082,19 @@ function FourSteps() {
       </div>
 
       {/* Top-centered heading */}
-      <div className="relative z-10 flex flex-col items-center px-6 pt-28 text-center md:pt-36">
+      <div className="relative z-10 flex flex-col items-center px-6 pt-6 text-center md:pt-10">
         <p
           data-fs-eyebrow
-          className="font-display text-sm font-semibold uppercase tracking-[0.22em] text-white/80 md:text-base"
+          className="font-display font-semibold uppercase tracking-normal text-white"
+          style={{ fontSize: "clamp(28px, 4.2vw, 48px)", lineHeight: 1.06 }}
         >
           4 Steps to
         </p>
-        <h2 data-fs-title className="mt-2 heading-xl !normal-case">
+        <h2
+          data-fs-title
+          className="mt-3 font-sans font-semibold tracking-tight text-white md:mt-4"
+          style={{ fontSize: "clamp(28px, 4.2vw, 48px)", lineHeight: 1.06 }}
+        >
           Pristine Clean
         </h2>
       </div>
@@ -1499,9 +1549,6 @@ function CompactModules() {
 
 function Testimonials() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [canLeft, setCanLeft] = useState(false);
-  const [canRight, setCanRight] = useState(true);
 
   useIsomorphicLayoutEffect(() => {
     const el = sectionRef.current;
@@ -1516,153 +1563,111 @@ function Testimonials() {
         ease: "power3.out",
         scrollTrigger: { trigger: el, start: "top 80%" },
       });
-      gsap.from("[data-ts-arrows]", {
-        autoAlpha: 0,
-        y: 10,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 80%" },
-      });
       gsap.from("[data-ts-card]", {
         autoAlpha: 0,
         y: 40,
         duration: 0.7,
-        stagger: 0.1,
+        stagger: 0.08,
         ease: "power3.out",
-        scrollTrigger: { trigger: "[data-ts-track]", start: "top 85%" },
+        scrollTrigger: { trigger: "[data-ts-grid]", start: "top 85%" },
       });
     }, el);
 
     return () => ctx.revert();
   }, []);
 
-  // Track scroll position for arrow enabled state
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    const update = () => {
-      setCanLeft(el.scrollLeft > 4);
-      setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-    };
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      el.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  const scrollByCard = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-ts-card]");
-    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
-    el.scrollBy({ left: step * dir, behavior: "smooth" });
-  };
-
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden py-14 md:py-16"
+      className="relative w-full py-20 md:py-28"
     >
       <Shell>
-        {/* Header row — title on left, prev/next arrows on right */}
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end md:gap-10">
-          <div>
-            <h2 data-ts-head className="heading-lg">
-              WHAT OUR USERS SAY
-            </h2>
-            <p
-              data-ts-head
-              className="mt-3 max-w-xl text-sm leading-relaxed text-white/60 md:text-[15px]"
-            >
-              Real feedback from car enthusiasts, bike owners, and professionals
-              across India who trust Aquaforce 1400.
-            </p>
-          </div>
-
-          <div data-ts-arrows className="flex shrink-0 items-center gap-3">
-            <button
-              type="button"
-              onClick={() => scrollByCard(-1)}
-              disabled={!canLeft}
-              aria-label="Previous testimonials"
-              className="grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/[0.03] text-white transition hover:border-white/40 hover:bg-white/[0.08] disabled:pointer-events-none disabled:opacity-30 md:h-12 md:w-12"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollByCard(1)}
-              disabled={!canRight}
-              aria-label="Next testimonials"
-              className="grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/[0.03] text-white transition hover:border-white/40 hover:bg-white/[0.08] disabled:pointer-events-none disabled:opacity-30 md:h-12 md:w-12"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
+        <div className="text-center">
+          <h2 data-ts-head className="heading-lg">
+            WHAT OUR USERS SAY
+          </h2>
+          <p
+            data-ts-head
+            className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/60 md:text-[15px]"
+          >
+            Real feedback from car enthusiasts, bike owners, and professionals
+            across India who trust Aquaforce 1400.
+          </p>
         </div>
 
-        {/* Horizontal rail — 3 cards visible, snap-scroll, drag or arrow controls */}
-        <div className="relative mt-8 md:mt-10">
-          <div
-            ref={trackRef}
-            data-ts-track
-            className="flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-3"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <style jsx>{`div::-webkit-scrollbar { display: none; }`}</style>
-            {TESTIMONIALS.map((t) => (
-              <article
-                key={t.name}
-                data-ts-card
-                className="relative flex w-[260px] shrink-0 snap-start flex-col rounded-2xl border border-white/[0.08] bg-bg-card p-5 md:w-[300px] md:p-6 lg:w-[340px]"
-              >
-                {/* Top row — avatar + verified badge */}
-                <div className="flex items-start justify-between gap-3">
-                  <img
-                    src={t.avatar}
-                    alt={t.name}
-                    className="h-11 w-11 rounded-full object-cover md:h-12 md:w-12"
-                  />
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/80">
-                    <span aria-hidden className="h-1 w-1 rounded-full bg-emerald-400" />
-                    Verified
-                  </span>
-                </div>
+        {/* 3-column natural masonry — all columns start at the same top.
+            Col 2 (Vikram) and col 3 (Aditya) lead with short reviews so they
+            render as compact cards, matching the Figma. Col 1 has 3 cards,
+            cols 2 & 3 have 4 cards each — the extra bottom cards sit inside
+            the bottom-fade overlay to produce the dim "fourth row" look. */}
+        <div data-ts-grid className="relative mt-10 md:mt-14">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:items-start">
+            {TESTIMONIAL_COLUMNS.map((col, i) => (
+              <div key={i} className="flex flex-col gap-5 md:gap-6">
+                {col.map((t) => {
+                  // Empty body = Vikram/Aditya: profile-only variant with a
+                  // top-fade mask so the card's top edge blends into the page
+                  // background, matching the Figma.
+                  const isProfileOnly = t.body === "";
+                  return (
+                    <article
+                      key={t.name}
+                      data-ts-card
+                      className="relative flex flex-col rounded-2xl bg-white/[0.03] p-6 md:p-7"
+                      style={
+                        isProfileOnly
+                          ? {
+                              WebkitMaskImage:
+                                "linear-gradient(to bottom, transparent 0%, black 45%)",
+                              maskImage:
+                                "linear-gradient(to bottom, transparent 0%, black 45%)",
+                            }
+                          : undefined
+                      }
+                    >
+                      {isProfileOnly ? (
+                        // Short spacer — just enough room for the top fade,
+                        // keeps the card compact so Sneha / Karthik move up.
+                        <div className="h-4 md:h-6" aria-hidden />
+                      ) : (
+                        <p className="font-sans text-sm leading-relaxed text-white/55 md:text-[15px]">
+                          {t.body}
+                        </p>
+                      )}
 
-                {/* Quote mark */}
-                <span
-                  aria-hidden
-                  className="mt-5 inline-block font-display text-3xl font-bold leading-none text-white/25 md:text-4xl"
-                >
-                  &ldquo;
-                </span>
-
-                {/* Body — clamped so cards share a baseline height */}
-                <p className="mt-2 flex-1 font-display text-sm leading-snug text-white md:text-[15px] lg:text-base">
-                  {t.body}
-                </p>
-
-                {/* Bottom — name + role with vertical accent bar */}
-                <div className="mt-5 flex items-start gap-3 md:mt-6">
-                  <span
-                    aria-hidden
-                    className="mt-0.5 inline-block h-8 w-[2px] shrink-0 bg-white/80"
-                  />
-                  <div className="min-w-0">
-                    <p className="truncate text-[13px] font-semibold text-white md:text-sm">
-                      {t.name}
-                    </p>
-                    <p className="mt-0.5 truncate text-[11px] text-white/55 md:text-xs">
-                      {t.role}
-                    </p>
-                  </div>
-                </div>
-              </article>
+                      <div className="mt-6 flex items-center gap-3 md:mt-7">
+                        <img
+                          src={t.avatar}
+                          alt={t.name}
+                          className="h-10 w-10 shrink-0 rounded-full object-cover md:h-11 md:w-11"
+                        />
+                        <div className="min-w-0">
+                          <p className="truncate font-display text-sm font-semibold text-white md:text-[15px]">
+                            {t.name}
+                          </p>
+                          <p className="mt-0.5 truncate font-sans text-[11px] text-white/50 md:text-xs">
+                            {t.role}
+                          </p>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
             ))}
           </div>
+
+          {/* Bottom fade — dims the extra 4th-row cards in cols 2 & 3 and the
+              tail of Arjun's card in col 1, matching the Figma's low-opacity
+              footer row. Sits on top of the grid, fades to page bg. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[220px] lg:block"
+            style={{
+              background:
+                "linear-gradient(to top, #0A0A0A 0%, #0A0A0A 35%, rgba(10,10,10,0) 100%)",
+            }}
+          />
         </div>
       </Shell>
     </section>
@@ -1812,7 +1817,7 @@ function CTA() {
           <div data-cta-btn className="mt-10">
             <Link
               href="/contact"
-              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
             >
               <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
                 <ArrowRight className="h-3.5 w-3.5" />

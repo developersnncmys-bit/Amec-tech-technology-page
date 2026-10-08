@@ -81,16 +81,21 @@ const WHY_FEATURES = [
 // Icons for the How AMEC Works process steps (Detect / Verify / Alert / Respond)
 const DetectIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <circle cx="12" cy="14" r="1.5" fill="currentColor" />
-    <path d="M9 11a4 4 0 0 1 6 0" />
-    <path d="M6.5 8.5a7.5 7.5 0 0 1 11 0" />
-    <path d="M4 6a11 11 0 0 1 16 0" />
+    <g transform="rotate(90 12 12)">
+      <circle cx="12" cy="12" r="1.25" fill="currentColor" />
+      <path d="M9.5 9.5a3.5 3.5 0 0 1 5 0" />
+      <path d="M9.5 14.5a3.5 3.5 0 0 0 5 0" />
+      <path d="M7 7a7 7 0 0 1 10 0" />
+      <path d="M7 17a7 7 0 0 0 10 0" />
+      <path d="M4.5 4.5a10.5 10.5 0 0 1 15 0" />
+      <path d="M4.5 19.5a10.5 10.5 0 0 0 15 0" />
+    </g>
   </svg>
 );
 
 const VerifyIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 2 4 5v6c0 5 3.5 8.4 8 10 4.5-1.6 8-5 8-10V5l-8-3Z" />
+    <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
     <path d="m9 12 2 2 4-4" />
   </svg>
 );
@@ -105,7 +110,7 @@ const AlertIcon = (
 
 const RespondIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 2 4 5v7c0 5 3.5 8.7 8 10 4.5-1.3 8-5 8-10V5l-8-3Z" />
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
   </svg>
 );
 
@@ -390,8 +395,7 @@ function Hero() {
         <div className="max-w-3xl">
           <h1
             data-ew-hero-title
-            className="font-display font-semibold uppercase leading-[1.05] text-white"
-            style={{ fontSize: "clamp(32px, 4.8vw, 56px)" }}
+            className="font-display text-[40px] font-semibold uppercase leading-[1.06] text-white md:text-[68px]"
           >
             {titleWords.map((w, i) => (
               <Fragment key={i}>
@@ -402,7 +406,7 @@ function Hero() {
           </h1>
           <p
             data-ew-hero-sub
-            className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 md:mt-6 md:text-[15px]"
+            className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 md:mt-6 md:text-[18px]"
           >
             AI-powered autonomous early warning system designed for industrial sites,
             mining, solar farms and critical infrastructure.
@@ -436,32 +440,33 @@ function Hero() {
 // Icons for the WHY AMEC OUTPERFORMS tiles — match Figma glyphs
 const LidarIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-    <path d="M8.5 12a3.5 3.5 0 0 1 7 0" />
-    <path d="M6 12a6 6 0 0 1 12 0" />
-    <path d="M3.5 12a8.5 8.5 0 0 1 17 0" />
+    <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+    <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+    <circle cx="12" cy="12" r="2" />
+    <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
+    <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
   </svg>
 );
 
 const SolarIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="7" y="3" width="10" height="16" rx="2" />
-    <path d="M10 3V2M14 3V2M10 22v-1M14 22v-1" />
-    <path d="m13 8-3 4h4l-3 4" fill="currentColor" />
+    <rect x="6" y="4" width="12" height="18" rx="2" />
+    <path d="M10 2h4" />
+    <path d="m13 9-3 4h4l-3 4" fill="currentColor" stroke="none" />
   </svg>
 );
 
 const MeshGlobeIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <circle cx="12" cy="12" r="9" />
-    <path d="M3 12h18" />
-    <path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+    <circle cx="12" cy="12" r="10" />
+    <path d="M2 12h20" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
   </svg>
 );
 
 const ShieldIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 2 4 5v7c0 5 3.5 8.7 8 10 4.5-1.3 8-5 8-10V5l-8-3Z" />
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
   </svg>
 );
 
@@ -716,6 +721,24 @@ function HowItWorks() {
             at + 0.35
           );
         }
+
+        // Active state — white fill + glow + black icon when this step is current
+        const fill = node.querySelector("[data-hw-node-fill]");
+        const glow = node.querySelector("[data-hw-node-glow]");
+        const icon = node.querySelector<HTMLElement>("[data-hw-node-icon]");
+
+        if (fill && glow && icon) {
+          tl.to(fill, { autoAlpha: 1, duration: 0.3 }, at + 0.2);
+          tl.to(glow, { autoAlpha: 1, duration: 0.3 }, at + 0.2);
+          tl.to(icon, { color: "#000000", duration: 0.3 }, at + 0.2);
+
+          // Deactivate when the next step takes over (keep last step active)
+          if (i < totalSteps - 1) {
+            tl.to(fill, { autoAlpha: 0, duration: 0.3 }, at + 0.9);
+            tl.to(glow, { autoAlpha: 0, duration: 0.3 }, at + 0.9);
+            tl.to(icon, { color: "#ffffff", duration: 0.3 }, at + 0.9);
+          }
+        }
       });
     }, section);
 
@@ -734,7 +757,7 @@ function HowItWorks() {
     >
       <Shell>
         <h2 data-hw-heading className="heading-lg text-center">
-          HOW AMEC WORKS
+          OPERATIONAL LOGIC
         </h2>
 
         <div data-hw-grid className="relative mt-16 md:mt-20">
@@ -749,11 +772,30 @@ function HowItWorks() {
           <div className="grid gap-10 md:grid-cols-4 md:gap-6">
             {PROCESS_STEPS.map((s) => (
               <div key={s.id} className="flex flex-col items-center text-center">
-                <span
-                  data-hw-node
-                  className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full border border-white/15 bg-bg-card text-white"
-                >
-                  <span className="h-6 w-6">{s.icon}</span>
+                <span data-hw-node className="relative inline-block">
+                  <span
+                    data-hw-node-glow
+                    aria-hidden
+                    className="pointer-events-none absolute -inset-4 rounded-full opacity-0"
+                    style={{
+                      background:
+                        "radial-gradient(circle, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 65%)",
+                    }}
+                  />
+                  <span className="relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full border border-white/15 bg-bg-card">
+                    <span
+                      data-hw-node-fill
+                      aria-hidden
+                      className="absolute inset-0 rounded-full bg-white opacity-0"
+                    />
+                    <span
+                      data-hw-node-icon
+                      className="relative z-10 h-6 w-6"
+                      style={{ color: "#ffffff" }}
+                    >
+                      {s.icon}
+                    </span>
+                  </span>
                 </span>
                 <div data-hw-step-text>
                   <h3 className="mt-6 text-base font-semibold text-white md:text-lg">{s.title}</h3>
@@ -880,29 +922,33 @@ function MeshNetwork() {
         .to("[data-tr-sub]", { autoAlpha: 1, y: 0, duration: 0.5 }, "-=0.1");
 
       // ------- Ambient (continuous) animations -------
+      // Pre-hide ambient elements so they don't flash in their default DOM
+      // state before the section enters the viewport. Each ambient tween is
+      // gated by a ScrollTrigger so it only runs while the section is in view.
+      gsap.set(["[data-mn-hub-pulse]", "[data-mn-ring]"], {
+        autoAlpha: 0,
+      });
+
+      const ambientST = {
+        trigger: el,
+        start: "top 85%",
+        end: "bottom top",
+        toggleActions: "play pause resume pause",
+      } as const;
 
       // Hub pulse ring — continuous
       gsap.fromTo(
         "[data-mn-hub-pulse]",
-        { attr: { r: 20 }, opacity: 0.6 },
-        { attr: { r: 44 }, opacity: 0, duration: 2.2, repeat: -1, ease: "sine.out" }
+        { attr: { r: 20 }, autoAlpha: 0.6 },
+        {
+          attr: { r: 44 },
+          autoAlpha: 0,
+          duration: 2.2,
+          repeat: -1,
+          ease: "sine.out",
+          scrollTrigger: ambientST,
+        }
       );
-
-      // Signal packet travels node-by-node toward the hub
-      const packetTl = gsap.timeline({ repeat: -1, repeatDelay: 0.6 });
-      packetTl.set("[data-mn-packet]", {
-        attr: { cx: nodes[0].x, cy: nodes[0].y },
-        opacity: 0,
-      });
-      packetTl.to("[data-mn-packet]", { opacity: 1, duration: 0.2 });
-      for (let i = 1; i < nodes.length; i++) {
-        packetTl.to("[data-mn-packet]", {
-          attr: { cx: nodes[i].x, cy: nodes[i].y },
-          duration: 0.7,
-          ease: "power1.inOut",
-        });
-      }
-      packetTl.to("[data-mn-packet]", { opacity: 0, duration: 0.3 });
 
       // Device photo gentle float
       gsap.to("[data-mn-device]", {
@@ -911,6 +957,7 @@ function MeshNetwork() {
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
+        scrollTrigger: ambientST,
       });
 
       // Concentric ring pulse behind the device
@@ -918,14 +965,15 @@ function MeshNetwork() {
       rings.forEach((ring, i) => {
         gsap.fromTo(
           ring,
-          { scale: 0.3, opacity: 0.75 },
+          { scale: 0.3, autoAlpha: 0.75 },
           {
             scale: 1.7,
-            opacity: 0,
+            autoAlpha: 0,
             duration: 3,
             repeat: -1,
             ease: "sine.out",
             delay: i * 0.75,
+            scrollTrigger: ambientST,
           }
         );
       });
@@ -1009,14 +1057,6 @@ function MeshNetwork() {
               strokeLinecap="round"
             />
 
-            {/* Signal packet rides the path */}
-            <circle
-              data-mn-packet
-              r="4"
-              fill="#9effd2"
-              style={{ filter: "drop-shadow(0 0 6px #19c37d)" }}
-            />
-
             {/* Nodes + labels */}
             {nodes.map((n, i) => (
               <g key={`node-${i}`}>
@@ -1039,6 +1079,11 @@ function MeshNetwork() {
                   fill={n.hub ? "url(#mn-hub-fill)" : "url(#mn-node-fill)"}
                   stroke={n.hub ? "rgba(25,195,125,1)" : "rgba(255,255,255,0.9)"}
                   strokeWidth="1.5"
+                  style={{
+                    filter: n.hub
+                      ? "drop-shadow(0 0 10px rgba(25,195,125,0.9)) drop-shadow(0 0 20px rgba(25,195,125,0.5))"
+                      : "drop-shadow(0 0 8px rgba(255,255,255,0.9)) drop-shadow(0 0 16px rgba(255,255,255,0.5))",
+                  }}
                 />
                 <text
                   data-mn-label
@@ -1072,7 +1117,7 @@ function MeshNetwork() {
               >
                 <span
                   aria-hidden
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/15 text-white md:h-12 md:w-12"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-black md:h-12 md:w-12"
                 >
                   <span className="h-5 w-5 md:h-6 md:w-6">{c.icon}</span>
                 </span>

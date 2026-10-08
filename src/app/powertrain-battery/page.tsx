@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { Footer } from "@/components/Footer";
-import { ArrowRight, ChevronLeft, ChevronRight } from "@/components/Icons";
+import { ArrowRight } from "@/components/Icons";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -289,22 +289,23 @@ function Hero() {
           preload="auto"
           aria-hidden
         />
-        {/* Subtle gradient — keeps text legible without washing out the video */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.45) 100%)",
-          }}
-        />
       </div>
 
-      {/* Title overlay — top-center, below navbar */}
-      <div className="absolute inset-x-0 top-0 flex justify-center px-6 pt-28 text-center md:pt-36">
+      {/* Localized radial scrim behind the title for legibility */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 55% 45% at 25% 50%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 85%)",
+        }}
+      />
+
+      {/* Title overlay — left-aligned, vertically centered */}
+      <div className="absolute inset-0 flex flex-col items-start justify-center px-4 text-left md:px-8 lg:px-12">
         <h1
           data-hero-title
-          className="font-display text-4xl font-semibold uppercase leading-[1.05] text-white md:text-6xl lg:text-7xl"
+          className="font-display text-[40px] font-semibold uppercase leading-[1.06] text-white md:text-[68px]"
         >
           Powertrain And Battery
         </h1>
@@ -379,112 +380,74 @@ function ProductPortfolio() {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const [visibleIndex, setVisibleIndex] = useState(1);
-  const [canLeft, setCanLeft] = useState(false);
-  const [canRight, setCanRight] = useState(true);
-
-  // Update which card is "in focus" based on scroll position (closest to left edge)
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    const update = () => {
-      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
-      setCanLeft(el.scrollLeft > 4);
-      setCanRight(!atEnd);
-      const cards = Array.from(el.querySelectorAll<HTMLElement>("[data-portfolio-card]"));
-      if (!cards.length) return;
-      // At the end of scroll, the counter should reflect the final card — the
-      // leftmost card can't advance past (totalCards - visibleCards + 1), so
-      // without this the counter stalls short of the total.
-      if (atEnd) {
-        setVisibleIndex(cards.length);
-        return;
-      }
-      const left = el.scrollLeft;
-      let closest = 0;
-      let min = Infinity;
-      cards.forEach((c, i) => {
-        const d = Math.abs(c.offsetLeft - left);
-        if (d < min) {
-          min = d;
-          closest = i;
-        }
-      });
-      setVisibleIndex(closest + 1);
-    };
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      el.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  // Mouse drag support
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    let isDown = false;
-    let startX = 0;
-    let startLeft = 0;
-
-    const onDown = (e: MouseEvent) => {
-      if (e.button !== 0) return;
-      if ((e.target as HTMLElement).closest("button, a")) return;
-      isDown = true;
-      startX = e.clientX;
-      startLeft = el.scrollLeft;
-      el.style.cursor = "grabbing";
-      el.style.scrollBehavior = "auto";
-    };
-    const onMove = (e: MouseEvent) => {
-      if (!isDown) return;
-      e.preventDefault();
-      el.scrollLeft = startLeft - (e.clientX - startX);
-    };
-    const onUp = () => {
-      isDown = false;
-      el.style.cursor = "";
-      el.style.scrollBehavior = "";
-    };
-
-    el.addEventListener("mousedown", onDown);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    return () => {
-      el.removeEventListener("mousedown", onDown);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-  }, []);
 
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
+    const track = trackRef.current;
+    if (!section || !track) return;
 
     const ctx = gsap.context(() => {
+      gsap.from("[data-pp-eyebrow]", {
+        autoAlpha: 0, y: 16, duration: 0.5, ease: "power3.out",
+        scrollTrigger: { trigger: section, start: "top 85%" },
+      });
+      gsap.from("[data-pp-counter]", {
+        autoAlpha: 0, y: 16, duration: 0.5, ease: "power3.out",
+        scrollTrigger: { trigger: section, start: "top 85%" },
+      });
+      gsap.fromTo(
+        "[data-portfolio-card]",
+        { autoAlpha: 0, y: 30 },
+        {
+          autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out",
+          scrollTrigger: { trigger: section, start: "top 85%" },
+        }
+      );
+
+      // Pin + translate the card track horizontally. A hold phase at the start
+      // keeps the pinned section still for ~half a viewport of scroll before
+      // the cards begin moving. Counter updates in sync with translate progress.
+      const getDistance = () =>
+        Math.max(0, track.scrollWidth - window.innerWidth + 48);
+      const getHold = () => window.innerHeight * 0.5;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "top 85%",
-          toggleActions: "play none none none",
+          start: "top top",
+          end: () => `+=${getHold() + getDistance()}`,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const hold = getHold();
+            const dist = getDistance();
+            if (dist === 0) return;
+            const total = hold + dist;
+            const translateProgress = Math.max(
+              0,
+              Math.min(1, (self.progress * total - hold) / dist)
+            );
+            const idx = Math.max(
+              1,
+              Math.min(
+                PRODUCTS.length,
+                Math.round(translateProgress * (PRODUCTS.length - 1)) + 1
+              )
+            );
+            setVisibleIndex((prev) => (prev === idx ? prev : idx));
+          },
         },
       });
-      tl.from("[data-pp-eyebrow]", { autoAlpha: 0, y: 16, duration: 0.5, ease: "power3.out" })
-        .from("[data-pp-counter]", { autoAlpha: 0, y: 16, duration: 0.5, ease: "power3.out" }, "-=0.3")
-        .fromTo(
-          "[data-portfolio-card]",
-          { autoAlpha: 0, y: 30 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.08,
-            ease: "power3.out",
-          },
-          "-=0.2"
-        );
+
+      tl.to({}, { duration: getHold() });
+      tl.to(track, {
+        x: () => -getDistance(),
+        ease: "none",
+        duration: getDistance(),
+      });
     }, section);
 
     const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -495,16 +458,8 @@ function ProductPortfolio() {
     };
   }, []);
 
-  const scrollByCard = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-portfolio-card]");
-    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
-    el.scrollBy({ left: step * dir, behavior: "smooth" });
-  };
-
   return (
-    <section ref={sectionRef} className="w-full py-16 md:py-20">
+    <section ref={sectionRef} className="relative w-full overflow-hidden py-16 md:py-20">
       <Shell>
         <div className="flex items-end justify-between gap-6">
           <h2 data-pp-eyebrow className="heading-lg">
@@ -518,76 +473,51 @@ function ProductPortfolio() {
             <span className="text-sm text-white/40">/{String(PRODUCTS.length).padStart(2, "0")}</span>
           </div>
         </div>
-
-        <div className="relative mt-8">
-          <div
-            ref={trackRef}
-            className="flex cursor-grab snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-6"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <style jsx>{`div::-webkit-scrollbar { display: none; }`}</style>
-            {PRODUCTS.map((p) => (
-              <article
-                key={p.title}
-                data-portfolio-card
-                className="group/card relative flex w-[340px] shrink-0 snap-start flex-col rounded-xl border border-white/[0.06] bg-bg-card p-5 transition hover:border-white/20 md:w-[400px]"
-              >
-                <span className="inline-flex w-fit items-center rounded-md border border-white/15 bg-white/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md">
-                  {p.tag}
-                </span>
-                <div className="mt-3 flex h-[200px] w-full items-center justify-center md:h-[220px]">
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    className="h-full w-full object-contain transition-transform duration-500 group-hover/card:scale-105"
-                  />
-                </div>
-                <h3 className="mt-4 text-base font-semibold text-white md:text-lg">{p.title}</h3>
-                <ul className="mt-3 space-y-1.5 text-xs text-white/60 md:text-[13px]">
-                  {p.bullets.map((b) => (
-                    <li key={b} className="flex gap-2">
-                      <span aria-hidden className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full bg-white/40" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/contact"
-                  className="group/cta mt-5 inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
-                >
-                  Explore More
-                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/cta:bg-black group-hover/cta:text-white">
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                </Link>
-              </article>
-            ))}
-          </div>
-
-          <div className="pointer-events-none absolute inset-y-0 -left-2 flex items-center md:-left-5">
-            <button
-              type="button"
-              onClick={() => scrollByCard(-1)}
-              disabled={!canLeft}
-              aria-label="Previous products"
-              className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-black/70 text-white backdrop-blur transition hover:border-white/40 hover:bg-black disabled:pointer-events-none disabled:opacity-30"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="pointer-events-none absolute inset-y-0 -right-2 flex items-center md:-right-5">
-            <button
-              type="button"
-              onClick={() => scrollByCard(1)}
-              disabled={!canRight}
-              aria-label="Next products"
-              className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-black/70 text-white backdrop-blur transition hover:border-white/40 hover:bg-black disabled:pointer-events-none disabled:opacity-30"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
       </Shell>
+
+      <div className="relative mt-8">
+        <div
+          ref={trackRef}
+          className="flex gap-6 pl-6 pr-6 will-change-transform md:pl-14 md:pr-14"
+        >
+          {PRODUCTS.map((p) => (
+            <article
+              key={p.title}
+              data-portfolio-card
+              className="group/card relative flex w-[340px] shrink-0 flex-col rounded-xl border border-white/[0.06] bg-bg-card p-5 transition hover:border-white/20 md:w-[400px]"
+            >
+              <span className="inline-flex w-fit items-center rounded-md border border-white/15 bg-white/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md">
+                {p.tag}
+              </span>
+              <div className="mt-3 flex h-[200px] w-full items-center justify-center md:h-[220px]">
+                <img
+                  src={p.image}
+                  alt={p.title}
+                  className="h-full w-full object-contain transition-transform duration-500 group-hover/card:scale-105"
+                />
+              </div>
+              <h3 className="mt-4 text-base font-semibold text-white md:text-lg">{p.title}</h3>
+              <ul className="mt-3 space-y-1.5 text-xs text-white/60 md:text-[13px]">
+                {p.bullets.map((b) => (
+                  <li key={b} className="flex gap-2">
+                    <span aria-hidden className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full bg-white/40" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/contact"
+                className="group/cta mt-5 inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              >
+                Explore More
+                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/cta:bg-black group-hover/cta:text-white">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </Link>
+            </article>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -793,7 +723,7 @@ function ApplicationsBand() {
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               />
               <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <h3 className="absolute inset-x-6 bottom-6 text-lg font-semibold text-white md:text-xl">
+              <h3 className="absolute inset-x-6 bottom-6 font-display text-lg font-semibold text-white md:text-xl">
                 {APPLICATIONS[0].title}
               </h3>
             </div>
@@ -813,7 +743,7 @@ function ApplicationsBand() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                 />
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <h3 className="absolute inset-x-6 bottom-6 text-lg font-semibold text-white md:text-xl">
+                <h3 className="absolute inset-x-6 bottom-6 font-display text-lg font-semibold text-white md:text-xl">
                   {app.title}
                 </h3>
               </div>

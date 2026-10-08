@@ -6,6 +6,7 @@ import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { Footer } from "@/components/Footer";
 import { HeroCTA } from "@/components/HeroCTA";
 import { ArrowRight, Mail, Phone } from "@/components/Icons";
+import { EnquiryTypeSelect } from "@/components/EnquiryTypeSelect";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -65,9 +66,9 @@ const LOCATIONS = [
     address:
       "25th Main Rd, 1st Sector,\nHSR Layout, Bengaluru,\nKarnataka 560102",
     mapHref:
-      "https://www.google.com/maps/search/?api=1&query=AMEC+Mobility+Pvt+Ltd%2C+13A+Plot+No+5A%2C+MIDC%2C+Hingna%2C+Nagpur+440016",
+      "https://www.google.com/maps/search/?api=1&query=25th+Main+Rd%2C+1st+Sector%2C+HSR+Layout%2C+Bengaluru%2C+Karnataka+560102",
     mapEmbed:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3406.798904962465!2d79.00805407525912!3d21.120756080551732!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4eb7c963d6385%3A0xe91bac817808ba93!2sAMEC%20Mobility%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1791436514392!5m2!1sen!2sin",
+      "https://maps.google.com/maps?q=25th+Main+Rd%2C+1st+Sector%2C+HSR+Layout%2C+Bengaluru%2C+Karnataka+560102&t=&z=15&ie=UTF8&iwloc=&output=embed",
   },
 ];
 
@@ -193,7 +194,7 @@ function Hero() {
           <div className="grid gap-10 md:grid-cols-[1.1fr_1fr] md:items-center md:gap-16">
             {/* LEFT — title + CTA */}
             <div>
-              <h1 data-hero-title className="heading-xl">
+              <h1 data-hero-title className="heading-xl md:!text-[68px] md:!leading-[1.06]">
                 {titleLines.map((line, i) => (
                   <Fragment key={i}>
                     <span className="inline-block">{line}</span>
@@ -214,7 +215,7 @@ function Hero() {
             {/* RIGHT — description */}
             <p
               data-hero-sub
-              className="max-w-xl text-sm leading-relaxed text-white/80 md:text-base"
+              className="max-w-xl text-sm leading-relaxed text-white/80 md:text-[18px]"
             >
               Whether you're exploring a collaboration, have a business enquiry,
               or are interested in joining AMEC, our team is here to help. Reach
@@ -708,27 +709,13 @@ function JustSendIt() {
                   </div>
                   <div>
                     <label htmlFor="jsi-type" className={labelCls}>Enquiry Type</label>
-                    <div className="relative mt-2">
-                      <select
+                    <div className="mt-2">
+                      <EnquiryTypeSelect
                         id="jsi-type"
                         name="type"
-                        defaultValue=""
-                        className={`${field("type")} cursor-pointer appearance-none pr-12`}
-                      >
-                        <option value="" disabled>
-                          Select your area of interest
-                        </option>
-                        {INQUIRY_TYPES.map((t) => (
-                          <option key={t} value={t} className="bg-bg-card text-white">
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                      <span aria-hidden className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-white/60">
-                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-                          <path d="m6 9 6 6 6-6" />
-                        </svg>
-                      </span>
+                        options={INQUIRY_TYPES}
+                        invalid={!!errors.type}
+                      />
                     </div>
                   </div>
                 </div>

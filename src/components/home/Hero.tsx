@@ -115,7 +115,7 @@ export function Hero() {
               </p>
               <h1
                 data-hero-title
-                className="mt-1 heading-xl md:!mt-2 md:!text-[64px] md:!leading-[1.06]"
+                className="mt-1 heading-xl md:!mt-2 md:!text-[68px] md:!leading-[1.06]"
               >
                 {"TECHNOLOGY".split("").map((c, i) => (
                   <span key={i} className="inline-block">{c}</span>
@@ -123,7 +123,7 @@ export function Hero() {
               </h1>
               <p
                 data-hero-sub
-                className="mt-3 body-hero md:!mt-4 md:!text-[20px] md:!leading-[1.2] whitespace-normal md:whitespace-nowrap"
+                className="mt-3 body-hero md:!mt-4 md:!text-[18px] md:!leading-[1.3] whitespace-normal md:whitespace-nowrap"
               >
                 Engineering Powertrain, Energy & Scalable Technologies
               </p>

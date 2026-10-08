@@ -166,31 +166,29 @@ function Hero() {
         />
       </div>
 
-      {/* Top-center heading, sits below the navbar */}
-      <div className="absolute inset-x-0 top-0 flex justify-center px-6 pt-28 text-center md:pt-36">
-        <h1
-          data-hero-title
-          className="font-display text-4xl font-semibold leading-[1.05] text-white md:text-6xl lg:text-7xl"
-        >
-          {titleWords.map((w, i) => (
-            <Fragment key={i}>
-              <span className="inline-block">{w}</span>
-              {i < titleWords.length - 1 ? " " : null}
-            </Fragment>
-          ))}
-        </h1>
-      </div>
-
-      {/* Bottom-left subtitle */}
-      <div className="absolute inset-x-0 bottom-0 flex w-full px-6 pb-14 md:px-14 md:pb-20">
-        <p
-          data-hero-sub
-          className="max-w-md text-sm leading-relaxed text-white/75 md:text-base"
-        >
-          Meet our amazing Performance Accumulator — the best of the best when it
-          comes to designing battery packs, carefully made to fit electric cars
-          perfectly.
-        </p>
+      {/* Vertically-centered left-aligned title + sub */}
+      <div className="relative flex h-full w-full flex-col justify-center px-6 md:px-14">
+        <div className="max-w-3xl">
+          <h1
+            data-hero-title
+            className="font-display text-[40px] font-semibold uppercase leading-[1.06] text-white md:text-[68px]"
+          >
+            {titleWords.map((w, i) => (
+              <Fragment key={i}>
+                <span className="inline-block">{w}</span>
+                {i < titleWords.length - 1 ? <br /> : null}
+              </Fragment>
+            ))}
+          </h1>
+          <p
+            data-hero-sub
+            className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 md:mt-6 md:text-[18px]"
+          >
+            Meet our amazing Performance Accumulator — the best of the best when
+            it comes to designing battery packs, carefully made to fit electric
+            cars perfectly.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -238,7 +236,7 @@ function Overview() {
   return (
     <section ref={sectionRef} className="w-full py-24 md:py-32">
       <Shell>
-        <h2 className="mx-auto max-w-3xl text-left font-display text-2xl font-semibold leading-snug text-white md:text-4xl">
+        <h2 className="mx-auto max-w-3xl text-left font-display text-lg font-normal leading-relaxed text-white md:text-[22px]">
           {OVERVIEW_WORDS.map((w, i) => (
             <Fragment key={i}>
               <span data-ov-word className="inline-block">{w}</span>
@@ -248,7 +246,7 @@ function Overview() {
         </h2>
         <p
           data-ov-body
-          className="mx-auto mt-8 max-w-3xl text-left text-sm leading-relaxed text-white/60 md:text-base"
+          className="mx-auto mt-8 max-w-3xl text-left font-display text-lg leading-relaxed text-white/60 md:text-[22px]"
         >
           {OVERVIEW_BODY}
         </p>
@@ -349,11 +347,11 @@ function CapacityBand() {
             />
 
             <div data-cap-number className="flex items-start">
-              <span className="font-display font-bold leading-none text-white" style={{ fontSize: "clamp(84px, 11vw, 180px)" }}>
+              <span className="font-sans font-regular leading-none text-white" style={{ fontSize: "clamp(84px, 11vw, 180px)" }}>
                 100
               </span>
-              <span className="mt-3 font-display text-2xl font-semibold text-white md:mt-5 md:text-4xl">
-                Ah
+              <span className="mt-3 font-sans text-2xl font-semibold text-white md:mt-5 md:text-4xl">
+                AH
               </span>
             </div>
 
@@ -470,13 +468,13 @@ function HighPerformanceSystem() {
 
         <div className="mt-12 grid gap-10 md:mt-16 md:grid-cols-[1fr_1.1fr_1fr] md:items-center md:gap-10">
           {/* LEFT features */}
-          <div className="flex flex-col gap-8 md:text-right">
+          <div className="flex flex-col gap-14 md:gap-16 md:text-right">
             {leftFeatures.map((f) => (
               <div key={f.title} data-hp-item>
-                <h3 className="font-display text-sm font-semibold text-white md:text-base">
+                <h3 className="font-display text-base font-semibold text-white md:text-lg">
                   {f.title}
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-white/60 md:text-[13px]">
+                <p className="mt-2 text-sm leading-relaxed text-white/60 md:text-[15px]">
                   {f.body}
                 </p>
               </div>
@@ -485,7 +483,7 @@ function HighPerformanceSystem() {
 
           {/* CENTER image */}
           <div data-hp-image className="relative mx-auto w-full">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-bg-card">
+            <div className="relative aspect-[9/8] w-full overflow-hidden rounded-xl bg-bg-card">
               <img
                 src="/Power/stat-30-image.png"
                 alt="High performance battery system"
@@ -495,13 +493,13 @@ function HighPerformanceSystem() {
           </div>
 
           {/* RIGHT features */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-14 md:gap-16">
             {rightFeatures.map((f) => (
               <div key={f.title} data-hp-item>
-                <h3 className="font-display text-sm font-semibold text-white md:text-base">
+                <h3 className="font-display text-base font-semibold text-white md:text-lg">
                   {f.title}
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-white/60 md:text-[13px]">
+                <p className="mt-2 text-sm leading-relaxed text-white/60 md:text-[15px]">
                   {f.body}
                 </p>
               </div>
@@ -558,17 +556,17 @@ function EfficiencyBand() {
       <Shell className="py-16 md:py-24">
         <div className="grid items-center gap-10 md:grid-cols-[1fr_1.6fr] md:gap-14">
           <div>
-            <div data-eff-number className="flex items-start">
-              <span className="font-display text-7xl font-bold leading-none text-white md:text-[10rem] lg:text-[12rem]">
+            <div data-eff-number className="flex items-start leading-none">
+              <span className="font-sans text-7xl font-medium leading-none text-white md:text-[180px]">
                 30
               </span>
-              <span className="mt-3 font-display text-2xl font-semibold text-white md:mt-5 md:text-4xl">
+              <span className="font-sans text-7xl font-medium leading-none text-white md:text-[180px]">
                 %
               </span>
             </div>
             <p
               data-eff-caption
-              className="mt-5 font-display text-sm font-semibold uppercase tracking-[0.22em] text-white md:text-base"
+              className="mt-3 font-display text-base font-semibold uppercase tracking-[0.12em] text-white md:text-[18px]"
             >
               Battery Efficiency Improvement
             </p>

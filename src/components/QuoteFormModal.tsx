@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
+import { EnquiryTypeSelect } from "@/components/EnquiryTypeSelect";
 
 const INQUIRY_TYPES = [
   "Sales/Partnership",
@@ -254,38 +255,14 @@ export function QuoteFormModal({
                 </div>
                 <div>
                   <label htmlFor="qm-type" className={labelCls}>Enquiry Type</label>
-                  <div className="relative mt-2">
-                    <select
+                  <div className="mt-2">
+                    <EnquiryTypeSelect
                       id="qm-type"
                       name="type"
+                      options={INQUIRY_TYPES}
                       defaultValue={defaultInquiryType ?? ""}
-                      className={`${field("type")} cursor-pointer appearance-none pr-12`}
-                    >
-                      <option value="" disabled>
-                        Select your area of interest
-                      </option>
-                      {INQUIRY_TYPES.map((t) => (
-                        <option key={t} value={t} className="bg-bg-card text-white">
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/60"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="m6 9 6 6 6-6" />
-                      </svg>
-                    </span>
+                      invalid={!!errors.type}
+                    />
                   </div>
                 </div>
               </div>

@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
+import { Fragment, useRef, useState, type FormEvent } from "react";
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { Footer } from "@/components/Footer";
-import { ArrowRight, ChevronLeft, ChevronRight } from "@/components/Icons";
+import { ArrowRight } from "@/components/Icons";
+import { EnquiryTypeSelect } from "@/components/EnquiryTypeSelect";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -19,14 +20,14 @@ const INTRO_BODY_WORDS = INTRO_BODY.split(" ");
 
 const FEATURED_PROJECTS = [
   {
-    title: "Promec Aquaforce high pressure Washer system",
+    title: "Promec Aquaforce High Pressure Washer System",
     body:
       "Experience powerful, portable cleaning without the need for power sockets or cables.",
     image: "/OEM/Promec Aquaforce high pressure Washer system.png",
     href: "/pressure-washer-kit",
   },
   {
-    title: "Ai-edge Super Surveillance & Prevention System",
+    title: "AI-Edge Super Surveillance & Prevention System",
     body:
       "Real-time surveillance and intelligent alerts for safer, smarter worksite monitoring.",
     image: "/OEM/Ai-edge Super Surveillance & Prevention System.png",
@@ -278,21 +279,19 @@ function Hero() {
         />
       </div>
 
-      {/* Readability overlay — gradient + spotlight so text stays legible.
-          Bottom reaches fully-opaque black so the hero blends seamlessly
-          into the dark section below (no visible seam). */}
+      {/* Localized radial scrim behind the title for legibility */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.2) 40%, rgba(10,10,10,0.45) 80%, #0A0A0A 100%), radial-gradient(60% 80% at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 60%)",
+            "radial-gradient(ellipse 60% 50% at 25% 50%, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0) 85%)",
         }}
       />
 
-      {/* Top-center title */}
-      <div className="absolute inset-x-0 top-0 flex flex-col items-center px-6 pt-28 text-center md:pt-36">
-        <h1 data-oem-hero-title className="heading-xl">
+      {/* Left-aligned, vertically centered title */}
+      <div className="absolute inset-0 flex flex-col items-start justify-center px-4 text-left md:px-8 lg:px-12">
+        <h1 data-oem-hero-title className="heading-xl md:!text-[68px] md:!leading-[1.06]">
           {"OEM ENGINEERING".split(" ").map((word, i) => (
             <Fragment key={i}>
               <span className="inline-block">{word}</span>
@@ -447,7 +446,7 @@ function FeaturedProjects() {
                 />
               </div>
               <div className="flex flex-1 flex-col gap-4 p-6">
-                <h3 className="font-display text-base font-semibold uppercase tracking-wide text-white md:text-lg">
+                <h3 className="font-display text-lg font-semibold tracking-tight text-white md:text-xl">
                   {p.title}
                 </h3>
                 <p className="flex-1 text-xs leading-relaxed text-white/60 md:text-sm">
@@ -455,10 +454,10 @@ function FeaturedProjects() {
                 </p>
                 <Link
                   href={p.href}
-                  className="group/btn mt-2 inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-xs font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                  className="group/btn mt-2 inline-flex items-center gap-3 self-start rounded border border-white/20 py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
                 >
-                  <span className="grid h-6 w-6 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/btn:bg-black group-hover/btn:text-white">
-                    <ArrowRight className="h-3 w-3" />
+                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/btn:bg-black group-hover/btn:text-white md:h-8 md:w-8">
+                    <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </span>
                   Explore More
                 </Link>
@@ -478,85 +477,11 @@ function FeaturedProjects() {
 function EngineeringCapabilities() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  // Enable/disable arrow buttons based on current scroll position
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    const update = () => {
-      setCanScrollLeft(el.scrollLeft > 4);
-      setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-    };
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      el.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  // Mouse drag support on desktop (touch swipe handled natively via overflow)
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    let isDown = false;
-    let moved = false;
-    let startX = 0;
-    let scrollStart = 0;
-
-    const onDown = (e: MouseEvent) => {
-      if (e.button !== 0) return;
-      if ((e.target as HTMLElement).closest("button")) return;
-      isDown = true;
-      moved = false;
-      startX = e.clientX;
-      scrollStart = el.scrollLeft;
-      el.style.cursor = "grabbing";
-      el.style.userSelect = "none";
-      el.style.scrollBehavior = "auto";
-    };
-    const onMove = (e: MouseEvent) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const walk = e.clientX - startX;
-      if (Math.abs(walk) > 3) moved = true;
-      el.scrollLeft = scrollStart - walk;
-    };
-    const onUp = () => {
-      if (!isDown) return;
-      isDown = false;
-      el.style.cursor = "";
-      el.style.userSelect = "";
-      el.style.scrollBehavior = "";
-    };
-    const onClickCapture = (e: MouseEvent) => {
-      if (moved) {
-        e.preventDefault();
-        e.stopPropagation();
-        moved = false;
-      }
-    };
-
-    el.addEventListener("mousedown", onDown);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    el.addEventListener("click", onClickCapture, true);
-    return () => {
-      el.removeEventListener("mousedown", onDown);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      el.removeEventListener("click", onClickCapture, true);
-    };
-  }, []);
 
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
+    const track = trackRef.current;
+    if (!section || !track) return;
 
     const ctx = gsap.context(() => {
       gsap.from(
@@ -571,29 +496,44 @@ function EngineeringCapabilities() {
         }
       );
 
-      gsap.from("[data-oem-cap-card]", {
-        autoAlpha: 0,
-        y: 40,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: "power3.out",
-        scrollTrigger: { trigger: "[data-oem-cap-rail]", start: "top 85%" },
+      // Pin the section and translate the card track horizontally as the
+      // user scrolls vertically. A hold phase at the start keeps the pinned
+      // section still for ~half a viewport of scroll before the cards begin
+      // moving — gives the eye a beat to settle on the pinned layout.
+      const getDistance = () =>
+        Math.max(0, track.scrollWidth - window.innerWidth + 48);
+      const getHold = () => window.innerHeight * 0.5;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${getHold() + getDistance()}`,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      tl.to({}, { duration: getHold() });
+      tl.to(track, {
+        x: () => -getDistance(),
+        ease: "none",
+        duration: getDistance(),
       });
     }, section);
 
-    return () => ctx.revert();
+    const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 200);
+    return () => {
+      window.clearTimeout(refreshId);
+      ctx.revert();
+    };
   }, []);
 
-  const scrollBy = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-oem-cap-card]");
-    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
-    el.scrollBy({ left: step * dir, behavior: "smooth" });
-  };
-
   return (
-    <section ref={sectionRef} className="py-20 md:py-28">
+    <section ref={sectionRef} className="relative overflow-hidden py-20 md:py-28">
       <Shell>
         <div className="grid gap-6 md:grid-cols-[1.3fr_1fr] md:items-end md:gap-16">
           <h2 data-oem-cap-eyebrow className="heading-lg">
@@ -606,66 +546,41 @@ function EngineeringCapabilities() {
             End-to-end engineering expertise powering next-generation products.
           </p>
         </div>
-
-        <div data-oem-cap-rail className="relative mt-12 md:mt-16">
-          <div
-            ref={trackRef}
-            className="flex cursor-grab snap-x snap-proximity gap-6 overflow-x-auto scroll-smooth pb-4"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <style jsx>{`
-              div::-webkit-scrollbar { display: none; }
-            `}</style>
-            {CAPABILITIES.map((c) => (
-              <div
-                key={c.title}
-                data-oem-cap-card
-                className="group flex w-[80vw] shrink-0 snap-start flex-col gap-5 rounded-card border border-white/[0.06] bg-bg-card p-6 transition-colors hover:border-white/20 md:w-[360px] lg:w-[400px]"
-              >
-                <div className="aspect-[16/10] w-full overflow-hidden rounded-lg border border-white/[0.06]">
-                  <div
-                    aria-hidden
-                    className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-110"
-                    style={{
-                      backgroundImage: `url('${encodeURI(c.image)}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-3">
-                  <h3 className="font-display text-base font-semibold uppercase tracking-wide text-white md:text-lg">
-                    {c.title}
-                  </h3>
-                  <p className="flex-1 text-sm leading-relaxed text-white/60">
-                    {c.body}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Rail navigation arrows */}
-          <button
-            type="button"
-            onClick={() => scrollBy(-1)}
-            disabled={!canScrollLeft}
-            aria-label="Previous"
-            className="absolute -left-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-md transition hover:border-white/40 hover:bg-black/80 disabled:pointer-events-none disabled:opacity-30 md:-left-6"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollBy(1)}
-            disabled={!canScrollRight}
-            aria-label="Next"
-            className="absolute -right-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-md transition hover:border-white/40 hover:bg-black/80 disabled:pointer-events-none disabled:opacity-30 md:-right-6"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-        </div>
       </Shell>
+
+      <div className="relative mt-12 md:mt-16">
+        <div
+          ref={trackRef}
+          className="flex gap-6 pl-6 pr-6 will-change-transform md:pl-14 md:pr-14"
+        >
+          {CAPABILITIES.map((c) => (
+            <div
+              key={c.title}
+              className="group flex w-[80vw] shrink-0 flex-col gap-5 rounded-card border border-white/[0.06] bg-bg-card p-6 transition-colors hover:border-white/20 md:w-[360px] lg:w-[400px]"
+            >
+              <div className="aspect-[16/10] w-full overflow-hidden rounded-lg border border-white/[0.06]">
+                <div
+                  aria-hidden
+                  className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-110"
+                  style={{
+                    backgroundImage: `url('${encodeURI(c.image)}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+              </div>
+              <div className="flex flex-1 flex-col gap-3">
+                <h3 className="font-display text-base font-semibold uppercase tracking-wide text-white md:text-lg">
+                  {c.title}
+                </h3>
+                <p className="flex-1 text-sm leading-relaxed text-white/60">
+                  {c.body}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -1383,27 +1298,13 @@ function JustSendIt() {
                     </div>
                     <div>
                       <label htmlFor="oem-type" className={labelCls}>Enquiry Type</label>
-                      <div className="relative mt-2">
-                        <select
+                      <div className="mt-2">
+                        <EnquiryTypeSelect
                           id="oem-type"
                           name="area"
-                          defaultValue=""
-                          className={`${field("type")} cursor-pointer appearance-none pr-12`}
-                        >
-                          <option value="" disabled>
-                            Select your area of interest
-                          </option>
-                          {AREAS_OF_INTEREST.map((t) => (
-                            <option key={t} value={t} className="bg-bg-card text-white">
-                              {t}
-                            </option>
-                          ))}
-                        </select>
-                        <span aria-hidden className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-white/60">
-                          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-                            <path d="m6 9 6 6 6-6" />
-                          </svg>
-                        </span>
+                          options={AREAS_OF_INTEREST}
+                          invalid={!!errors.type}
+                        />
                       </div>
                     </div>
                   </div>

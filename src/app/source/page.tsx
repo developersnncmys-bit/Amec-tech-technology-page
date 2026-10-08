@@ -293,14 +293,14 @@ function Hero() {
           <p className="eyebrow md:!text-[32px] md:!leading-none md:!tracking-[0.14em] md:!font-semibold md:!text-white">
             Source
           </p>
-          <h1 className="mt-3 heading-xl">Hybrid Energy System</h1>
+          <h1 className="mt-3 heading-xl md:!text-[68px] md:!leading-[1.06]">Hybrid Energy System</h1>
         </AnimateIn>
       </div>
 
       {/* Bottom-left: description with CTAs stacked below */}
       <div className="absolute inset-x-0 bottom-0 flex px-6 pb-12 md:px-14 md:pb-16">
         <AnimateIn className="max-w-xl">
-          <p className="text-base leading-relaxed text-white/85 md:text-lg">
+          <p className="text-base leading-relaxed text-white/85 md:text-[18px]">
             Seamlessly manage solar, grid, and battery power for maximum efficiency and uninterrupted energy.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
