@@ -137,19 +137,16 @@ const ENGAGEMENT_MODELS = [
 
 const PARTNERS = [
   {
-    label: "[ CORE VALUE 01 ]",
     title: "Startups with a concept",
     body:
       "AMEC OEM Solutions is ideal for startups that have a strong product idea but need experienced engineering support to bring it to life. We help early-stage teams translate concepts into engineered systems by defining architecture, validating feasibility, and building prototypes that are ready to scale into production. Our approach reduces technical risk and helps founders focus on marketplace business execution.",
   },
   {
-    label: "[ CORE VALUE 02 ]",
     title: "Companies entering EV or energy market",
     body:
       "For companies expanding into electric mobility or energy systems, AMEC provides the technical depth required to enter new domains with confidence. We support platform development, technology selection, and system integration — ensuring products meet performance, safety, and compliance expectations from day one. This enables faster entry into complex, regulation-driven markets.",
   },
   {
-    label: "[ CORE VALUE 03 ]",
     title: "OEMs needing rapid development",
     body:
       "Established OEMs partner with AMEC when speed, reliability, and engineering ownership are critical. We support rapid development of new platforms, subsystems, or performance upgrades while maintaining structured validation and manufacturing readiness. Our teams integrate seamlessly with existing processes to deliver results without disrupting ongoing programs.",
@@ -174,6 +171,7 @@ const CLIENTS = [
 const AREAS_OF_INTEREST = [
   "Sales/Partnership",
   "OEM/Product Development",
+  "Source Hybrid energy system",
   "Mobility & EV Solutions",
   "Renewable Energy System",
   "Career/Human Resources",
@@ -1050,10 +1048,7 @@ function WhoWeWorkWith() {
               />
 
               <div data-oem-www-content className="mt-8 flex flex-1 flex-col md:mt-10">
-                <span className="font-display text-xs font-semibold tracking-[0.22em] text-white/50 md:text-sm">
-                  {p.label}
-                </span>
-                <h3 className="mt-6 font-display text-xl font-semibold leading-tight text-white md:mt-8 md:text-2xl lg:text-[28px]">
+                <h3 className="font-display text-xl font-semibold leading-tight text-white md:text-2xl lg:text-[28px]">
                   {p.title}
                 </h3>
                 <p className="mt-5 text-sm leading-relaxed text-white/70 md:mt-6 md:text-[15px]">

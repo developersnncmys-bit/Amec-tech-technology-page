@@ -27,19 +27,49 @@ export function Footer() {
             We Build, Design & Engineer Industry Defining Technology For The Inevitable Future.
           </p>
           <div className="mt-10 flex items-center gap-5 text-white">
-            <a href="#" aria-label="Facebook" className="transition-opacity hover:opacity-70">
+            <a
+              href="https://www.facebook.com/amectechnology"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="transition-opacity hover:opacity-70"
+            >
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Twitter" className="transition-opacity hover:opacity-70">
+            <a
+              href="https://x.com/AMECTechnology"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+              className="transition-opacity hover:opacity-70"
+            >
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Instagram" className="transition-opacity hover:opacity-70">
+            <a
+              href="https://www.instagram.com/amectechnology"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="transition-opacity hover:opacity-70"
+            >
               <Instagram className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="LinkedIn" className="transition-opacity hover:opacity-70">
+            <a
+              href="https://in.linkedin.com/company/amec-technology"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="transition-opacity hover:opacity-70"
+            >
               <Linkedin className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="YouTube" className="transition-opacity hover:opacity-70">
+            <a
+              href="https://www.youtube.com/@amecmobility"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className="transition-opacity hover:opacity-70"
+            >
               <YouTube className="h-5 w-5" />
             </a>
           </div>
@@ -55,15 +85,21 @@ export function Footer() {
           <ul className="mt-5 space-y-4 text-sm text-white/60">
             <li className="flex items-start gap-3">
               <Mail className="mt-0.5 h-4 w-4 shrink-0" />
-              <a href="mailto:contact@company.com" className="transition-colors hover:text-white">contact@company.com</a>
+              <a href="mailto:info@amectechnology.com" className="transition-colors hover:text-white">info@amectechnology.com</a>
             </li>
             <li className="flex items-start gap-3">
               <Phone className="mt-0.5 h-4 w-4 shrink-0" />
-              <a href="tel:+14146875892" className="transition-colors hover:text-white">(414) 687 – 5892</a>
+              <a href="tel:+919021510318" className="transition-colors hover:text-white">+91 9021510318</a>
             </li>
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-              <span>794 Mcallister St<br />San Francisco, 94102</span>
+              <span>
+                Plot No. 5A,13A MIDC,<br />
+                Beside Tata Motors<br />
+                Service Centre,<br />
+                Hingna MIDC,<br />
+                Nagpur – 440016
+              </span>
             </li>
           </ul>
         </div>

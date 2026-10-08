@@ -14,6 +14,7 @@ import { ArrowRight, Mail, Phone } from "@/components/Icons";
 const INQUIRY_TYPES = [
   "Sales/Partnership",
   "OEM/Product Development",
+  "Source Hybrid energy system",
   "Mobility & EV Solutions",
   "Renewable Energy System",
   "Career/Human Resources",
@@ -49,22 +50,24 @@ const LOCATIONS = [
     body:
       "Manufacturing & Assembly. Head operations, production facility and global dispatch.",
     city: "Nagpur, Maharashtra",
-    address: "MIDC Industrial Area,\nNagpur – 440 022, India",
+    address:
+      "Plot No. 5A, 13A MIDC,\nBeside Tata Motors Service Centre, Hingna MIDC,\nNagpur – 440016",
     mapHref:
-      "https://www.google.com/maps/search/?api=1&query=MIDC+Industrial+Area+Nagpur",
+      "https://www.google.com/maps/search/?api=1&query=AMEC+Mobility+Pvt+Ltd%2C+13A+Plot+No+5A%2C+MIDC%2C+Hingna%2C+Nagpur+440016",
     mapEmbed:
-      "https://www.google.com/maps?q=MIDC+Industrial+Area+Nagpur+440022&output=embed",
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3406.798904962465!2d79.00805407525912!3d21.120756080551732!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4eb7c963d6385%3A0xe91bac817808ba93!2sAMEC%20Mobility%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1791436514392!5m2!1sen!2sin",
   },
   {
     label: "AMEC Labs",
     body:
       "Research & Development. Industrial production, process control and preparation for assembly.",
     city: "Bangalore, Karnataka",
-    address: "HSR Layout,\nBengaluru, Karnataka 560102",
+    address:
+      "25th Main Rd, 1st Sector,\nHSR Layout, Bengaluru,\nKarnataka 560102",
     mapHref:
-      "https://www.google.com/maps/search/?api=1&query=HSR+Layout+Bengaluru+560102",
+      "https://www.google.com/maps/search/?api=1&query=AMEC+Mobility+Pvt+Ltd%2C+13A+Plot+No+5A%2C+MIDC%2C+Hingna%2C+Nagpur+440016",
     mapEmbed:
-      "https://www.google.com/maps?q=HSR+Layout+Bengaluru+Karnataka+560102&output=embed",
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3406.798904962465!2d79.00805407525912!3d21.120756080551732!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4eb7c963d6385%3A0xe91bac817808ba93!2sAMEC%20Mobility%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1791436514392!5m2!1sen!2sin",
   },
 ];
 

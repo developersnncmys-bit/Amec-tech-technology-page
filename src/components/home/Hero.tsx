@@ -5,7 +5,7 @@ import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from "@/lib/gsap";
 import { HeroCTA } from "@/components/HeroCTA";
 
 const INTRO_TEXT =
-  "AMEC TECHNOLOGY is the engineering execution arm of AMEC Group. We develop production ready systems across electric mobility, renewable energy, and OEM engineering—bridging concepts and deployment through strong engineering fundamentals, validation, and scalable design.";
+  "AMEC TECHNOLOGY is the engineering execution arm of AMEC. We develop production ready systems across electric mobility, renewable energy, and OEM engineering—bridging concepts and deployment through strong engineering fundamentals, validation, and scalable design.";
 
 const INTRO_WORDS = INTRO_TEXT.split(" ");
 

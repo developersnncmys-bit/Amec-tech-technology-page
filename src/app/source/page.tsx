@@ -7,6 +7,7 @@ import { AnimateIn } from "@/components/AnimateIn";
 import { HeroCTA } from "@/components/HeroCTA";
 import { ArrowRight } from "@/components/Icons";
 import { Footer } from "@/components/Footer";
+import { QuoteFormModal } from "@/components/QuoteFormModal";
 import { LuZap, LuDroplet, LuShield, LuWrench, LuRotateCw, LuScanSearch } from "react-icons/lu";
 
 const SOURCE_IMG = "/images/Source.png";
@@ -239,6 +240,7 @@ function Shell({ children, className = "" }: { children: React.ReactNode; classN
 
 function Hero() {
   const pinRef = useRef<HTMLElement | null>(null);
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   useIsomorphicLayoutEffect(() => {
     const pinTarget = pinRef.current;
@@ -302,11 +304,22 @@ function Hero() {
             Seamlessly manage solar, grid, and battery power for maximum efficiency and uninterrupted energy.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <HeroCTA href="/contact" label="Request a Quote" variant="primary" arrow={false} />
+            <HeroCTA
+              onClick={() => setQuoteOpen(true)}
+              label="Request a Quote"
+              variant="primary"
+              arrow={false}
+            />
             <HeroCTA href="/contact" label="Talk to an Expert" arrow={false} />
           </div>
         </AnimateIn>
       </div>
+
+      <QuoteFormModal
+        open={quoteOpen}
+        onClose={() => setQuoteOpen(false)}
+        defaultInquiryType="Sales/Partnership"
+      />
     </section>
   );
 }
@@ -1843,20 +1856,33 @@ function ModelDimensionsAndResources() {
           <div className="divide-y divide-black/10 border-y border-black/10">
             {[
               { label: "Learning Center", href: "/learning-center" },
-              { label: "Warranty", href: "/warranty" },
+              {
+                label: "Specification Sheet",
+                href: "/Source 6.5 kWh Data Sheet.pdf",
+                download: "Source 6.5 kWh Data Sheet.pdf",
+              },
               { label: "Download Manuals", href: "/manuals" },
-            ].map((r) => (
-              <Link
-                key={r.label}
-                href={r.href}
-                className="group flex items-center justify-between gap-6 py-6 transition-colors hover:text-black/60"
-              >
-                <span className="font-display text-lg font-medium text-black md:text-xl">{r.label}</span>
-                <span className="grid h-8 w-8 place-items-center rounded-full border border-black/20 text-black transition group-hover:border-black group-hover:bg-black group-hover:text-white">
-                  <ArrowRight className="h-3 w-3" />
-                </span>
-              </Link>
-            ))}
+            ].map((r) => {
+              const content = (
+                <>
+                  <span className="font-display text-lg font-medium text-black md:text-xl">{r.label}</span>
+                  <span className="grid h-8 w-8 place-items-center rounded-full border border-black/20 text-black transition group-hover:border-black group-hover:bg-black group-hover:text-white">
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </>
+              );
+              const className =
+                "group flex items-center justify-between gap-6 py-6 transition-colors hover:text-black/60";
+              return r.download ? (
+                <a key={r.label} href={r.href} download={r.download} className={className}>
+                  {content}
+                </a>
+              ) : (
+                <Link key={r.label} href={r.href} className={className}>
+                  {content}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </Shell>
@@ -2033,7 +2059,7 @@ function WhereSourceWorks() {
         {/* Content row — image owns the taller height; accordion stretches to match */}
         <div className="mt-10 grid gap-6 md:mt-20 md:grid-cols-[1.3fr_1fr] md:items-stretch md:gap-10">
           {/* Left — image container. Taller fixed height so the card has more presence. */}
-          <div className="relative h-[320px] w-full overflow-hidden rounded-card border border-white/20 md:h-[360px]">
+          <div className="relative h-[340px] w-full overflow-hidden rounded-card border border-white/20 md:h-[400px]">
             {APPLICATIONS.map((a, i) => {
               const isActive = i === active;
               return (
@@ -2056,24 +2082,16 @@ function WhereSourceWorks() {
             <div className="flex h-full flex-col divide-y divide-white/10 border-y border-white/10">
               {APPLICATIONS.map((a, i) => {
                 const isActive = i === active;
-                const num = String(i + 1).padStart(2, "0");
                 return (
                   <div key={a.title} className="flex flex-1 flex-col justify-center">
                     <button
                       type="button"
                       onClick={() => setActive(i)}
                       aria-expanded={isActive}
-                      className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-6 py-3.5 text-left transition-colors md:py-4"
+                      className="grid w-full grid-cols-[1fr_auto] items-center gap-6 py-3.5 text-left transition-colors md:py-4"
                     >
                       <span
-                        className={`font-display text-xs tracking-[0.2em] transition-colors md:text-sm ${
-                          isActive ? "text-white" : "text-white/40"
-                        }`}
-                      >
-                        {num}
-                      </span>
-                      <span
-                        className={`font-display text-base font-semibold transition-colors md:text-lg ${
+                        className={`font-display text-lg font-semibold transition-colors md:text-2xl ${
                           isActive ? "text-white" : "text-white/60 hover:text-white"
                         }`}
                       >
@@ -2107,13 +2125,7 @@ function WhereSourceWorks() {
                       style={{ gridTemplateRows: isActive ? "1fr" : "0fr" }}
                     >
                       <div className="min-h-0">
-                        <div className="grid grid-cols-[auto_1fr_auto] gap-6">
-                          <span
-                            aria-hidden
-                            className="invisible font-display text-xs tracking-[0.2em] md:text-sm"
-                          >
-                            {num}
-                          </span>
+                        <div className="grid grid-cols-[1fr_auto] gap-6">
                           <p className="pb-5 pr-4 text-xs leading-relaxed text-white/70 md:text-sm">
                             {a.body}
                           </p>
