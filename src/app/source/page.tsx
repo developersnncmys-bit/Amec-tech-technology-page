@@ -2011,8 +2011,10 @@ function RemoteControl() {
             })}
           </div>
 
-          {/* RIGHT — phone image, capped so it never dominates the layout */}
-          <div className="relative mx-auto flex h-full max-h-[520px] w-full items-center justify-center overflow-hidden rounded-card">
+          {/* RIGHT — phone image, fixed height so cover-crop stays identical
+              across all tab selections (previously inherited h-full from the
+              grid row and shifted whenever the left description changed). */}
+          <div className="relative mx-auto flex h-[380px] w-full items-center justify-center overflow-hidden rounded-card md:h-[420px]">
             {REMOTE_TABS.map((tab, i) => {
               const isActive = i === active;
               return (

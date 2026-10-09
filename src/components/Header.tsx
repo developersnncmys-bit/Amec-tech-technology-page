@@ -26,29 +26,28 @@ export function Header() {
 
   useEffect(() => {
     lastScrollY.current = window.scrollY;
+    // Small threshold prevents flicker on tiny scroll jitters (trackpads,
+    // inertia bounces) — require ~6px of movement to count as a direction.
+    const THRESHOLD = 6;
 
     const onScroll = () => {
       const current = window.scrollY;
-      const direction = current > lastScrollY.current ? "down" : "up";
+      const delta = current - lastScrollY.current;
+      if (Math.abs(delta) < THRESHOLD) return;
+
       // 80px of grace so the navbar lingers slightly past the Hero fold.
       const pastHero = current > window.innerHeight - 80;
 
-      const revealEl = document.getElementById("nav-reveal");
-      // If the page has an explicit <section id="nav-reveal"> (e.g. home's
-      // TechnologyCards), use its top. Otherwise fall back to ~2 viewport
-      // heights, which approximates the top of the 3rd section on standard
-      // product pages. This prevents the navbar from reappearing on any
-      // upscroll past the hero on pages that don't declare the id.
-      const revealTop = revealEl
-        ? revealEl.getBoundingClientRect().top + window.scrollY
-        : window.innerHeight * 2;
-
       if (!pastHero) {
+        // While the hero is still (mostly) in view the navbar is always visible.
         setHidden(false);
-      } else if (direction === "up" && current <= revealTop) {
-        setHidden(false);
-      } else if (direction === "down") {
+      } else if (delta > 0) {
+        // Scrolling DOWN past the hero → hide.
         setHidden(true);
+      } else {
+        // Scrolling UP anywhere past the hero → reveal and stay visible until
+        // the next down-scroll (or hero) flips the state.
+        setHidden(false);
       }
 
       lastScrollY.current = current;
@@ -71,7 +70,7 @@ export function Header() {
     >
       <div className="pointer-events-auto w-full max-w-[1400px]">
         {/* Floating bar — frosted white glass to match Figma */}
-        <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150 md:px-6 md:py-4">
+        <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/20 bg-black/20 px-4 py-3 text-white shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150 md:px-6 md:py-4">
           <div className="flex shrink-0 items-center self-center">
             <Logo variant="light" />
           </div>

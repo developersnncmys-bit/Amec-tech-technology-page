@@ -480,20 +480,20 @@ function ProductPortfolio() {
             <article
               key={p.title}
               data-portfolio-card
-              className="group/card relative flex w-[85vw] max-w-[340px] shrink-0 flex-col rounded-xl border border-white/[0.06] bg-bg-card p-5 transition hover:border-white/20 sm:w-[340px] md:w-[400px]"
+              className="group/card relative flex w-[85vw] max-w-[340px] shrink-0 flex-col rounded-xl border border-white/[0.06] bg-bg-card p-4 transition hover:border-white/20 sm:w-[340px] md:w-[400px]"
             >
               <span className="inline-flex w-fit items-center rounded-md border border-white/15 bg-white/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md">
                 {p.tag}
               </span>
-              <div className="mt-3 flex h-[200px] w-full items-center justify-center md:h-[220px]">
+              <div className="mt-2 flex h-[180px] w-full items-center justify-center overflow-hidden rounded-xl md:h-[210px]">
                 <img
                   src={p.image}
                   alt={p.title}
-                  className="h-full w-full object-contain transition-transform duration-500 group-hover/card:scale-105"
+                  className="h-full w-full scale-[1.35] rounded-xl object-contain transition-transform duration-500 group-hover/card:scale-[1.42]"
                 />
               </div>
-              <h3 className="mt-4 text-base font-semibold text-white md:text-lg">{p.title}</h3>
-              <ul className="mt-3 space-y-1.5 text-xs text-white/60 md:text-[13px]">
+              <h3 className="mt-3 text-base font-semibold text-white md:text-lg">{p.title}</h3>
+              <ul className="mt-2 space-y-1.5 text-xs text-white/60 md:text-[13px]">
                 {p.bullets.map((b) => (
                   <li key={b} className="flex gap-2">
                     <span aria-hidden className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full bg-white/40" />
@@ -503,7 +503,7 @@ function ProductPortfolio() {
               </ul>
               <Link
                 href="/contact"
-                className="group/cta mt-5 inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
+                className="group/cta mt-4 inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
               >
                 Explore More
                 <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/cta:bg-black group-hover/cta:text-white md:h-8 md:w-8">

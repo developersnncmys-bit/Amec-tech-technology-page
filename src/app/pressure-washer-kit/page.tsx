@@ -1574,7 +1574,11 @@ function Testimonials() {
       // started on the same frame via a single master timeline so they stay
       // visually synced regardless of per-column distance.
       const tracks = gsap.utils.toArray<HTMLElement>("[data-ts-track]");
-      const PX_PER_SEC = 28;
+      // Each column scrolls at a slightly different pixel velocity so the
+      // three tracks drift out of sync and feel organic rather than marching
+      // together. They still all START on the same frame via the master
+      // timeline below.
+      const SPEEDS = [24, 32, 28];
       let master: gsap.core.Timeline | null = null;
 
       const startAll = () => {
@@ -1598,12 +1602,13 @@ function Testimonials() {
         // timeline that owns all three tweens — one clock, perfectly in sync.
         specs.forEach(({ track }) => gsap.set(track, { y: 0 }));
         master = gsap.timeline();
-        specs.forEach(({ track, distance }) => {
+        specs.forEach(({ track, distance }, idx) => {
+          const velocity = SPEEDS[idx % SPEEDS.length];
           master!.to(
             track,
             {
               y: -distance,
-              duration: distance / PX_PER_SEC,
+              duration: distance / velocity,
               ease: "none",
               repeat: -1,
             },
