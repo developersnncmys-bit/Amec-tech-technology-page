@@ -150,11 +150,11 @@ export function CTA() {
           <div data-cta-button>
             <Link
               href="/contact"
-              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
             >
               Get in Touch
-              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-                <ArrowRight className="h-3.5 w-3.5" />
+              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white md:h-8 md:w-8">
+                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
               </span>
             </Link>
           </div>
@@ -173,9 +173,9 @@ export function CTA() {
               <div>
                 <h3 className="font-display text-2xl font-semibold md:text-3xl">Partner with<br />AMEC</h3>
               </div>
-              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
-                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-                  <ArrowRight className="h-3.5 w-3.5" />
+              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-5 group-hover:pr-1.5 group-hover:text-black md:text-base">
+                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white md:h-8 md:w-8">
+                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 </span>
                 Become a Partner
               </span>
@@ -191,9 +191,9 @@ export function CTA() {
               <div>
                 <h3 className="font-display text-2xl font-semibold md:text-3xl">Build the<br />future with AMEC</h3>
               </div>
-              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-4 group-hover:pr-1 group-hover:text-black">
-                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-                  <ArrowRight className="h-3.5 w-3.5" />
+              <span className="inline-flex items-center gap-3 self-start rounded border border-white/20 py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover:flex-row-reverse group-hover:border-white group-hover:bg-white group-hover:pl-5 group-hover:pr-1.5 group-hover:text-black md:text-base">
+                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white md:h-8 md:w-8">
+                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 </span>
                 Explore Careers
               </span>

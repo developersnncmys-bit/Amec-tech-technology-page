@@ -390,7 +390,7 @@ function Hero() {
         />
       </div>
 
-      <div className="relative flex h-full w-full flex-col justify-center px-6 pb-10 md:px-14 md:pb-14">
+      <div className="relative flex h-full w-full flex-col justify-center px-6 pb-40 md:px-14 md:pb-24 lg:pb-14">
         {/* Vertically-centered left-aligned title + sub */}
         <div className="max-w-3xl">
           <h1
@@ -414,12 +414,12 @@ function Hero() {
         </div>
 
         {/* Bottom chips row — evenly spread across full width with icons */}
-        <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-white/[0.08] px-6 py-6 md:justify-between md:gap-x-6 md:px-14 md:py-7">
+        <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-white/[0.08] px-6 py-5 md:gap-x-6 md:py-6 lg:justify-between lg:gap-x-6 lg:px-14 lg:py-7">
           {HERO_CHIPS.map((c) => (
             <span
               key={c.label}
               data-ew-hero-chip
-              className="inline-flex items-center gap-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/85 md:text-xs"
+              className="inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85 md:text-[10px] md:tracking-[0.22em] lg:text-xs"
             >
               <span aria-hidden className="h-4 w-4 shrink-0 text-white md:h-[18px] md:w-[18px]">
                 {c.icon}
@@ -682,7 +682,7 @@ function HowItWorks() {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=100%",
+          end: "+=40%",
           pin: true,
           pinSpacing: true,
           scrub: 0.5,
@@ -753,7 +753,7 @@ function HowItWorks() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden py-20 md:py-28"
+      className="relative w-full overflow-hidden py-20 md:py-28"
     >
       <Shell>
         <h2 data-hw-heading className="heading-lg text-center">
@@ -876,7 +876,12 @@ function MeshNetwork() {
         }
       );
 
-      // Scrubbed pinned timeline — mesh graphic + THE RESULT reveal
+      // Scrubbed pinned timeline — mesh graphic + THE RESULT reveal.
+      // Declared here so the onUpdate callback can gate the signal packet
+      // (defined further down) on the main timeline's progress — the only
+      // reliable signal for "the mesh line is actually drawn".
+      let packetTl: gsap.core.Timeline | null = null;
+      let packetGateOpen = false;
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
@@ -888,6 +893,19 @@ function MeshNetwork() {
           anticipatePin: 1,
           scrub: 0.5,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (!packetTl) return;
+            // Path + nodes finish drawing by roughly 35% of this timeline.
+            const shouldPlay = self.progress >= 0.35;
+            if (shouldPlay && !packetGateOpen) {
+              packetGateOpen = true;
+              packetTl.restart();
+            } else if (!shouldPlay && packetGateOpen) {
+              packetGateOpen = false;
+              packetTl.pause();
+              gsap.set("[data-mn-packet]", { autoAlpha: 0 });
+            }
+          },
         },
       });
 
@@ -925,7 +943,7 @@ function MeshNetwork() {
       // Pre-hide ambient elements so they don't flash in their default DOM
       // state before the section enters the viewport. Each ambient tween is
       // gated by a ScrollTrigger so it only runs while the section is in view.
-      gsap.set(["[data-mn-hub-pulse]", "[data-mn-ring]"], {
+      gsap.set(["[data-mn-hub-pulse]", "[data-mn-ring]", "[data-mn-packet]"], {
         autoAlpha: 0,
       });
 
@@ -936,19 +954,45 @@ function MeshNetwork() {
         toggleActions: "play pause resume pause",
       } as const;
 
-      // Hub pulse ring — continuous
-      gsap.fromTo(
-        "[data-mn-hub-pulse]",
-        { attr: { r: 20 }, autoAlpha: 0.6 },
-        {
-          attr: { r: 44 },
-          autoAlpha: 0,
-          duration: 2.2,
-          repeat: -1,
-          ease: "sine.out",
-          scrollTrigger: ambientST,
-        }
-      );
+      // Hub pulse rings — 3 staggered concentric rings expanding outward
+      const hubPulses = gsap.utils.toArray<SVGCircleElement>("[data-mn-hub-pulse]");
+      hubPulses.forEach((pulse, i) => {
+        gsap.fromTo(
+          pulse,
+          { attr: { r: 16 }, autoAlpha: 0.9 },
+          {
+            attr: { r: 56 },
+            autoAlpha: 0,
+            duration: 2.4,
+            repeat: -1,
+            ease: "sine.out",
+            delay: i * 0.8,
+            scrollTrigger: ambientST,
+          }
+        );
+      });
+
+      // Signal packet — green dot travels node-by-node from N1 → Hub.
+      // Playback is driven by the main pinned timeline's onUpdate above, which
+      // only lets it run once the mesh line + nodes are drawn in.
+      packetTl = gsap.timeline({
+        repeat: -1,
+        repeatDelay: 0.6,
+        paused: true,
+      });
+      packetTl.set("[data-mn-packet]", {
+        attr: { cx: nodes[0].x, cy: nodes[0].y },
+        autoAlpha: 0,
+      });
+      packetTl.to("[data-mn-packet]", { autoAlpha: 1, duration: 0.2 });
+      for (let i = 1; i < nodes.length; i++) {
+        packetTl.to("[data-mn-packet]", {
+          attr: { cx: nodes[i].x, cy: nodes[i].y },
+          duration: 0.7,
+          ease: "power1.inOut",
+        });
+      }
+      packetTl.to("[data-mn-packet]", { autoAlpha: 0, duration: 0.3 });
 
       // Device photo gentle float
       gsap.to("[data-mn-device]", {
@@ -985,10 +1029,10 @@ function MeshNetwork() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen w-full flex-col justify-between overflow-hidden py-16 md:py-20"
+      className="relative w-full overflow-hidden py-16 md:py-20"
     >
-      <Shell className="flex min-h-0 flex-1 flex-col">
-        <div className="relative shrink-0">
+      <Shell className="flex flex-col">
+        <div className="relative">
           <div className="mx-auto max-w-3xl text-center">
             <h2 data-mn-heading className="heading-lg">MESH NETWORK</h2>
             <p
@@ -1029,7 +1073,7 @@ function MeshNetwork() {
         {/* Mesh visual — compact so The Result fits in the same viewport */}
         <div
           data-mn-svg
-          className="relative mx-auto mt-4 w-full max-w-3xl overflow-visible md:mt-6 lg:max-w-4xl"
+          className="relative mx-auto mt-10 w-full max-w-3xl overflow-visible md:mt-14 lg:max-w-4xl"
         >
           <svg
             viewBox="0 0 900 220"
@@ -1057,19 +1101,50 @@ function MeshNetwork() {
               strokeLinecap="round"
             />
 
+            {/* Signal packet rides the path */}
+            <circle
+              data-mn-packet
+              r="5"
+              fill="#9effd2"
+              style={{ filter: "drop-shadow(0 0 8px #19c37d) drop-shadow(0 0 16px rgba(25,195,125,0.6))" }}
+            />
+
             {/* Nodes + labels */}
             {nodes.map((n, i) => (
               <g key={`node-${i}`}>
                 {n.hub && (
-                  <circle
-                    data-mn-hub-pulse
-                    cx={n.x}
-                    cy={n.y}
-                    r="20"
-                    fill="none"
-                    stroke="rgba(25,195,125,0.7)"
-                    strokeWidth="2"
-                  />
+                  <>
+                    <circle
+                      data-mn-hub-pulse
+                      data-pulse-index="0"
+                      cx={n.x}
+                      cy={n.y}
+                      r="20"
+                      fill="none"
+                      stroke="rgba(25,195,125,0.9)"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      data-mn-hub-pulse
+                      data-pulse-index="1"
+                      cx={n.x}
+                      cy={n.y}
+                      r="20"
+                      fill="none"
+                      stroke="rgba(25,195,125,0.9)"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      data-mn-hub-pulse
+                      data-pulse-index="2"
+                      cx={n.x}
+                      cy={n.y}
+                      r="20"
+                      fill="none"
+                      stroke="rgba(25,195,125,0.9)"
+                      strokeWidth="2"
+                    />
+                  </>
                 )}
                 <circle
                   data-mn-node
@@ -1088,10 +1163,10 @@ function MeshNetwork() {
                 <text
                   data-mn-label
                   x={n.x}
-                  y={n.y + 36}
+                  y={n.y + 40}
                   textAnchor="middle"
-                  fill="rgba(255,255,255,0.75)"
-                  fontSize="13"
+                  fill="rgba(255,255,255,0.85)"
+                  fontSize="22"
                   fontWeight="500"
                 >
                   {n.label}
@@ -1102,7 +1177,7 @@ function MeshNetwork() {
         </div>
 
         {/* THE RESULT — merged into the Mesh Network section */}
-        <div className="mt-6 shrink-0 md:mt-8">
+        <div className="mt-14 md:mt-20">
           <h2 data-tr-heading className="heading-lg text-center">THE RESULT</h2>
 
           <div
@@ -1175,17 +1250,14 @@ function WhyThisMatters() {
         scrollTrigger: { trigger: el, start: "top 85%" },
       });
 
-      // Pin + scrubbed reveal timeline — heading, rule, quote, and 4 points
-      // animate in sequence as the user scrolls through the pinned range.
+      // Scrubbed reveal timeline — heading, rule, quote, and 4 points
+      // animate as the section passes through the viewport (no pin, no spacer).
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
           trigger: el,
-          start: "top top",
-          end: "+=100%",
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
+          start: "top 70%",
+          end: "bottom 30%",
           scrub: 0.5,
           invalidateOnRefresh: true,
         },
@@ -1489,7 +1561,7 @@ function ComparisonTable() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden py-16 md:py-20"
+      className="relative w-full overflow-hidden py-16 md:py-20"
     >
       {/* Faint grid background — adds depth without being noisy */}
       <div
@@ -1932,7 +2004,7 @@ function Testimonials() {
 // ---------------------------------------------------------------------------
 
 function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useIsomorphicLayoutEffect(() => {
@@ -1967,67 +2039,72 @@ function FAQ() {
           FREQUENTLY ASKED QUESTIONS
         </h2>
 
-        <div data-faq-grid className="mt-12 grid gap-4 md:mt-16 md:grid-cols-2 md:gap-5">
-          {FAQ_ITEMS.map((item, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div
-                key={item.q}
-                data-faq-item
-                className="rounded-card border border-white/[0.08] bg-bg-card"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left md:px-6 md:py-6"
-                >
-                  <span
-                    className={`text-sm font-medium transition-colors md:text-[15px] ${
-                      isOpen ? "text-white" : "text-white/85"
-                    }`}
+        <div data-faq-grid className="mt-12 grid gap-4 md:mt-16 md:grid-cols-2 md:items-start md:gap-5">
+          {[0, 1].map((col) => (
+            <div key={col} className="flex flex-col gap-4 md:gap-5">
+              {FAQ_ITEMS.map((item, i) => {
+                if (i % 2 !== col) return null;
+                const isOpen = openIndex === i;
+                return (
+                  <div
+                    key={item.q}
+                    data-faq-item
+                    className="rounded-card border border-white/[0.08] bg-bg-card"
                   >
-                    {item.q}
-                  </span>
-                  <span
-                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border transition ${
-                      isOpen ? "border-white bg-white text-black" : "border-white/25 text-white/70"
-                    }`}
-                    aria-hidden
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-3.5 w-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
+                    <button
+                      type="button"
+                      onClick={() => setOpenIndex(isOpen ? null : i)}
+                      aria-expanded={isOpen}
+                      className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left md:px-6 md:py-6"
                     >
-                      <path
-                        d="M12 5v14"
-                        style={{
-                          transition: "transform 0.3s",
-                          transform: isOpen ? "scaleY(0)" : "scaleY(1)",
-                          transformOrigin: "center",
-                        }}
-                      />
-                      <path d="M5 12h14" />
-                    </svg>
-                  </span>
-                </button>
-                <div
-                  className="grid overflow-hidden transition-[grid-template-rows] duration-500 ease-out"
-                  style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
-                >
-                  <div className="min-h-0">
-                    <p className="px-5 pb-6 text-xs leading-relaxed text-white/70 md:px-6 md:text-sm">
-                      {item.a}
-                    </p>
+                      <span
+                        className={`text-sm font-medium transition-colors md:text-[15px] ${
+                          isOpen ? "text-white" : "text-white/85"
+                        }`}
+                      >
+                        {item.q}
+                      </span>
+                      <span
+                        className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border transition ${
+                          isOpen ? "border-white bg-white text-black" : "border-white/25 text-white/70"
+                        }`}
+                        aria-hidden
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-3.5 w-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        >
+                          <path
+                            d="M12 5v14"
+                            style={{
+                              transition: "transform 0.3s",
+                              transform: isOpen ? "scaleY(0)" : "scaleY(1)",
+                              transformOrigin: "center",
+                            }}
+                          />
+                          <path d="M5 12h14" />
+                        </svg>
+                      </span>
+                    </button>
+                    <div
+                      className="grid overflow-hidden transition-[grid-template-rows] duration-500 ease-out"
+                      style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+                    >
+                      <div className="min-h-0">
+                        <p className="px-5 pb-6 text-xs leading-relaxed text-white/70 md:px-6 md:text-sm">
+                          {item.a}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          ))}
         </div>
       </Shell>
     </section>
@@ -2157,11 +2234,11 @@ function ClosingCTA() {
           <div data-cta-button>
             <Link
               href="/contact"
-              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
             >
               Get in Touch
-              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-                <ArrowRight className="h-3.5 w-3.5" />
+              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white md:h-8 md:w-8">
+                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
               </span>
             </Link>
           </div>

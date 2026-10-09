@@ -337,13 +337,15 @@ const TESTIMONIALS = [
     avatar: "/Pressure-washerkit/Image (Priya Nair).png",
   },
   {
-    body: "",
+    body:
+      "Studio mein daily 8-10 cars detail karte hain. Aquaforce ka consistent pressure aur quick swap battery ne turnaround time almost half kar diya. Reliable workhorse.",
     name: "Vikram Reddy",
     role: "Auto Detailing Studio, Hyderabad",
     avatar: "/Pressure-washerkit/Image (Vikram Reddy).png",
   },
   {
-    body: "",
+    body:
+      "Desert trails ke baad bike aur gear dono layered dust mein cover ho jaate hain. Portable Aquaforce campsite pe hi deep clean kar deta hai — no waiting for home wash.",
     name: "Aditya Singh",
     role: "Off-Road Enthusiast, Jaipur",
     avatar: "/Pressure-washerkit/Image (Aditya Singh).png",
@@ -388,7 +390,7 @@ const TESTIMONIALS = [
       "Weekend trail ride ke baad bike pe stubborn mud jam jata tha. The 1400 PSI pressure is seriously impressive — radiator ke delicate fins ko bina damage kiye saari mitti saaf kar deta hai.",
     name: "Arjun Mehta",
     role: "Bike Enthusiast, Pune",
-    avatar: "/Pressure-washerkit/Image (Vikram Reddy).png",
+    avatar: "/Pressure-washerkit/Image (Arjun Mehta).png",
   },
   {
     body:
@@ -818,7 +820,7 @@ function UltimatePerformance() {
               <div
                 key={f.title}
                 data-up-item-left
-                className="flex items-start justify-end gap-3 text-right md:gap-4"
+                className="flex flex-row-reverse items-start justify-end gap-3 text-left md:flex-row md:justify-end md:gap-4 md:text-right"
               >
                 <div className="min-w-0">
                   <h3 className="font-display text-xs font-semibold uppercase tracking-wide text-white md:text-sm lg:text-base">
@@ -1554,6 +1556,8 @@ function Testimonials() {
     const el = sectionRef.current;
     if (!el) return;
 
+    const cleanups: Array<() => void> = [];
+
     const ctx = gsap.context(() => {
       gsap.from("[data-ts-head]", {
         autoAlpha: 0,
@@ -1563,17 +1567,111 @@ function Testimonials() {
         ease: "power3.out",
         scrollTrigger: { trigger: el, start: "top 80%" },
       });
-      gsap.from("[data-ts-card]", {
-        autoAlpha: 0,
-        y: 40,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: "power3.out",
-        scrollTrigger: { trigger: "[data-ts-grid]", start: "top 85%" },
+
+      // Continuous vertical marquee per column. Each inner track renders two
+      // copies of its items back-to-back; animating y from 0 to the distance
+      // between the two copies produces a seamless loop. All columns are
+      // started on the same frame via a single master timeline so they stay
+      // visually synced regardless of per-column distance.
+      const tracks = gsap.utils.toArray<HTMLElement>("[data-ts-track]");
+      const PX_PER_SEC = 28;
+      let master: gsap.core.Timeline | null = null;
+
+      const startAll = () => {
+        if (master) master.kill();
+
+        // Measure first — bail if any column still has 0 distance.
+        const specs = tracks
+          .map((track) => {
+            const firstCopy = track.firstElementChild as HTMLElement | null;
+            const secondCopy = track.children[1] as HTMLElement | null;
+            if (!firstCopy || !secondCopy) return null;
+            const distance = secondCopy.offsetTop - firstCopy.offsetTop;
+            if (!distance) return null;
+            return { track, distance };
+          })
+          .filter((s): s is { track: HTMLElement; distance: number } => !!s);
+
+        if (specs.length !== tracks.length) return;
+
+        // Reset all tracks to y:0 in the same frame, then build the master
+        // timeline that owns all three tweens — one clock, perfectly in sync.
+        specs.forEach(({ track }) => gsap.set(track, { y: 0 }));
+        master = gsap.timeline();
+        specs.forEach(({ track, distance }) => {
+          master!.to(
+            track,
+            {
+              y: -distance,
+              duration: distance / PX_PER_SEC,
+              ease: "none",
+              repeat: -1,
+            },
+            0
+          );
+        });
+
+        // Pause on hover per column
+        specs.forEach(({ track }) => {
+          const column = track.parentElement;
+          if (!column) return;
+          const onEnter = () => master?.pause();
+          const onLeave = () => master?.resume();
+          column.addEventListener("mouseenter", onEnter);
+          column.addEventListener("mouseleave", onLeave);
+          cleanups.push(() => {
+            column.removeEventListener("mouseenter", onEnter);
+            column.removeEventListener("mouseleave", onLeave);
+          });
+        });
+      };
+
+      // Wait for every img inside the section to finish (load or error),
+      // with a 2s fallback. Then start on a stable frame.
+      const images = Array.from(el.querySelectorAll("img"));
+      const pending = images.filter((img) => !img.complete);
+      let kicked = false;
+      const kick = () => {
+        if (kicked) return;
+        kicked = true;
+        // Double-rAF to make sure layout is committed before measuring.
+        requestAnimationFrame(() => requestAnimationFrame(startAll));
+      };
+
+      if (pending.length === 0) {
+        kick();
+      } else {
+        let remaining = pending.length;
+        const done = () => {
+          remaining -= 1;
+          if (remaining <= 0) kick();
+        };
+        pending.forEach((img) => {
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+        });
+        const fallback = window.setTimeout(kick, 2000);
+        cleanups.push(() => window.clearTimeout(fallback));
+      }
+
+      // Debounced resize — restart only once motion settles.
+      let resizeTimer: number | undefined;
+      const onResize = () => {
+        if (!kicked) return;
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(startAll, 250);
+      };
+      window.addEventListener("resize", onResize);
+      cleanups.push(() => {
+        window.removeEventListener("resize", onResize);
+        window.clearTimeout(resizeTimer);
       });
     }, el);
 
-    return () => ctx.revert();
+    return () => {
+      cleanups.forEach((fn) => fn());
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -1595,79 +1693,71 @@ function Testimonials() {
           </p>
         </div>
 
-        {/* 3-column natural masonry — all columns start at the same top.
-            Col 2 (Vikram) and col 3 (Aditya) lead with short reviews so they
-            render as compact cards, matching the Figma. Col 1 has 3 cards,
-            cols 2 & 3 have 4 cards each — the extra bottom cards sit inside
-            the bottom-fade overlay to produce the dim "fourth row" look. */}
+        {/* 3-column vertical marquee — each column auto-scrolls upward on its
+            own loop, continuously revealing new testimonials. Top/bottom fades
+            soften the entry/exit edges. */}
         <div data-ts-grid className="relative mt-10 md:mt-14">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:items-start">
+          <div
+            className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3"
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+            }}
+          >
             {TESTIMONIAL_COLUMNS.map((col, i) => (
-              <div key={i} className="flex flex-col gap-5 md:gap-6">
-                {col.map((t) => {
-                  // Empty body = Vikram/Aditya: profile-only variant with a
-                  // top-fade mask so the card's top edge blends into the page
-                  // background, matching the Figma.
-                  const isProfileOnly = t.body === "";
-                  return (
-                    <article
-                      key={t.name}
-                      data-ts-card
-                      className="relative flex flex-col rounded-2xl bg-white/[0.03] p-6 md:p-7"
-                      style={
-                        isProfileOnly
-                          ? {
-                              WebkitMaskImage:
-                                "linear-gradient(to bottom, transparent 0%, black 45%)",
-                              maskImage:
-                                "linear-gradient(to bottom, transparent 0%, black 45%)",
-                            }
-                          : undefined
-                      }
-                    >
-                      {isProfileOnly ? (
-                        // Short spacer — just enough room for the top fade,
-                        // keeps the card compact so Sneha / Karthik move up.
-                        <div className="h-4 md:h-6" aria-hidden />
-                      ) : (
-                        <p className="font-sans text-sm leading-relaxed text-white/55 md:text-[15px]">
-                          {t.body}
-                        </p>
-                      )}
+              <div
+                key={i}
+                className="relative h-[640px] overflow-hidden md:h-[720px]"
+              >
+                <div
+                  data-ts-track
+                  className="flex flex-col gap-5 will-change-transform md:gap-6"
+                >
+                  {[0, 1].map((copy) => (
+                    <div key={copy} className="flex flex-col gap-5 md:gap-6">
+                      {col.map((t) => {
+                        const isProfileOnly = t.body === "";
+                        return (
+                          <article
+                            key={`${t.name}-${copy}`}
+                            data-ts-card
+                            className="relative flex flex-col rounded-2xl bg-white/[0.03] p-6 md:p-7"
+                            aria-hidden={copy === 1}
+                          >
+                            {isProfileOnly ? (
+                              <div className="h-4 md:h-6" aria-hidden />
+                            ) : (
+                              <p className="font-sans text-sm leading-relaxed text-white/55 md:text-[15px]">
+                                {t.body}
+                              </p>
+                            )}
 
-                      <div className="mt-6 flex items-center gap-3 md:mt-7">
-                        <img
-                          src={t.avatar}
-                          alt={t.name}
-                          className="h-10 w-10 shrink-0 rounded-full object-cover md:h-11 md:w-11"
-                        />
-                        <div className="min-w-0">
-                          <p className="truncate font-display text-sm font-semibold text-white md:text-[15px]">
-                            {t.name}
-                          </p>
-                          <p className="mt-0.5 truncate font-sans text-[11px] text-white/50 md:text-xs">
-                            {t.role}
-                          </p>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
+                            <div className="mt-6 flex items-center gap-3 md:mt-7">
+                              <img
+                                src={t.avatar}
+                                alt={t.name}
+                                className="h-10 w-10 shrink-0 rounded-full object-cover md:h-11 md:w-11"
+                              />
+                              <div className="min-w-0">
+                                <p className="truncate font-display text-sm font-semibold text-white md:text-[15px]">
+                                  {t.name}
+                                </p>
+                                <p className="mt-0.5 truncate font-sans text-[11px] text-white/50 md:text-xs">
+                                  {t.role}
+                                </p>
+                              </div>
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-
-          {/* Bottom fade — dims the extra 4th-row cards in cols 2 & 3 and the
-              tail of Arjun's card in col 1, matching the Figma's low-opacity
-              footer row. Sits on top of the grid, fades to page bg. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[220px] lg:block"
-            style={{
-              background:
-                "linear-gradient(to top, #0A0A0A 0%, #0A0A0A 35%, rgba(10,10,10,0) 100%)",
-            }}
-          />
         </div>
       </Shell>
     </section>
@@ -1817,10 +1907,10 @@ function CTA() {
           <div data-cta-btn className="mt-10">
             <Link
               href="/contact"
-              className="group inline-flex flex-row items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row items-center gap-3 rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row-reverse hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
             >
-              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-                <ArrowRight className="h-3.5 w-3.5" />
+              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white md:h-8 md:w-8">
+                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
               </span>
               Get in Touch
             </Link>

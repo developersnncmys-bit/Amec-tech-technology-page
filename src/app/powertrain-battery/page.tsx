@@ -342,7 +342,7 @@ function Intro() {
   return (
     <section ref={sectionRef} className="w-full py-16 md:py-24">
       <Shell>
-        <div className="mx-auto max-w-4xl space-y-8 font-display text-base leading-[1.75] text-white/80 md:text-lg">
+        <div className="mx-auto max-w-4xl space-y-8 font-display text-[20px] leading-[1.75] text-white/80">
           <p>
             <span data-intro-word className="inline-block font-semibold text-white">
               {INTRO_LEAD_LABEL}
@@ -480,7 +480,7 @@ function ProductPortfolio() {
             <article
               key={p.title}
               data-portfolio-card
-              className="group/card relative flex w-[340px] shrink-0 flex-col rounded-xl border border-white/[0.06] bg-bg-card p-5 transition hover:border-white/20 md:w-[400px]"
+              className="group/card relative flex w-[85vw] max-w-[340px] shrink-0 flex-col rounded-xl border border-white/[0.06] bg-bg-card p-5 transition hover:border-white/20 sm:w-[340px] md:w-[400px]"
             >
               <span className="inline-flex w-fit items-center rounded-md border border-white/15 bg-white/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md">
                 {p.tag}
@@ -503,11 +503,11 @@ function ProductPortfolio() {
               </ul>
               <Link
                 href="/contact"
-                className="group/cta mt-5 inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+                className="group/cta mt-5 inline-flex flex-row-reverse items-center gap-3 self-start rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
               >
                 Explore More
-                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/cta:bg-black group-hover/cta:text-white">
-                  <ArrowRight className="h-3.5 w-3.5" />
+                <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/cta:bg-black group-hover/cta:text-white md:h-8 md:w-8">
+                  <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                 </span>
               </Link>
             </article>
@@ -858,14 +858,14 @@ function TechnicalCapabilities() {
               data-tc-card
               className="group relative pt-6"
             >
-              {/* Thin top rule — short white segment grows on hover */}
+              {/* Thin top rule — short white segment fills to full width on hover */}
               <span
                 aria-hidden
                 className="absolute inset-x-0 top-0 h-px bg-white/15"
               />
               <span
                 aria-hidden
-                className="absolute left-0 top-0 h-px w-12 origin-left bg-white transition-transform duration-500 ease-out group-hover:scale-x-[5]"
+                className="absolute inset-x-0 top-0 h-px origin-left scale-x-[0.08] bg-white transition-transform duration-500 ease-out group-hover:scale-x-100"
               />
 
               <span
@@ -1035,11 +1035,11 @@ function BuildCTA() {
           <div data-build-cta-button>
             <Link
               href="/contact"
-              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-4 hover:pr-1 hover:text-black"
+              className="group inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out hover:flex-row hover:border-white hover:bg-white hover:pl-5 hover:pr-1.5 hover:text-black md:text-base"
             >
               Start Your EV Project
-              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white">
-                <ArrowRight className="h-3.5 w-3.5" />
+              <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover:bg-black group-hover:text-white md:h-8 md:w-8">
+                <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
               </span>
             </Link>
           </div>

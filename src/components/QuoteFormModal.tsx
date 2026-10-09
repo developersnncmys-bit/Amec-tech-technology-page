@@ -103,7 +103,7 @@ export function QuoteFormModal({
   };
 
   const inputBase =
-    "w-full rounded-md border bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder:text-white/40 outline-none transition md:text-[15px]";
+    "w-full rounded-md border bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none transition md:text-[15px]";
   const inputOk = "border-white/10 focus:border-white/40 focus:bg-white/[0.05]";
   const inputErr = "border-red-400/60 focus:border-red-400";
   const field = (name: string) =>
@@ -126,17 +126,17 @@ export function QuoteFormModal({
 
       <div
         ref={dialogRef}
-        className="relative z-10 flex max-h-[calc(100vh-3rem)] w-full max-w-2xl flex-col overflow-hidden rounded-card border border-white/[0.08] bg-bg-card shadow-[0_30px_80px_rgba(0,0,0,0.55)] animate-[qmPopIn_0.3s_ease-out]"
+        className="relative z-10 flex w-full max-w-2xl flex-col rounded-card border border-white/[0.08] bg-bg-card shadow-[0_30px_80px_rgba(0,0,0,0.55)] animate-[qmPopIn_0.3s_ease-out]"
       >
-        <div className="flex items-start justify-between gap-6 border-b border-white/[0.06] px-6 py-5 md:px-8 md:py-6">
+        <div className="flex items-start justify-between gap-6 border-b border-white/[0.06] px-6 py-4 md:px-8 md:py-5">
           <div>
             <h2
               id="quote-modal-title"
-              className="font-display text-xl font-semibold text-white md:text-2xl"
+              className="font-display text-lg font-semibold text-white md:text-xl"
             >
               {title}
             </h2>
-            <p className="mt-1.5 text-xs leading-relaxed text-white/60 md:text-sm">
+            <p className="mt-1 text-xs leading-relaxed text-white/60 md:text-sm">
               {subtitle}
             </p>
           </div>
@@ -160,7 +160,7 @@ export function QuoteFormModal({
           </button>
         </div>
 
-        <div className="overflow-y-auto px-6 py-6 md:px-8 md:py-7">
+        <div className="px-6 py-5 md:px-8 md:py-6">
           {state === "success" ? (
             <div className="flex flex-col items-start gap-5 rounded border border-white/[0.06] bg-white/[0.02] p-6">
               <span className="grid h-12 w-12 place-items-center rounded-full border border-white/15 bg-white/[0.03] text-white">
@@ -202,7 +202,7 @@ export function QuoteFormModal({
               </div>
             </div>
           ) : (
-            <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
                 <label htmlFor="qm-name" className={labelCls}>Full Name</label>
                 <input
@@ -217,7 +217,7 @@ export function QuoteFormModal({
                 {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name}</p>}
               </div>
 
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label htmlFor="qm-email" className={labelCls}>Mail ID</label>
                   <input
@@ -242,7 +242,7 @@ export function QuoteFormModal({
                 </div>
               </div>
 
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label htmlFor="qm-company" className={labelCls}>Company / Organization</label>
                   <input
@@ -262,6 +262,7 @@ export function QuoteFormModal({
                       options={INQUIRY_TYPES}
                       defaultValue={defaultInquiryType ?? ""}
                       invalid={!!errors.type}
+                      size="sm"
                     />
                   </div>
                 </div>
@@ -272,7 +273,7 @@ export function QuoteFormModal({
                 <textarea
                   id="qm-message"
                   name="message"
-                  rows={4}
+                  rows={3}
                   placeholder="Enter your query details…"
                   className={`mt-2 resize-none ${field("message")}`}
                   aria-invalid={!!errors.message}
@@ -283,7 +284,7 @@ export function QuoteFormModal({
               <button
                 type="submit"
                 disabled={state === "submitting"}
-                className="mt-1 inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-4 font-display text-sm font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60 md:text-base"
+                className="inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3.5 font-display text-sm font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60 md:text-base"
               >
                 {state === "submitting" ? "Submitting…" : "Submit Enquiry"}
               </button>

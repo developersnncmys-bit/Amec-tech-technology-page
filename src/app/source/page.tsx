@@ -388,7 +388,7 @@ function ProductOverview() {
     <section ref={sectionRef} className="w-full py-20 md:py-28">
       <Shell>
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr] md:items-center md:gap-16">
-          <div className="grid grid-cols-[1fr_auto_1.4fr] gap-x-6 gap-y-16 md:gap-x-10 md:gap-y-24">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-[1fr_auto_1.4fr] md:gap-x-10 md:gap-y-24">
             {/* Row 1 — Product Overview title */}
             <h2
               data-block1-title
@@ -396,8 +396,8 @@ function ProductOverview() {
             >
               Product Overview
             </h2>
-            {/* Continuous dim rail with two bright indicator segments — one per row */}
-            <div className="relative row-span-2 grid w-[3px] grid-rows-2">
+            {/* Continuous dim rail with two bright indicator segments — one per row (hidden on mobile where layout is stacked) */}
+            <div className="relative row-span-2 hidden w-[3px] grid-rows-2 md:grid">
               <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-white/15" aria-hidden />
               <span
                 data-overview-ind-1
@@ -1709,7 +1709,7 @@ function WarrantyVisual() {
     <div className="flex h-full w-full flex-col items-center justify-center px-6 py-6">
       <span
         data-metallic-num
-        className="font-display text-[6rem] font-bold leading-none tracking-tight md:text-[8rem]"
+        className="font-display text-[4.5rem] font-bold leading-none tracking-tight md:text-[8rem]"
         style={{
           background:
             "linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.25) 100%)",

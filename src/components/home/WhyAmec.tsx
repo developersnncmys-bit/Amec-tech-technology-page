@@ -58,7 +58,7 @@ export function WhyAmec() {
 
   return (
     <section className="relative w-full py-16 md:py-24">
-      <div className="mx-auto w-full max-w-[1400px] px-6 md:px-14">
+      <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10 lg:px-14">
         {/* Header */}
         <AnimateIn className="text-center">
           <h2 className="heading-lg">WHY AMEC TECHNOLOGY</h2>
@@ -69,8 +69,8 @@ export function WhyAmec() {
           </p>
         </AnimateIn>
 
-        {/* Desktop: pinned showcase */}
-        <div className="mt-20 hidden md:grid md:grid-cols-[1.05fr_1fr] md:gap-16 lg:gap-24">
+        {/* Desktop: pinned showcase (shifted from md: to lg: so narrow tablets don't cramp) */}
+        <div className="mt-20 hidden lg:grid lg:grid-cols-[1.05fr_1fr] lg:gap-16 xl:gap-24">
           {/* Left — sticky stage */}
           <div className="relative">
             <div className="sticky top-24 h-[72vh] overflow-hidden rounded-card border border-white/[0.08] bg-bg-card">
@@ -128,7 +128,7 @@ export function WhyAmec() {
         </div>
 
         {/* Mobile: stacked cards */}
-        <div className="mt-14 flex flex-col gap-8 md:hidden">
+        <div className="mt-14 flex flex-col gap-8 lg:hidden">
           {PILLARS.map((p) => (
             <AnimateIn key={p.number}>
               <article className="overflow-hidden rounded-card border border-white/[0.08] bg-bg-card">

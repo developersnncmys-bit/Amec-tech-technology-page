@@ -105,17 +105,17 @@ export function Hero() {
             />
           </div>
 
-          <div className="absolute inset-0 flex items-end justify-between gap-16 px-6 pb-10 md:px-24 md:pb-16">
-            <div className="max-w-[70%] text-left">
+          <div className="absolute inset-0 flex flex-col items-start justify-end gap-6 px-6 pb-10 sm:flex-row sm:items-end sm:justify-between sm:gap-10 md:px-14 md:pb-14 lg:gap-16 lg:px-24 lg:pb-16">
+            <div className="max-w-full text-left sm:max-w-[70%]">
               <p
                 data-hero-eyebrow
-                className="eyebrow md:!text-[48px] md:!leading-none md:!tracking-[0.12em] md:!font-semibold md:!text-white"
+                className="eyebrow md:!text-[32px] md:!leading-none md:!tracking-[0.12em] md:!font-semibold md:!text-white lg:!text-[48px]"
               >
                 AMEC
               </p>
               <h1
                 data-hero-title
-                className="mt-1 heading-xl md:!mt-2 md:!text-[68px] md:!leading-[1.06]"
+                className="mt-1 heading-xl md:!mt-2 md:!text-[52px] md:!leading-[1.06] lg:!text-[68px]"
               >
                 {"TECHNOLOGY".split("").map((c, i) => (
                   <span key={i} className="inline-block">{c}</span>
@@ -123,12 +123,12 @@ export function Hero() {
               </h1>
               <p
                 data-hero-sub
-                className="mt-3 body-hero md:!mt-4 md:!text-[18px] md:!leading-[1.3] whitespace-normal md:whitespace-nowrap"
+                className="mt-3 body-hero md:!mt-4 md:!text-[16px] md:!leading-[1.3] lg:!text-[18px] lg:whitespace-nowrap"
               >
                 Engineering Powertrain, Energy & Scalable Technologies
               </p>
             </div>
-            <div data-hero-cta className="shrink-0 self-end">
+            <div data-hero-cta className="shrink-0 self-start sm:self-end">
               <HeroCTA onClick={scrollToIntro} label="Explore more" variant="primary" arrow={false} />
             </div>
           </div>

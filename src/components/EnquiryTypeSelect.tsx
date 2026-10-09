@@ -9,6 +9,7 @@ type Props = {
   defaultValue?: string;
   placeholder?: string;
   invalid?: boolean;
+  size?: "sm" | "md";
 };
 
 export function EnquiryTypeSelect({
@@ -18,17 +19,46 @@ export function EnquiryTypeSelect({
   defaultValue = "",
   placeholder = "Select your area of interest",
   invalid = false,
+  size = "md",
 }: Props) {
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
+  const [dropUp, setDropUp] = useState(false);
+  const [maxListHeight, setMaxListHeight] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(() =>
     Math.max(0, options.indexOf(defaultValue))
   );
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
   const autoId = useId();
   const triggerId = id ?? `enq-${autoId}`;
   const listId = `${triggerId}-list`;
+
+  // Decide whether to drop up or down based on available viewport space,
+  // and clamp the list height so it never spills off-screen (which would
+  // hide items behind the scrollbar edge).
+  useEffect(() => {
+    if (!open) return;
+    const measure = () => {
+      const btn = triggerRef.current;
+      if (!btn) return;
+      const r = btn.getBoundingClientRect();
+      const margin = 16;
+      const spaceBelow = window.innerHeight - r.bottom - margin;
+      const spaceAbove = r.top - margin;
+      const preferUp = spaceBelow < 240 && spaceAbove > spaceBelow;
+      setDropUp(preferUp);
+      setMaxListHeight(Math.max(160, preferUp ? spaceAbove : spaceBelow));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, true);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure, true);
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -86,8 +116,13 @@ export function EnquiryTypeSelect({
     }
   };
 
+  const sizeCls =
+    size === "sm"
+      ? "px-4 py-3 text-sm md:text-[15px]"
+      : "px-5 py-4 text-sm md:text-base";
   const triggerCls = [
-    "flex w-full items-center justify-between gap-3 rounded-lg border bg-white/[0.03] px-4 py-3.5 text-left text-sm text-white outline-none transition md:text-[15px]",
+    "flex w-full items-center justify-between gap-3 rounded-md border bg-white/[0.03] text-left text-white outline-none transition",
+    sizeCls,
     invalid
       ? "border-red-400/60 focus:border-red-400"
       : open
@@ -99,6 +134,7 @@ export function EnquiryTypeSelect({
     <div ref={rootRef} className="relative">
       <input type="hidden" name={name} value={value} />
       <button
+        ref={triggerRef}
         type="button"
         id={triggerId}
         className={triggerCls}
@@ -133,7 +169,12 @@ export function EnquiryTypeSelect({
           tabIndex={-1}
           aria-activedescendant={`${triggerId}-opt-${activeIndex}`}
           onKeyDown={onListKey}
-          className="absolute left-0 right-0 z-50 mt-2 max-h-80 overflow-auto rounded-lg border border-white/10 bg-[#141414] p-1 shadow-[0_12px_32px_rgba(0,0,0,0.5)] focus:outline-none"
+          style={{
+            maxHeight: maxListHeight ? `${Math.min(maxListHeight, 320)}px` : undefined,
+          }}
+          className={`absolute left-0 right-0 z-50 overflow-auto rounded-lg border border-white/10 bg-[#141414] p-1 shadow-[0_12px_32px_rgba(0,0,0,0.5)] focus:outline-none ${
+            dropUp ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
         >
           {options.map((opt, i) => {
             const selected = value === opt;

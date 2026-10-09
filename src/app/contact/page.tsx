@@ -357,12 +357,12 @@ function HiringHR() {
           <form
             data-hiring-item
             onSubmit={onSubmit}
-            className="flex w-full items-center gap-4 rounded-2xl border border-white/15 bg-black px-6 py-4 transition-colors hover:border-white/30 focus-within:border-white/40 md:ml-auto md:max-w-md"
+            className="flex w-full items-center gap-3 rounded-2xl border border-white/15 bg-black px-4 py-4 transition-colors hover:border-white/30 focus-within:border-white/40 sm:gap-4 sm:px-6 md:ml-auto md:max-w-md"
           >
-            <span className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-white md:text-base">
+            <span className="font-display text-xs font-semibold uppercase tracking-[0.14em] text-white sm:text-sm sm:tracking-[0.18em] md:text-base">
               Email
             </span>
-            <span aria-hidden className="h-6 w-px bg-white/40" />
+            <span aria-hidden className="h-5 w-px bg-white/40 sm:h-6" />
             <input
               type="email"
               value={email}

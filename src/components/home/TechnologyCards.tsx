@@ -115,14 +115,14 @@ export function TechnologyCards() {
                 aria-hidden
               />
               <div className="p-5">
-                <h3 className="font-display text-sm font-semibold text-white md:text-base">{card.title}</h3>
+                <h3 className="font-display text-base font-semibold text-white md:text-lg">{card.title}</h3>
                 <p className="mt-2 body text-xs md:text-[13px]">{card.body}</p>
                 <span
-                  className="mt-4 inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1 pl-1 pr-4 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover/card:flex-row group-hover/card:border-white group-hover/card:bg-white group-hover/card:pl-4 group-hover/card:pr-1 group-hover/card:text-black"
+                  className="mt-4 inline-flex flex-row-reverse items-center gap-3 rounded border border-white/20 bg-transparent py-1.5 pl-1.5 pr-5 font-display text-sm font-medium text-white transition-all duration-300 ease-out group-hover/card:flex-row group-hover/card:border-white group-hover/card:bg-white group-hover/card:pl-5 group-hover/card:pr-1.5 group-hover/card:text-black md:text-base"
                 >
                   Explore More
-                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/card:bg-black group-hover/card:text-white">
-                    <ArrowRight className="h-3.5 w-3.5" />
+                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded bg-white text-black transition-colors duration-300 ease-out group-hover/card:bg-black group-hover/card:text-white md:h-8 md:w-8">
+                    <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </span>
                 </span>
               </div>
