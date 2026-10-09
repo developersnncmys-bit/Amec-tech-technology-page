@@ -497,7 +497,7 @@ function WhyOutperforms() {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=180%",
+          end: "+=60%",
           pin: true,
           pinSpacing: true,
           scrub: 0.5,
@@ -1076,7 +1076,7 @@ function MeshNetwork() {
           className="relative mx-auto mt-10 w-full max-w-3xl overflow-visible md:mt-14 lg:max-w-4xl"
         >
           <svg
-            viewBox="0 0 900 220"
+            viewBox="0 0 900 280"
             className="relative h-auto w-full"
             preserveAspectRatio="xMidYMid meet"
           >
@@ -1163,8 +1163,9 @@ function MeshNetwork() {
                 <text
                   data-mn-label
                   x={n.x}
-                  y={n.y + 40}
+                  y={n.y + (n.hub ? 50 : 24)}
                   textAnchor="middle"
+                  dominantBaseline="hanging"
                   fill="rgba(255,255,255,0.85)"
                   fontSize="22"
                   fontWeight="500"
