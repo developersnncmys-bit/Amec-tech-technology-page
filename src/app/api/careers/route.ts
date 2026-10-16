@@ -77,6 +77,15 @@ export async function POST(req: Request) {
       );
     }
     const buf = Buffer.from(await resume.arrayBuffer());
+
+    // Magic-byte check — real PDFs begin with "%PDF-".
+    if (buf.length < 5 || buf.subarray(0, 5).toString("ascii") !== "%PDF-") {
+      return NextResponse.json(
+        { error: "Resume must be a valid PDF file." },
+        { status: 400 }
+      );
+    }
+
     attachments.push({
       filename: resume.name || "resume.pdf",
       content: buf,
@@ -135,9 +144,14 @@ export async function POST(req: Request) {
       attachments,
     });
   } catch (err) {
+    const detail =
+      err instanceof Error ? err.message : "Unknown error sending email.";
     console.error("[careers] sendMail failed", err);
     return NextResponse.json(
-      { error: "Could not send the application. Please try again." },
+      {
+        error: "Could not send the application. Please try again.",
+        detail,
+      },
       { status: 502 }
     );
   }

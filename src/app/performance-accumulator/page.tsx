@@ -684,7 +684,7 @@ function EngineeredForPerformance() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex h-screen w-full flex-col justify-between overflow-hidden py-20 md:py-24"
+      className="relative flex h-auto w-full flex-col justify-between gap-10 overflow-hidden py-14 md:h-screen md:gap-0 md:py-24"
     >
       {/* Background image — fills the full section */}
       <img

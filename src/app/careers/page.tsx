@@ -287,8 +287,11 @@ function JobDetails() {
   const descRef = useRef<HTMLDivElement | null>(null);
   const [descOpen, setDescOpen] = useState(false);
   const [fileName, setFileName] = useState<string>("");
+  const [fileError, setFileError] = useState<string>("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [submitMessage, setSubmitMessage] = useState<string>("");
+
+  const MAX_PDF_BYTES = 5 * 1024 * 1024; // 5 MB
 
   useIsomorphicLayoutEffect(() => {
     const el = sectionRef.current;
@@ -374,9 +377,57 @@ function JobDetails() {
     }
   }, [descOpen]);
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    setFileName(f ? f.name : "");
+  const rejectFile = (input: HTMLInputElement, msg: string) => {
+    setFileError(msg);
+    setFileName("");
+    input.value = "";
+  };
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const f = input.files?.[0];
+
+    if (!f) {
+      setFileName("");
+      setFileError("");
+      return;
+    }
+
+    const isPdfExt = /\.pdf$/i.test(f.name);
+    const isPdfMime = !f.type || f.type === "application/pdf";
+
+    if (!isPdfExt || !isPdfMime) {
+      rejectFile(input, "Only PDF files are allowed.");
+      return;
+    }
+
+    if (f.size > MAX_PDF_BYTES) {
+      rejectFile(input, "PDF must be 5 MB or smaller.");
+      return;
+    }
+
+    // Magic-byte check: real PDFs start with "%PDF-" (0x25 0x50 0x44 0x46 0x2D).
+    // Catches files renamed from .docx/.jpg/etc. to .pdf.
+    try {
+      const head = new Uint8Array(await f.slice(0, 5).arrayBuffer());
+      const isPdfMagic =
+        head.length === 5 &&
+        head[0] === 0x25 &&
+        head[1] === 0x50 &&
+        head[2] === 0x44 &&
+        head[3] === 0x46 &&
+        head[4] === 0x2d;
+      if (!isPdfMagic) {
+        rejectFile(input, "That file is not a valid PDF.");
+        return;
+      }
+    } catch {
+      rejectFile(input, "Could not read the file. Please try another.");
+      return;
+    }
+
+    setFileError("");
+    setFileName(f.name);
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -497,11 +548,14 @@ function JobDetails() {
                     id="resume"
                     name="resume"
                     type="file"
-                    accept="application/pdf"
+                    accept="application/pdf,.pdf"
                     onChange={onFileChange}
                     className="sr-only"
                   />
                 </div>
+                {fileError ? (
+                  <p className="mt-2 text-xs text-red-400">{fileError}</p>
+                ) : null}
               </div>
 
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">

@@ -123,7 +123,7 @@ export function Hero() {
               </h1>
               <p
                 data-hero-sub
-                className="mt-3 body-hero md:!mt-4 md:!text-[16px] md:!leading-[1.3] lg:!text-[18px] lg:whitespace-nowrap"
+                className="mt-3 body-hero !leading-[1.4] md:!mt-4 md:!text-[16px] md:!leading-[1.3] lg:!text-[18px] lg:whitespace-nowrap"
               >
                 Engineering Powertrain, Energy & Scalable Technologies
               </p>
