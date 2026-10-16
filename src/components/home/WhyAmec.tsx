@@ -57,7 +57,7 @@ export function WhyAmec() {
   }, []);
 
   return (
-    <section className="relative w-full py-16 md:py-24">
+    <section className="relative w-full py-10 md:py-24">
       <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10 lg:px-14">
         {/* Header */}
         <AnimateIn className="text-center">

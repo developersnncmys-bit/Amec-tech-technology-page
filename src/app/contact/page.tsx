@@ -578,7 +578,7 @@ function JustSendIt() {
           <div className="grid md:grid-cols-[1fr_1.3fr] tablet:grid-cols-1">
             {/* LEFT — lighter card bg; title sits lower in the column; info blocks + buttons grouped at the bottom */}
             <div data-jsi-left className="flex flex-col bg-bg-card p-7 md:p-12 lg:p-16">
-              <h2 className="mt-24 font-display font-semibold normal-case tracking-normal text-white text-[52px] leading-[1.05] md:mt-40 md:text-[72px]">
+              <h2 className="mt-10 font-display font-semibold normal-case tracking-normal text-white text-[36px] leading-[1.05] sm:mt-24 sm:text-[52px] md:mt-40 md:text-[72px]">
                 Just<br />send it.
               </h2>
 

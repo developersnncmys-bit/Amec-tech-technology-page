@@ -301,7 +301,7 @@ function Hero() {
       <div className="absolute inset-0 flex flex-col items-start justify-center px-4 text-left md:px-8 lg:px-12 tablet:px-6">
         <h1
           data-hero-title
-          className="font-display text-[40px] font-semibold uppercase leading-[1.06] text-white md:text-[68px]"
+          className="font-display text-[28px] font-semibold uppercase leading-[1.06] text-white sm:text-[36px] md:text-[68px]"
         >
           Powertrain And Battery
         </h1>
@@ -478,7 +478,7 @@ function ProductPortfolio() {
       <div className="relative mt-8 tablet:overflow-x-auto tablet:[-ms-overflow-style:none] tablet:[scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div
           ref={trackRef}
-          className="flex gap-6 pl-6 pr-6 will-change-transform md:pl-14 md:pr-14 tablet:snap-x tablet:snap-mandatory"
+          className="flex gap-4 pl-4 pr-4 will-change-transform md:gap-6 md:pl-14 md:pr-14 tablet:snap-x tablet:snap-mandatory"
         >
           {PRODUCTS.map((p) => (
             <article
@@ -1014,7 +1014,7 @@ function BuildCTA() {
               key={i}
               data-build-cta-pulse
               className="absolute aspect-square rounded-full border-2 border-white/25"
-              style={{ width: "60vmax" }}
+              style={{ width: "60vmin" }}
             />
           ))}
         </div>

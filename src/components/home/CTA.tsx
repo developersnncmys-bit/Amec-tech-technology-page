@@ -138,7 +138,7 @@ export function CTA() {
               "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 55%)",
           }}
         />
-        <div className="relative flex flex-col items-center gap-8 px-6 text-center tablet:px-8 md:px-14">
+        <div className="relative flex flex-col items-center gap-6 px-6 text-center tablet:px-8 md:gap-8 md:px-14">
           <h2 className="heading-xl max-w-6xl">
             {HEADING_WORDS.map((word, i) => (
               <Fragment key={i}>
@@ -167,9 +167,9 @@ export function CTA() {
           <Link
             href="/contact"
             data-cta-card
-            className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-bg-card p-10 md:p-12"
+            className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-bg-card p-6 md:p-12"
           >
-            <div className="relative flex h-full flex-col justify-between gap-8">
+            <div className="relative flex h-full flex-col justify-between gap-6 md:gap-8">
               <div>
                 <h3 className="font-display text-2xl font-semibold md:text-3xl">Partner with<br />AMEC</h3>
               </div>
@@ -185,9 +185,9 @@ export function CTA() {
           <Link
             href="/careers"
             data-cta-card
-            className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-bg-card p-10 md:p-12"
+            className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-bg-card p-6 md:p-12"
           >
-            <div className="relative flex h-full flex-col justify-between gap-8">
+            <div className="relative flex h-full flex-col justify-between gap-6 md:gap-8">
               <div>
                 <h3 className="font-display text-2xl font-semibold md:text-3xl">Build the<br />future with AMEC</h3>
               </div>

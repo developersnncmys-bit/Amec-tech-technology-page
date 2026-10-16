@@ -287,7 +287,7 @@ function Hero() {
 
       {/* Left-aligned, vertically centered title */}
       <div className="absolute inset-0 flex flex-col items-start justify-center px-4 text-left md:px-8 lg:px-12">
-        <h1 data-oem-hero-title className="heading-xl md:!text-[68px] md:!leading-[1.06]">
+        <h1 data-oem-hero-title className="heading-xl !text-3xl sm:!text-4xl md:!text-[68px] md:!leading-[1.06]">
           {"OEM ENGINEERING".split(" ").map((word, i) => (
             <Fragment key={i}>
               <span className="inline-block">{word}</span>
@@ -1204,7 +1204,7 @@ function JustSendIt() {
           <div className="grid md:grid-cols-[1fr_1.3fr] tablet:grid-cols-1">
             {/* LEFT — lighter card bg; title sits lower in the column; info blocks + buttons grouped at the bottom */}
             <div data-oem-cta-left className="flex flex-col bg-bg-card p-7 md:p-12 lg:p-16 tablet:p-8">
-              <h2 className="mt-4 font-display font-semibold normal-case tracking-normal text-white text-[44px] leading-[1.05] md:mt-40 md:text-[72px] tablet:mt-6">
+              <h2 className="mt-4 font-display font-semibold normal-case tracking-normal text-white text-[32px] leading-[1.05] sm:text-[44px] md:mt-40 md:text-[72px] tablet:mt-6">
                 Just<br />send it.
               </h2>
 

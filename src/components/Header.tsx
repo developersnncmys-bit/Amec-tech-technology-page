@@ -8,6 +8,9 @@ import { Logo } from "./Logo";
 type NavItem = { href: string; label: string; disabled?: boolean };
 
 const NAV: NavItem[] = [
+  // `/` renders the Technology page content directly (see src/app/page.tsx).
+  // The original home page is preserved in `_home-original-backup.tsx` but
+  // not routed.
   { href: "/", label: "Home" },
   { href: "/source", label: "Source" },
   { href: "/oem-engineering", label: "OEM Engineering" },
@@ -29,6 +32,19 @@ export function Header() {
     // the navbar there would strand the user inside the pin with no way to
     // navigate out. Keep it visible for the entire page.
     if (pathname === "/timeline") {
+      setHidden(false);
+      return;
+    }
+
+    // Performance-accumulator pins its hero on desktop (+100% scroll). During
+    // the pin, scrolling down triggers the pastHero auto-hide while the pinned
+    // hero is still on-screen → nav disappears mid-hero. Pin is disabled on
+    // mobile (see performance-accumulator/page.tsx), so mobile should auto-hide
+    // normally. Only keep nav always-visible on desktop for this page.
+    const isDesktop =
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 768px)").matches;
+    if (pathname === "/performance-accumulator" && isDesktop) {
       setHidden(false);
       return;
     }
@@ -71,12 +87,14 @@ export function Header() {
 
   return (
     <header
-      className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4 transition-all duration-500 ease-out md:px-6 md:pt-6 ${
-        hidden ? "-translate-y-24 opacity-0" : "translate-y-0 opacity-100"
+      className={`pointer-events-none fixed left-1/2 top-0 z-50 w-full max-w-[1400px] px-6 pt-4 transition-all duration-500 ease-out md:px-6 md:pt-6 ${
+        hidden
+          ? "-translate-x-1/2 -translate-y-24 opacity-0"
+          : "-translate-x-1/2 translate-y-0 opacity-100"
       }`}
       aria-hidden={hidden}
     >
-      <div className="pointer-events-auto w-full max-w-[1400px]">
+      <div className="pointer-events-auto w-full">
         {/* Floating bar — frosted white glass to match Figma */}
         <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/20 bg-black/20 px-4 py-3 text-white shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150 md:px-6 md:py-4">
           <div className="flex shrink-0 items-center self-center">

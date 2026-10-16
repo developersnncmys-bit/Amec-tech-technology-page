@@ -280,11 +280,15 @@ function Hero() {
 // Job Details — light background, 2-column (meta + application form)
 // ---------------------------------------------------------------------------
 
+type SubmitState = "idle" | "submitting" | "success" | "error";
+
 function JobDetails() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const descRef = useRef<HTMLDivElement | null>(null);
   const [descOpen, setDescOpen] = useState(false);
   const [fileName, setFileName] = useState<string>("");
+  const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [submitMessage, setSubmitMessage] = useState<string>("");
 
   useIsomorphicLayoutEffect(() => {
     const el = sectionRef.current;
@@ -375,9 +379,38 @@ function JobDetails() {
     setFileName(f ? f.name : "");
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Hook up to a real endpoint later.
+    if (submitState === "submitting") return;
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    data.set("role", `${JOB.titleTop} — ${JOB.titleBottom}`);
+
+    setSubmitState("submitting");
+    setSubmitMessage("");
+
+    try {
+      const res = await fetch("/api/careers", { method: "POST", body: data });
+      const json = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!res.ok || !json.ok) {
+        setSubmitState("error");
+        setSubmitMessage(json.error || "Something went wrong. Please try again.");
+        return;
+      }
+
+      setSubmitState("success");
+      setSubmitMessage("Thanks — your application has been sent.");
+      form.reset();
+      setFileName("");
+    } catch {
+      setSubmitState("error");
+      setSubmitMessage("Network error. Please try again.");
+    }
   };
 
   return (
@@ -509,10 +542,26 @@ function JobDetails() {
 
               <button
                 type="submit"
-                className="mt-3 flex w-full items-center justify-center rounded-md bg-white px-6 py-3.5 font-display text-sm font-semibold text-black transition hover:bg-white/90 md:text-base"
+                disabled={submitState === "submitting"}
+                className="mt-3 flex w-full items-center justify-center rounded-md bg-white px-6 py-3.5 font-display text-sm font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60 md:text-base"
               >
-                Submit
+                {submitState === "submitting" ? "Submitting…" : "Submit"}
               </button>
+
+              {submitMessage ? (
+                <p
+                  role="status"
+                  className={`text-sm ${
+                    submitState === "success"
+                      ? "text-emerald-400"
+                      : submitState === "error"
+                      ? "text-red-400"
+                      : "text-white/70"
+                  }`}
+                >
+                  {submitMessage}
+                </p>
+              ) : null}
             </form>
           </div>
         </div>

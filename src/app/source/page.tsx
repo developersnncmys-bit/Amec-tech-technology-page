@@ -290,10 +290,10 @@ function Hero() {
       {/* Top-center: eyebrow + main heading */}
       <div className="absolute inset-x-0 top-0 flex flex-col items-center px-6 pt-28 text-center md:pt-36">
         <AnimateIn>
-          <p className="eyebrow !text-base !tracking-[0.14em] !text-white md:!text-[32px] md:!leading-none md:!font-semibold">
+          <p className="eyebrow !text-sm !tracking-[0.14em] !text-white md:!text-[32px] md:!leading-none md:!font-semibold">
             Source
           </p>
-          <h1 className="mt-3 heading-xl md:!text-[68px] md:!leading-[1.06]">Hybrid Energy System</h1>
+          <h1 className="mt-3 heading-xl !text-3xl md:!text-[68px] md:!leading-[1.06]">Hybrid Energy System</h1>
         </AnimateIn>
       </div>
 
@@ -885,7 +885,7 @@ function HybridEnergyManagement() {
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => setActive(m.id)}
-                    className={`group relative flex items-center gap-4 border-b border-white/10 py-3 text-left transition-colors last:border-b-0 ${
+                    className={`group relative flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-white/10 py-3 text-left transition-colors last:border-b-0 md:flex-nowrap ${
                       isActive ? "text-white" : "text-white/55 hover:text-white/85"
                     }`}
                   >
@@ -901,7 +901,10 @@ function HybridEnergyManagement() {
                     <span className="font-display text-base font-semibold md:text-lg">
                       {m.label}
                     </span>
-                    <span className="ml-auto text-[11px] text-white/40 md:text-xs">
+                    {/* Mobile: tagline drops to its own row (full-width, indented
+                        under the label) so it never clips at the viewport edge.
+                        md+: inline on the right via ml-auto, as originally designed. */}
+                    <span className="w-full pl-[2.75rem] text-[11px] text-white/40 md:ml-auto md:w-auto md:pl-0 md:text-xs">
                       {m.tagline}
                     </span>
                   </button>
@@ -1098,7 +1101,7 @@ function KeyFeatures() {
               <img
                 src="/images/source-product2.png"
                 alt="SOURCE product render"
-                className="max-h-[380px] w-auto object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]"
+                className="max-h-[280px] w-auto object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]"
               />
             </div>
 
@@ -2078,7 +2081,7 @@ function WhereSourceWorks() {
         {/* Content row — image owns the taller height; accordion stretches to match */}
         <div className="mt-10 grid gap-6 md:mt-20 md:grid-cols-[1.3fr_1fr] md:items-stretch md:gap-10 tablet:grid-cols-1 tablet:gap-10">
           {/* Left — image container. Taller fixed height so the card has more presence. */}
-          <div className="relative h-[340px] w-full overflow-hidden rounded-card border border-white/20 md:h-[400px]">
+          <div className="relative h-[260px] w-full overflow-hidden rounded-card border border-white/20 md:h-[400px]">
             {APPLICATIONS.map((a, i) => {
               const isActive = i === active;
               return (

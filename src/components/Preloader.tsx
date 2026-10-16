@@ -25,14 +25,29 @@ export function Preloader() {
     <div
       aria-hidden={phase !== "visible"}
       role="status"
-      className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-black"
+      className="pointer-events-none fixed left-0 top-0 z-[100] bg-black"
       style={{
+        // Explicit viewport dimensions, no flex centering — the content block
+        // below centers itself with `top: 50% / left: 50% / translate(-50%, -50%)`.
+        // Flex-based centering can fail if an ancestor (e.g., GSAP pin-spacer)
+        // alters the containing block; absolute-center via transform is more
+        // defensive on pages with heavy ScrollTrigger pins.
+        width: "100vw",
+        height: "100vh",
         opacity: phase === "visible" ? 1 : 0,
         visibility: phase === "hidden" ? "hidden" : "visible",
         transition: `opacity ${FADE_MS}ms ease`,
       }}
     >
-      <div className="relative flex flex-col items-center gap-6">
+      <div
+        className="flex flex-col items-center gap-6"
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
         {/* Plain <img> — avoids next/image wrapper elements interacting with
             page-level GSAP pin-spacers during hydration. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}

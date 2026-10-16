@@ -3,10 +3,13 @@ import { Logo } from "./Logo";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter, YouTube } from "./Icons";
 import { NewsletterForm } from "./NewsletterForm";
 
-const COMPANY = [
-  { label: "About", href: "/about" },
+// About and Timeline intentionally rendered as non-linked labels per request
+// — pages still exist at src/app/about and src/app/timeline. To restore
+// navigation, remove the `linked: false` flag on either entry.
+const COMPANY: { label: string; href: string; linked?: boolean }[] = [
+  { label: "About", href: "/about", linked: false },
   { label: "Leadership", href: "/leadership" },
-  { label: "Timeline", href: "/timeline" },
+  { label: "Timeline", href: "/timeline", linked: false },
   { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
 ];
@@ -122,10 +125,14 @@ export function Footer() {
           <p>© 2026 AMEC Group. All Rights Reserved.</p>
           <p className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 tablet:justify-center md:justify-start">
             <span>All Rights Reserved</span>
+            {/* Terms and Conditions + Privacy Policy intentionally unlinked
+                per request — pages remain at src/app/terms-of-service and
+                src/app/privacy-policy. To restore, swap the <span>s below
+                back to <Link href="/terms-of-service"> / <Link href="/privacy-policy">. */}
             <span aria-hidden className="text-white/25">|</span>
-            <Link href="/terms-of-service" className="transition-colors hover:text-white">Terms and Conditions</Link>
+            <span>Terms and Conditions</span>
             <span aria-hidden className="text-white/25">|</span>
-            <Link href="/privacy-policy" className="transition-colors hover:text-white">Privacy Policy</Link>
+            <span>Privacy Policy</span>
           </p>
         </div>
       </div>
@@ -133,14 +140,24 @@ export function Footer() {
   );
 }
 
-function FooterColumn({ title, items }: { title: string; items: { label: string; href: string }[] }) {
+function FooterColumn({
+  title,
+  items,
+}: {
+  title: string;
+  items: { label: string; href: string; linked?: boolean }[];
+}) {
   return (
     <div>
       <h3 className="font-display text-base font-semibold uppercase tracking-[0.14em] text-white">{title}</h3>
       <ul className="mt-5 space-y-3 text-sm text-white/60">
         {items.map((item) => (
           <li key={item.href}>
-            <Link href={item.href} className="transition-colors hover:text-white">{item.label}</Link>
+            {item.linked === false ? (
+              <span>{item.label}</span>
+            ) : (
+              <Link href={item.href} className="transition-colors hover:text-white">{item.label}</Link>
+            )}
           </li>
         ))}
       </ul>

@@ -111,14 +111,22 @@ function Hero() {
     if (!pinTarget) return;
 
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: pinTarget,
-        start: "top top",
-        end: "+=100%",
-        pin: pinTarget,
-        pinSpacing: true,
-        anticipatePin: 1,
-      });
+      // Skip the hero pin on mobile — the pin wraps the section in a GSAP
+      // pin-spacer and transforms it, which clashes with the fixed-position
+      // Preloader fading out and the fixed Header, causing visible alignment
+      // glitches during page load on small screens. Pin is a desktop
+      // dwell-effect only; mobile shows the hero as a normal h-screen section.
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      if (isDesktop) {
+        ScrollTrigger.create({
+          trigger: pinTarget,
+          start: "top top",
+          end: "+=100%",
+          pin: pinTarget,
+          pinSpacing: true,
+          anticipatePin: 1,
+        });
+      }
 
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
       tl.from("[data-hero-image]", { autoAlpha: 0, scale: 1.05, duration: 1.2 })
@@ -347,7 +355,7 @@ function CapacityBand() {
             />
 
             <div data-cap-number className="flex items-start">
-              <span className="font-sans font-regular leading-none text-white" style={{ fontSize: "clamp(84px, 11vw, 180px)" }}>
+              <span className="font-sans font-regular leading-none text-white" style={{ fontSize: "clamp(56px, 12vw, 180px)" }}>
                 100
               </span>
               <span className="mt-3 font-sans text-2xl font-semibold text-white md:mt-5 md:text-4xl">
@@ -557,10 +565,10 @@ function EfficiencyBand() {
         <div className="grid items-center gap-10 md:grid-cols-[1fr_1.6fr] md:gap-14 tablet:grid-cols-1 tablet:gap-10">
           <div>
             <div data-eff-number className="flex items-start leading-none">
-              <span className="font-sans text-7xl font-medium leading-none text-white md:text-[180px]">
+              <span className="font-sans text-5xl font-medium leading-none text-white sm:text-7xl md:text-[180px]">
                 30
               </span>
-              <span className="font-sans text-7xl font-medium leading-none text-white md:text-[180px]">
+              <span className="font-sans text-5xl font-medium leading-none text-white sm:text-7xl md:text-[180px]">
                 %
               </span>
             </div>
@@ -611,19 +619,29 @@ function EngineeredForPerformance() {
       gsap.set("[data-eng-rule]", { scaleX: 0, transformOrigin: "left center" });
 
       // Pin + scrubbed reveal timeline — points animate in as the user scrolls
-      // through the pinned range. Short pin (~1 extra viewport = roughly 2
-      // scroll gestures) so the user isn't locked in for long.
+      // through the pinned range on desktop. Short pin (~1 extra viewport =
+      // roughly 2 scroll gestures) so the user isn't locked in for long.
+      // On mobile: no pin AND no scrub — the animation plays once at full
+      // speed when the section enters view, so text reveal feels responsive
+      // instead of dragging across 80% of scroll.
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=80%",
-          pin: section,
-          pinSpacing: true,
-          anticipatePin: 1,
-          scrub: 0.5,
-          invalidateOnRefresh: true,
-        },
+        scrollTrigger: isDesktop
+          ? {
+              trigger: section,
+              start: "top top",
+              end: "+=80%",
+              pin: section,
+              pinSpacing: true,
+              anticipatePin: 1,
+              scrub: 0.5,
+              invalidateOnRefresh: true,
+            }
+          : {
+              trigger: section,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
       });
 
       // Header fades in at the very start of the pin
@@ -750,15 +768,20 @@ function ClosingCTA() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Pin for a short range — one scroll gesture scrubs the full reveal
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "+=100%",
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-      });
+      // Pin for a short range — one scroll gesture scrubs the full reveal.
+      // Skip on mobile to avoid multiple pins stacking and clashing with the
+      // Preloader fade (see Hero pin skip above).
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      if (isDesktop) {
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          end: "+=100%",
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+        });
+      }
 
       // CTA button — fires once as section enters, no scrub
       gsap.from("[data-close-cta]", {
