@@ -183,7 +183,7 @@ export function CTA() {
           </Link>
 
           <Link
-            href="/careers"
+            href="/careers/SeniorSalesManager"
             data-cta-card
             className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-bg-card p-6 md:p-12"
           >

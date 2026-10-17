@@ -9,8 +9,9 @@ import { Footer } from "@/components/Footer";
 // ---------------------------------------------------------------------------
 
 const JOB = {
-  titleTop: "Hiring Senior Sales Manager",
-  titleBottom: "Industrial Cleaning Equipment Sales",
+  eyebrow: "Hiring",
+  title: "Senior Sales Manager",
+  subtitle: "Industrial Cleaning Equipment Sales",
   meta: [
     {
       label: "Industry",
@@ -237,7 +238,7 @@ function Hero() {
       <div className="absolute inset-0">
         <video
           className="absolute inset-0 h-full w-full object-cover opacity-60"
-          src="/videos/career.mp4"
+          src="/videos/career2.mp4"
           autoPlay
           muted
           loop
@@ -257,18 +258,24 @@ function Hero() {
       </div>
 
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col items-center px-6 py-10 text-center md:py-24">
-        <h1 className="font-display font-semibold uppercase leading-[1.08] text-white">
+        <p
+          data-hero-line
+          className="font-display text-sm font-medium uppercase tracking-[0.3em] text-white/85 md:text-base lg:text-lg"
+        >
+          {JOB.eyebrow}
+        </p>
+        <h1 className="mt-4 font-display font-semibold leading-[1.08] text-white md:mt-5">
           <span
             data-hero-line
-            className="block text-[32px] md:text-[52px] lg:text-[64px]"
+            className="block text-[34px] md:text-[56px] lg:text-[68px]"
           >
-            {JOB.titleTop}
+            {JOB.title}
           </span>
           <span
             data-hero-line
-            className="mt-2 block text-[28px] md:text-[46px] lg:text-[56px]"
+            className="mt-3 block text-[18px] font-normal text-white/85 md:mt-4 md:text-[26px] lg:text-[30px]"
           >
-            {JOB.titleBottom}
+            [{JOB.subtitle}]
           </span>
         </h1>
       </div>
@@ -436,7 +443,7 @@ function JobDetails() {
 
     const form = e.currentTarget;
     const data = new FormData(form);
-    data.set("role", `${JOB.titleTop} — ${JOB.titleBottom}`);
+    data.set("role", `${JOB.eyebrow} ${JOB.title} — ${JOB.subtitle}`);
 
     setSubmitState("submitting");
     setSubmitMessage("");

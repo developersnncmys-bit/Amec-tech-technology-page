@@ -69,7 +69,7 @@ const CLOSING_CARDS = [
     title: "Build the",
     titleAccent: "future with AMEC",
     cta: "Explore Careers",
-    href: "/careers",
+    href: "/careers/SeniorSalesManager",
   },
 ];
 

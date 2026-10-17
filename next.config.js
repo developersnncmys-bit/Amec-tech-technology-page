@@ -8,6 +8,15 @@ const nextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
   },
+  async redirects() {
+    return [
+      {
+        source: "/careers",
+        destination: "/careers/SeniorSalesManager",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

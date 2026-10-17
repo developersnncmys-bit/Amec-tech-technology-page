@@ -1240,7 +1240,7 @@ function JustSendIt() {
                     </span>
                   </a>
                   <Link
-                    href="/careers"
+                    href="/careers/SeniorSalesManager"
                     className="group/job relative inline-flex h-10 w-fit items-center rounded border border-white/20 bg-transparent pl-11 pr-4 font-display text-sm font-medium text-white transition-all duration-500 ease-out hover:border-white hover:bg-white hover:pl-4 hover:pr-11 hover:text-black"
                   >
                     <span className="whitespace-nowrap">Job Openings</span>

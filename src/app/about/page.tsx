@@ -1959,7 +1959,7 @@ function ClosingCTA() {
           </Link>
 
           <Link
-            href="/careers"
+            href="/careers/SeniorSalesManager"
             data-cta-sub
             className="group relative overflow-hidden rounded-2xl bg-bg-card p-10 md:p-12"
           >

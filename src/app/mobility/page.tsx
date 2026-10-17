@@ -783,7 +783,7 @@ function CareersInMobility() {
                           {r.title}
                         </span>
                         <Link
-                          href="/careers"
+                          href="/careers/SeniorSalesManager"
                           className="inline-flex shrink-0 items-center gap-1 text-xs text-white/70 transition-colors hover:text-white"
                         >
                           Learn More
@@ -805,7 +805,7 @@ function CareersInMobility() {
                       <span className="text-[13px] text-white">{r.type}</span>
                       <span className="text-[13px] text-white">{r.location}</span>
                       <Link
-                        href="/careers"
+                        href="/careers/SeniorSalesManager"
                         className="inline-flex items-center gap-2 justify-self-end text-[13px] text-white transition-colors hover:text-white/80"
                       >
                         Learn More
@@ -976,7 +976,7 @@ function ClosingCTA() {
           </Link>
 
           <Link
-            href="/careers"
+            href="/careers/SeniorSalesManager"
             data-cta-sub
             className="group relative overflow-hidden rounded-2xl bg-bg-card p-10 md:p-12"
           >

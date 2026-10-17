@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter, YouTube } from "./Icons";
+import { Facebook, Instagram, Linkedin, Mail, Phone, Twitter, YouTube } from "./Icons";
 import { NewsletterForm } from "./NewsletterForm";
+import { AddressList } from "./AddressList";
 
 // About and Timeline intentionally rendered as non-linked labels per request
 // — pages still exist at src/app/about and src/app/timeline. To restore
@@ -10,7 +11,7 @@ const COMPANY: { label: string; href: string; linked?: boolean }[] = [
   { label: "About", href: "/about", linked: false },
   { label: "Leadership", href: "/leadership" },
   { label: "Timeline", href: "/timeline", linked: false },
-  { label: "Careers", href: "/careers" },
+  { label: "Careers", href: "/careers/SeniorSalesManager" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -106,17 +107,13 @@ export function Footer() {
               <Phone className="mt-0.5 h-4 w-4 shrink-0" />
               <a href="tel:+919021510318" className="transition-colors hover:text-white">+91 9021510318</a>
             </li>
-            <li className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-              <span>
-                Plot No. 5A,13A MIDC,<br />
-                Beside Tata Motors<br />
-                Service Centre,<br />
-                Hingna MIDC,<br />
-                Nagpur – 440016
-              </span>
-            </li>
           </ul>
+          {/* Office locations — tappable rows that expand/collapse the full
+              street address. Lives in AddressList (client component) so this
+              Footer can stay a server component. */}
+          <div className="mt-4">
+            <AddressList />
+          </div>
         </div>
       </div>
 
