@@ -232,7 +232,7 @@ function Hero() {
   return (
     <section
       ref={ref}
-      className="relative isolate flex min-h-[72vh] w-full items-center justify-center overflow-hidden bg-[#0a0a0a] pt-24 tablet:min-h-[70vh] tablet:pt-24 md:min-h-[80vh] md:pt-32"
+      className="relative isolate flex min-h-[55vh] w-full items-center justify-center overflow-hidden bg-[#0a0a0a] pt-24 tablet:min-h-[70vh] tablet:pt-24 md:min-h-[80vh] md:pt-32"
     >
       <div className="absolute inset-0">
         <video
@@ -256,7 +256,7 @@ function Hero() {
         />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1200px] flex-col items-center px-6 py-16 text-center md:py-24">
+      <div className="relative mx-auto flex w-full max-w-[1200px] flex-col items-center px-6 py-10 text-center md:py-24">
         <h1 className="font-display font-semibold uppercase leading-[1.08] text-white">
           <span
             data-hero-line
@@ -465,11 +465,11 @@ function JobDetails() {
   };
 
   return (
-    <section ref={sectionRef} className="w-full bg-[#F2F2F2] py-16 md:py-24">
+    <section ref={sectionRef} className="w-full bg-[#F2F2F2] py-8 md:py-24">
       <div className="mx-auto w-full max-w-[1280px] px-6 md:px-14">
         <div className="grid gap-10 md:grid-cols-[1.1fr_1fr] md:gap-x-14 md:gap-y-10 tablet:grid-cols-1 tablet:gap-10">
           {/* Job meta — top-left on desktop, first on mobile */}
-          <div className="order-1 md:col-start-1 md:row-start-1 tablet:order-1 tablet:col-start-auto tablet:row-start-auto">
+          <div className="order-2 md:col-start-1 md:row-start-1 md:order-none tablet:order-2 tablet:col-start-auto tablet:row-start-auto">
             <ul className="space-y-7">
               {JOB.meta.map((m) => (
                 <li key={m.label} data-meta-row>
@@ -521,7 +521,15 @@ function JobDetails() {
           {/* RIGHT — Dark application form card. On desktop sits in the right
               column spanning both rows; on mobile sits between meta and the
               dropdown (order-2). */}
-          <div data-form-card className="order-2 h-fit rounded-2xl bg-[#111111] p-6 md:col-start-2 md:row-span-2 md:row-start-1 md:order-none md:p-8 md:sticky md:top-28 tablet:static tablet:order-2 tablet:col-start-auto tablet:row-start-auto tablet:row-span-1">
+          <div data-form-card className="order-1 h-fit rounded-2xl bg-[#111111] p-6 md:col-start-2 md:row-span-2 md:row-start-1 md:order-none md:p-8 md:sticky md:top-28 tablet:static tablet:order-1 tablet:col-start-auto tablet:row-start-auto tablet:row-span-1">
+            {submitState === "success" ? (
+              <SuccessCard
+                onSendAnother={() => {
+                  setSubmitState("idle");
+                  setSubmitMessage("");
+                }}
+              />
+            ) : (
             <form onSubmit={onSubmit} className="flex flex-col gap-5">
               <div data-form-field>
                 <label
@@ -602,21 +610,13 @@ function JobDetails() {
                 {submitState === "submitting" ? "Submitting…" : "Submit"}
               </button>
 
-              {submitMessage ? (
-                <p
-                  role="status"
-                  className={`text-sm ${
-                    submitState === "success"
-                      ? "text-emerald-400"
-                      : submitState === "error"
-                      ? "text-red-400"
-                      : "text-white/70"
-                  }`}
-                >
+              {submitState === "error" && submitMessage ? (
+                <p role="status" className="text-sm text-red-400">
                   {submitMessage}
                 </p>
               ) : null}
             </form>
+            )}
           </div>
         </div>
       </div>
@@ -627,6 +627,48 @@ function JobDetails() {
 // ---------------------------------------------------------------------------
 // Pieces
 // ---------------------------------------------------------------------------
+
+function SuccessCard({ onSendAnother }: { onSendAnother: () => void }) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex min-h-[360px] flex-col items-center justify-center gap-5 rounded-xl bg-[#0a0a0a] px-6 py-10 text-center md:min-h-[460px] md:px-10 md:py-14"
+    >
+      <span className="grid h-16 w-16 place-items-center rounded-full bg-white text-black md:h-20 md:w-20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-7 w-7 md:h-9 md:w-9"
+          aria-hidden
+        >
+          <path d="m5 12 5 5L20 7" />
+        </svg>
+      </span>
+
+      <div className="space-y-2">
+        <h3 className="font-display text-lg font-semibold text-white md:text-xl">
+          Thanks your application has been sent.
+        </h3>
+        <p className="text-sm leading-relaxed text-white/70 md:text-[15px]">
+          Our team will contact you soon.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onClick={onSendAnother}
+        className="mt-2 rounded-md border border-white/15 px-5 py-2 font-display text-xs font-medium text-white/80 transition hover:border-white/40 hover:bg-white/[0.04] hover:text-white md:text-sm"
+      >
+        Send another application
+      </button>
+    </div>
+  );
+}
 
 function Field({
   label,
