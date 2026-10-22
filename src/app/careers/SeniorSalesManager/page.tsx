@@ -624,6 +624,7 @@ function JobDetails() {
                   label="Past Company Name"
                   name="pastCompany"
                   placeholder="Enter past company name"
+                  wide
                 />
               </div>
 
@@ -701,15 +702,17 @@ function Field({
   type = "text",
   placeholder,
   required,
+  wide,
 }: {
   label: string;
   name: string;
   type?: string;
   placeholder?: string;
   required?: boolean;
+  wide?: boolean;
 }) {
   return (
-    <div data-form-field>
+    <div data-form-field className={wide ? "md:col-span-2" : undefined}>
       <label
         htmlFor={name}
         className="block font-display text-sm font-medium text-white md:text-[15px]"
