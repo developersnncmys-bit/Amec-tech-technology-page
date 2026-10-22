@@ -295,10 +295,12 @@ function JobDetails() {
   const [descOpen, setDescOpen] = useState(false);
   const [fileName, setFileName] = useState<string>("");
   const [fileError, setFileError] = useState<string>("");
+  const [phoneError, setPhoneError] = useState<string>("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [submitMessage, setSubmitMessage] = useState<string>("");
 
   const MAX_PDF_BYTES = 5 * 1024 * 1024; // 5 MB
+  const PHONE_ALLOWED_RE = /^[+()\-\s\d]+$/;
 
   useIsomorphicLayoutEffect(() => {
     const el = sectionRef.current;
@@ -437,18 +439,53 @@ function JobDetails() {
     setFileName(f.name);
   };
 
+  const validatePhone = (raw: string): string => {
+    const value = raw.trim();
+    if (!value) return "Phone number is required.";
+    if (!PHONE_ALLOWED_RE.test(value)) {
+      return "Phone number can only contain digits, spaces, +, -, and parentheses.";
+    }
+    const digits = value.replace(/\D/g, "");
+    // Accept 10 digits (local) or 11–13 digits (10 + 1–3 digit country code).
+    const isLocal = digits.length === 10;
+    const isWithCountryCode = digits.length >= 11 && digits.length <= 13;
+    if (!isLocal && !isWithCountryCode) {
+      return "Enter a valid 10-digit phone number (country code optional).";
+    }
+    return "";
+  };
+
+  const onPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (phoneError) {
+      const err = validatePhone(e.target.value);
+      if (!err) setPhoneError("");
+    }
+  };
+
+  const onPhoneBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const err = validatePhone(e.target.value);
+    setPhoneError(err);
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (submitState === "submitting") return;
 
     const form = e.currentTarget;
 
+    const data = new FormData(form);
+    const phoneErr = validatePhone(String(data.get("phone") || ""));
+    if (phoneErr) {
+      setPhoneError(phoneErr);
+      (form.elements.namedItem("phone") as HTMLInputElement | null)?.focus();
+      return;
+    }
+
     if (!fileName) {
       setFileError("Please attach your resume (PDF).");
       return;
     }
 
-    const data = new FormData(form);
     data.set("role", `${JOB.eyebrow} ${JOB.title} — ${JOB.subtitle}`);
 
     setSubmitState("submitting");
@@ -597,6 +634,11 @@ function JobDetails() {
                   type="tel"
                   placeholder="Enter your phone number"
                   required
+                  inputMode="tel"
+                  autoComplete="tel"
+                  error={phoneError}
+                  onChange={onPhoneChange}
+                  onBlur={onPhoneBlur}
                 />
                 <Field
                   label="Email"
@@ -703,6 +745,11 @@ function Field({
   placeholder,
   required,
   wide,
+  error,
+  onChange,
+  onBlur,
+  inputMode,
+  autoComplete,
 }: {
   label: string;
   name: string;
@@ -710,7 +757,13 @@ function Field({
   placeholder?: string;
   required?: boolean;
   wide?: boolean;
+  error?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  autoComplete?: string;
 }) {
+  const hasError = Boolean(error);
   return (
     <div data-form-field className={wide ? "md:col-span-2" : undefined}>
       <label
@@ -731,8 +784,23 @@ function Field({
         placeholder={placeholder}
         required={required}
         aria-required={required || undefined}
-        className="mt-2 w-full rounded-md border border-white/10 bg-[#1b1b1b] px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none"
+        aria-invalid={hasError || undefined}
+        aria-describedby={hasError ? `${name}-error` : undefined}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
+        onChange={onChange}
+        onBlur={onBlur}
+        className={`mt-2 w-full rounded-md border bg-[#1b1b1b] px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none ${
+          hasError
+            ? "border-red-400/60 focus:border-red-400"
+            : "border-white/10 focus:border-white/40"
+        }`}
       />
+      {hasError ? (
+        <p id={`${name}-error`} className="mt-2 text-xs text-red-400">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

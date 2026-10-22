@@ -5,9 +5,11 @@ export const runtime = "nodejs";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5 MB
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_ALLOWED_RE = /^[+()\-\s\d]+$/;
 
 const RECIPIENT = process.env.CAREERS_RECIPIENT || "hr.amectechnology@gmail.com";
 const APPS_SCRIPT_URL = process.env.CAREERS_APPS_SCRIPT_URL || "";
+const APPS_SCRIPT_SECRET = process.env.GOOGLE_APPS_SCRIPT_SECRET || "";
 
 function esc(v: string) {
   return v
@@ -59,6 +61,27 @@ export async function POST(req: Request) {
       { error: "Phone number is required." },
       { status: 400 }
     );
+  }
+  if (!PHONE_ALLOWED_RE.test(phone)) {
+    return NextResponse.json(
+      {
+        error:
+          "Phone number can only contain digits, spaces, +, -, and parentheses.",
+      },
+      { status: 400 }
+    );
+  }
+  {
+    const digits = phone.replace(/\D/g, "");
+    // Accept 10 digits (local) or 11–13 digits (10 + 1–3 digit country code).
+    const isLocal = digits.length === 10;
+    const isWithCountryCode = digits.length >= 11 && digits.length <= 13;
+    if (!isLocal && !isWithCountryCode) {
+      return NextResponse.json(
+        { error: "Enter a valid 10-digit phone number (country code optional)." },
+        { status: 400 }
+      );
+    }
   }
   if (!email || !EMAIL_RE.test(email)) {
     return NextResponse.json(
@@ -184,15 +207,28 @@ export async function POST(req: Request) {
   const syncToSheet = async (): Promise<{ ok: boolean; detail?: string }> => {
     if (!sheetConfigured) return { ok: false, detail: "sheet not configured" };
 
+    // Apps Script expects `experience` as a STRING of digits (its `clean()`
+    // helper rejects non-strings, returning "" which then fails the
+    // "Required fields are missing" check). Parse digits from free-text
+    // input and send as a string so `clean()` keeps it, and the subsequent
+    // `Number(experience)` call parses it to a number for range validation.
+    const expMatch = experience.match(/\d+(?:\.\d+)?/);
+    const experienceStr = expMatch ? expMatch[0] : "";
+
     const payload = {
+      // Shared secret so the Apps Script can reject unauthenticated requests.
+      // Must match CONFIG.SHARED_SECRET inside the Apps Script doPost handler.
+      secret: APPS_SCRIPT_SECRET,
       role,
       jobTitle: role,
       name,
       phone,
+      phoneNumber: phone, // alias — some handlers key off `phoneNumber`
       email,
       city,
       education,
-      experience,
+      // String of digits (e.g. "6") for Apps Script's clean() → Number() path.
+      experience: experienceStr,
       pastCompany,
       resumeBase64: resumeBuffer ? resumeBuffer.toString("base64") : "",
       resumeFileName,
@@ -202,7 +238,13 @@ export async function POST(req: Request) {
     try {
       const res = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        // IMPORTANT: Apps Script Web Apps deployed with "Anyone" access do NOT
+        // reliably accept application/json — Google either silently drops the
+        // request or redirects to a login page without invoking doPost. Using
+        // text/plain avoids the preflight/CORS path and the request reaches
+        // doPost. The body is still JSON; `e.postData.contents` in Apps Script
+        // receives the raw JSON string which JSON.parse decodes normally.
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload),
         // Apps Script Web Apps redirect through googleusercontent.com on
         // success — allow fetch to follow those 302s.
@@ -211,6 +253,28 @@ export async function POST(req: Request) {
 
       if (!res.ok) {
         return { ok: false, detail: `HTTP ${res.status}` };
+      }
+
+      // Apps Script returns 200 even on validation failures — parse the body
+      // to detect `{ success: false, ... }` and treat it as a real failure.
+      const text = await res.text();
+      let body: { success?: boolean; message?: string; debug?: string } = {};
+      try {
+        body = JSON.parse(text);
+      } catch {
+        // Non-JSON response — some Apps Script setups return HTML on error.
+        return { ok: false, detail: `non-JSON response: ${text.slice(0, 200)}` };
+      }
+      if (body.success === false) {
+        // `debug` is the actual error message surfaced by the Apps Script
+        // catch block (temporarily exposed for diagnostics). `message` is the
+        // generic user-safe copy.
+        return {
+          ok: false,
+          detail: body.debug
+            ? `${body.message || "rejected"} — ${body.debug}`
+            : body.message || "Apps Script rejected the submission",
+        };
       }
       return { ok: true };
     } catch (err) {
@@ -239,11 +303,20 @@ export async function POST(req: Request) {
     );
   }
 
+  // Log sheet sync failure to server console AND include the detail in the
+  // response so it's visible in the browser's Network → Response tab. Helps
+  // diagnose Apps Script issues without needing server access.
+  if (!sheetResult.ok) {
+    console.error("[careers] Sheet sync failed:", sheetResult.detail);
+  }
+
   return NextResponse.json({
     ok: true,
     delivered: {
       email: emailResult.ok,
       sheet: sheetResult.ok,
     },
+    sheetError: sheetResult.ok ? undefined : sheetResult.detail,
+    emailError: emailResult.ok ? undefined : emailResult.detail,
   });
 }
