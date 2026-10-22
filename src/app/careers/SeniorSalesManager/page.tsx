@@ -442,6 +442,12 @@ function JobDetails() {
     if (submitState === "submitting") return;
 
     const form = e.currentTarget;
+
+    if (!fileName) {
+      setFileError("Please attach your resume (PDF).");
+      return;
+    }
+
     const data = new FormData(form);
     data.set("role", `${JOB.eyebrow} ${JOB.title} — ${JOB.subtitle}`);
 
@@ -544,6 +550,9 @@ function JobDetails() {
                   className="block font-display text-sm font-medium text-white md:text-[15px]"
                 >
                   Upload Resume
+                  <span aria-hidden className="ml-1 text-red-400">
+                    *
+                  </span>
                 </label>
                 <div className="mt-2 flex items-center justify-between gap-3 rounded-md border border-white/10 bg-[#1b1b1b] px-4 py-3">
                   <span
@@ -564,6 +573,8 @@ function JobDetails() {
                     name="resume"
                     type="file"
                     accept="application/pdf,.pdf"
+                    required
+                    aria-required="true"
                     onChange={onFileChange}
                     className="sr-only"
                   />
@@ -578,6 +589,13 @@ function JobDetails() {
                   label="Name"
                   name="name"
                   placeholder="Enter your name"
+                  required
+                />
+                <Field
+                  label="Phone Number"
+                  name="phone"
+                  type="tel"
+                  placeholder="Enter your phone number"
                   required
                 />
                 <Field
@@ -697,6 +715,11 @@ function Field({
         className="block font-display text-sm font-medium text-white md:text-[15px]"
       >
         {label}
+        {required ? (
+          <span aria-hidden className="ml-1 text-red-400">
+            *
+          </span>
+        ) : null}
       </label>
       <input
         id={name}
@@ -704,6 +727,7 @@ function Field({
         type={type}
         placeholder={placeholder}
         required={required}
+        aria-required={required || undefined}
         className="mt-2 w-full rounded-md border border-white/10 bg-[#1b1b1b] px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none"
       />
     </div>
