@@ -3,9 +3,10 @@ import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
-const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5 MB
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_ALLOWED_RE = /^[+()\-\s\d]+$/;
+const EXPERIENCE_ALLOWED_RE = /^\d+(?:\.\d+)?$/;
 
 const RECIPIENT = process.env.CAREERS_RECIPIENT || "hr.amectechnology@gmail.com";
 const APPS_SCRIPT_URL = process.env.CAREERS_APPS_SCRIPT_URL || "";
@@ -89,6 +90,21 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  if (experience) {
+    if (!EXPERIENCE_ALLOWED_RE.test(experience)) {
+      return NextResponse.json(
+        { error: "Enter experience as a number (e.g. 5 or 7.5)." },
+        { status: 400 }
+      );
+    }
+    const years = Number(experience);
+    if (!Number.isFinite(years) || years < 0 || years > 60) {
+      return NextResponse.json(
+        { error: "Experience must be between 0 and 60 years." },
+        { status: 400 }
+      );
+    }
+  }
   if (!resume || !(resume instanceof File) || resume.size === 0) {
     return NextResponse.json(
       { error: "Resume (PDF) is required." },
@@ -102,7 +118,7 @@ export async function POST(req: Request) {
   if (resume && resume instanceof File && resume.size > 0) {
     if (resume.size > MAX_FILE_BYTES) {
       return NextResponse.json(
-        { error: "Resume must be 5 MB or smaller." },
+        { error: "Resume must be 10 MB or smaller." },
         { status: 400 }
       );
     }

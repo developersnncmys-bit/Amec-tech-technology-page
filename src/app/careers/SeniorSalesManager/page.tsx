@@ -296,11 +296,14 @@ function JobDetails() {
   const [fileName, setFileName] = useState<string>("");
   const [fileError, setFileError] = useState<string>("");
   const [phoneError, setPhoneError] = useState<string>("");
+  const [experienceError, setExperienceError] = useState<string>("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [submitMessage, setSubmitMessage] = useState<string>("");
 
-  const MAX_PDF_BYTES = 5 * 1024 * 1024; // 5 MB
+  const MAX_PDF_BYTES = 10 * 1024 * 1024; // 10 MB
   const PHONE_ALLOWED_RE = /^[+()\-\s\d]+$/;
+  // Allow digits with optional single decimal point. No letters, no symbols.
+  const EXPERIENCE_ALLOWED_RE = /^\d+(?:\.\d+)?$/;
 
   useIsomorphicLayoutEffect(() => {
     const el = sectionRef.current;
@@ -411,7 +414,7 @@ function JobDetails() {
     }
 
     if (f.size > MAX_PDF_BYTES) {
-      rejectFile(input, "PDF must be 5 MB or smaller.");
+      rejectFile(input, "PDF must be 10 MB or smaller.");
       return;
     }
 
@@ -456,15 +459,41 @@ function JobDetails() {
   };
 
   const onPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (phoneError) {
-      const err = validatePhone(e.target.value);
-      if (!err) setPhoneError("");
+    const value = e.target.value;
+    // Hold the "required" error until blur so the user doesn't see it the
+    // instant they focus an empty field. Show format errors as they type.
+    if (!value.trim()) {
+      setPhoneError("");
+      return;
     }
+    setPhoneError(validatePhone(value));
   };
 
   const onPhoneBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const err = validatePhone(e.target.value);
-    setPhoneError(err);
+    setPhoneError(validatePhone(e.target.value));
+  };
+
+  const validateExperience = (raw: string): string => {
+    const value = raw.trim();
+    if (!value) return "";
+    if (!EXPERIENCE_ALLOWED_RE.test(value)) {
+      return "Enter experience as a number (e.g. 5 or 7.5).";
+    }
+    const years = Number(value);
+    if (!Number.isFinite(years) || years < 0 || years > 60) {
+      return "Experience must be between 0 and 60 years.";
+    }
+    return "";
+  };
+
+  const onExperienceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Experience is optional, so empty is always clean. Validate as the user
+    // types so bad input (letters, out-of-range) surfaces immediately.
+    setExperienceError(validateExperience(e.target.value));
+  };
+
+  const onExperienceBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setExperienceError(validateExperience(e.target.value));
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -478,6 +507,17 @@ function JobDetails() {
     if (phoneErr) {
       setPhoneError(phoneErr);
       (form.elements.namedItem("phone") as HTMLInputElement | null)?.focus();
+      return;
+    }
+
+    const experienceErr = validateExperience(
+      String(data.get("experience") || "")
+    );
+    if (experienceErr) {
+      setExperienceError(experienceErr);
+      (form.elements.namedItem(
+        "experience"
+      ) as HTMLInputElement | null)?.focus();
       return;
     }
 
@@ -660,7 +700,12 @@ function JobDetails() {
                 <Field
                   label="Experience in Years"
                   name="experience"
-                  placeholder="Enter your experience"
+                  type="text"
+                  placeholder="e.g. 5"
+                  inputMode="decimal"
+                  error={experienceError}
+                  onChange={onExperienceChange}
+                  onBlur={onExperienceBlur}
                 />
                 <Field
                   label="Past Company Name"
